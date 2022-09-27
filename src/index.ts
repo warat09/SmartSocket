@@ -1,30 +1,43 @@
 import express, { Application, Request, Response } from 'express';
-import http from "http";
-
+import http from 'http';
+import config from './config/config';
+import {Connect} from "./config/mysql";
+var cors = require('cors')
 const router: Application = express();
 
-const PORT: number = 9090;
-router.use(express.json({ limit: "100mb" }));
-router.use(express.urlencoded({ extended: true, limit: "100mb" }));
-router.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header(
-      "Access-Control-Allow-Headers",
-      "Origin, X-Requested-With,Content-Type,Accept, Authorization"
-    );
-    if (req.method === "OPTIONS") {
-      res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
-      return res.status(200).json({});
-    }
-    next();
+Connect().then(()=>{
+  StartServer()
+}).catch((err)=>{
+  console.log("not connect db",err)
+})
+const StartServer = () => {
+  router.use(express.json({ limit: "100mb" }));
+  router.use(express.urlencoded({ extended: true, limit: "100mb" }));
+  router.use(cors())
+  router.use((req, res, next) => {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header(
+        "Access-Control-Allow-Headers",
+        "Origin, X-Requested-With,Content-Type,Accept, Authorization"
+      );
+      if (req.method === "OPTIONS") {
+        res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
+        return res.status(200).json({});
+      }
+      next();
+    });
+  router.get('/', (req: Request, res: Response) => {
+      console.log(req.body)
+      res.send('get + TypeScript Server');
   });
-router.get('/', (req: Request, res: Response) => {
+  router.post('/', (req: Request, res: Response) => {
     console.log(req.body)
-    res.send('Express + TypeScript Server');
-});
+    res.send('post + TypeScript Server');
+  });
 
-http
-.createServer(router)
-.listen(PORT, () =>
-  console.log(`Server is running at http://localhost:${PORT}`)
-);
+  http
+  .createServer(router)
+  .listen(config.server.port,() =>
+    console.log(`Server is running at http://localhost:${config.server.port}`)
+  );
+}
