@@ -2,6 +2,9 @@ import express, { Application, Request, Response } from 'express';
 import http from 'http';
 import config from './config/config';
 import {Connect} from "./config/mysql";
+import MACRoutes from './routes/M.A.C';
+
+
 var cors = require('cors')
 const router: Application = express();
 
@@ -26,14 +29,16 @@ const StartServer = () => {
       }
       next();
     });
-  router.get('/', (req: Request, res: Response) => {
-      console.log(req.body)
-      res.send('get + TypeScript Server');
-  });
-  router.post('/', (req: Request, res: Response) => {
-    console.log(req.body)
-    res.send('post + TypeScript Server');
-  });
+
+    router.use('/MACAddress', MACRoutes);
+  // router.get('/', (req: Request, res: Response) => {
+  //     console.log(req.body)
+  //     res.send('get + TypeScript Server');
+  // });
+  // router.post('/', (req: Request, res: Response) => {
+  //   console.log(req.body)
+  //   res.send('post + TypeScript Server');
+  // });
 
   http
   .createServer(router)
