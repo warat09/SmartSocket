@@ -7,12 +7,26 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
     console.log(Address)
     res.status(200).json({status: "Ok"});
 
-    // let query = `INSERT INTO books (author, title) VALUES ("${author}", "${title}")`;
+    let query = `INSERT INTO macaddress (MAC_ADDRESS) VALUES ("${Address}")`;
 
-    // Connect()
-    //     .then((connection) => {
-    //         Query(connection, query)
-    //     });
+    Connect()
+        .then((connection) => {
+            Query(connection, query)
+            .then((result)=>{
+                return res.status(200).json({
+                    result
+                });
+            })
+            .catch((error) => {
+                return res.status(200).json({
+                    message: error.message,
+                    error
+                });
+            })
+            .finally(() => {
+                connection.end();
+            });
+        });
 };
 
 

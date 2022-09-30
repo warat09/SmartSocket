@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.3.0-dev+20220928.000bf397a4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 27, 2022 at 10:48 PM
+-- Generation Time: Sep 30, 2022 at 10:04 AM
 -- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- PHP Version: 8.1.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,28 +24,45 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `iot`
+-- Table structure for table `macaddress`
 --
 
-CREATE TABLE `iot` (
-  `ID_IoT` int(100) NOT NULL,
-  `M.A.C_ID` varchar(100) NOT NULL,
-  `Name` varchar(100) NOT NULL,
-  `Status` varchar(100) NOT NULL,
-  `Rent` tinyint(1) NOT NULL,
-  `TimeRemain` datetime NOT NULL,
-  `Maintainent` tinyint(1) NOT NULL
+CREATE TABLE `macaddress` (
+  `MAC_ID` int(4) NOT NULL,
+  `MAC_ADDRESS` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `macaddress`
+--
+
+INSERT INTO `macaddress` (`MAC_ID`, `MAC_ADDRESS`) VALUES
+(1, '4C:75:25:36:9D:D9'),
+(2, '4C:75:25:36:9D:D9'),
+(3, '4C:75:25:36:9D:D9'),
+(4, '4C:75:25:36:9D:D9'),
+(5, '4C:75:25:36:9D:D9'),
+(6, '4C:75:25:36:9D:D9');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `iot`
+-- Indexes for table `macaddress`
 --
-ALTER TABLE `iot`
-  ADD PRIMARY KEY (`ID_IoT`);
+ALTER TABLE `macaddress`
+  ADD PRIMARY KEY (`MAC_ID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `macaddress`
+--
+ALTER TABLE `macaddress`
+  MODIFY `MAC_ID` int(4) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
