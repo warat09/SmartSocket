@@ -35,10 +35,10 @@ const StartServer = () => {
   //     console.log(req.body)
   //     res.send('get + TypeScript Server');
   // });
-  // router.post('/', (req: Request, res: Response) => {
-  //   console.log(req.body)
-  //   res.send('post + TypeScript Server');
-  // });
+  router.post('/', (req: Request, res: Response) => {
+    console.log(req.body.count);
+    res.send(`count = ${req.body.count}`);
+  });
 
   http
   .createServer(router)
