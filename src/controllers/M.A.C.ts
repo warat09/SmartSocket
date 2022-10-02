@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import { Connect, Query } from '../config/mysql';
-import IMac from '../models/MAC'
 
 const AddMACAddress = async (req: Request, res: Response, next: NextFunction) => {
     let {Address,LocalIP} = req.body
     console.log(req.body)
-    let CheckMacAddress = `SELECT * FROM nodes WHERE mac_address = "${Address}"`;
-    let AddMacAddress = `INSERT INTO nodes (mac_address,ip_protocol) VALUES ("${Address}","${LocalIP}") `
+    let CheckMacAddress = `SELECT mac_address FROM nodes WHERE mac_address = "${Address}"`;
+    let AddMacAddress = `INSERT INTO nodes (mac_address,ip_protocol) VALUES ("${Address}","${LocalIP}") `;
+    let UpdateMacAddress = `UPDATE nodes SET ip_protocol= "${LocalIP}" WHERE mac_address = "${Address}";`
     Connect()
         .then((connection) => {
             Query(connection, CheckMacAddress)
@@ -19,7 +19,10 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
                     })
                 }
                 else{
-                    res.status(200).json({status:1,message: "Alredy have"});
+                    Query(connection,UpdateMacAddress)
+                    .then(()=>{
+                        res.status(200).json({status:1,message: "Update Success"});
+                    })
                 }
             })
             .catch((error) => {

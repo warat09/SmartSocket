@@ -13,7 +13,7 @@ struct settings {
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-const char* WEBSITE = "http://192.168.100.36:9090/MACAddress/AddMACAddress";
+const char* WEBSITE = "http://192.168.1.109:9090/MACAddress/AddMACAddress";
 unsigned long prevTime = millis();
 int count = 0;
 WiFiClient wifiClient;
@@ -59,7 +59,7 @@ void loop() {
 //  StaticJsonDocument<capacity> doc;
     if (WiFi.status() == WL_CONNECTED) {
       if(currentTime - prevTime > 1000){
-        http.begin(wifiClient,"http://192.168.100.36:9090/");
+        http.begin(wifiClient,"http://192.168.1.109:9090:9090/");
         http.addHeader("Content-Type", "application/json");//Specify request destination
         String stringOne = String(count);
         int httpCode = http.POST("{\"count\":\""+stringOne+"\"}");
@@ -123,8 +123,8 @@ void sentaddress(){
       if(message.equals("Insert Success")){
          Serial.print("Insert Success");        
       }
-      else if(message.equals("Alredy have")){
-         Serial.print("Alredy have");        
+      else if(message.equals("Update Success")){
+         Serial.print("Update Success");        
       }
     }
   }
