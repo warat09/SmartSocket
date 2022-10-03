@@ -3,7 +3,9 @@ import http from 'http';
 import config from './config/config';
 import {Connect} from "./config/mysql";
 import MACRoutes from './routes/M.A.C';
-
+import Assets from './routes/Asset';
+import Matching from './routes/Matching';
+import Transection from './routes/Transection';
 
 var cors = require('cors')
 const router: Application = express();
@@ -31,6 +33,9 @@ const StartServer = () => {
     });
 
     router.use('/MACAddress', MACRoutes);
+    router.use('/Assets',Assets);
+    router.use('/Matching',Matching);
+    router.use('/Transection',Transection)
   // router.get('/', (req: Request, res: Response) => {
   //     console.log(req.body)
   //     res.send('get + TypeScript Server');

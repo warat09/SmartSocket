@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { Connect, Query } from '../config/mysql';
 
 const AddMACAddress = async (req: Request, res: Response, next: NextFunction) => {
-    let {Address,LocalIP} = req.body
+    let {Address,LocalIP,time} = req.body
     console.log(req.body)
     let CheckMacAddress = `SELECT mac_address FROM nodes WHERE mac_address = "${Address}"`;
     let AddMacAddress = `INSERT INTO nodes (mac_address,ip_protocol) VALUES ("${Address}","${LocalIP}") `;
