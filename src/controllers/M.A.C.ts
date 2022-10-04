@@ -40,7 +40,7 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
 const getAllMacaddress= async (req: Request, res: Response, next: NextFunction) => {
 
     let query = `SELECT * FROM macaddress`;
-
+    
     Connect()
         .then((connection) => {
             Query(connection, query)

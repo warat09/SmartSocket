@@ -3,7 +3,7 @@ import http from 'http';
 import config from './config/config';
 import {Connect} from "./config/mysql";
 import MACRoutes from './routes/M.A.C';
-import Assets from './routes/Asset';
+import Asset from './routes/Asset';
 import Matching from './routes/Matching';
 import Transection from './routes/Transection';
 
@@ -33,7 +33,7 @@ const StartServer = () => {
     });
 
     router.use('/MACAddress', MACRoutes);
-    router.use('/Assets',Assets);
+    router.use('/Assets',Asset);
     router.use('/Matching',Matching);
     router.use('/Transection',Transection)
   // router.get('/', (req: Request, res: Response) => {

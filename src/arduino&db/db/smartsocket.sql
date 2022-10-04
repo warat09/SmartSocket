@@ -45,6 +45,8 @@ CREATE TABLE `matching` (
   `id_macthing` int(11) NOT NULL,
   `id_assets` int(11) NOT NULL,
   `mac_address` varchar(45) NOT NULL,
+  `floor` varchar(45) NOT NULL,
+  `room` varchar(45) NOT NULL,
   `status` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
