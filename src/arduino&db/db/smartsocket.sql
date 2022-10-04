@@ -30,8 +30,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `assets` (
   `id_assets` int(11) NOT NULL,
   `name_assets` varchar(45) NOT NULL,
-  `time_limit` float NOT NULL,
-  `time_remain` float NOT NULL,
+  `time_limit` time NULL,
+  `time_remain` time NULL,
   `maintanent` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -46,7 +46,6 @@ CREATE TABLE `matching` (
   `id_assets` int(11) NOT NULL,
   `mac_address` varchar(45) NOT NULL,
   `status` varchar(45) NOT NULL,
-  `show` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -70,6 +69,7 @@ CREATE TABLE `rent` (
   `id_rent` int(11) NOT NULL,
   `date_time_rent` datetime NOT NULL,
   `id_user` int(11) NOT NULL,
+  `id_macthing` int(11) NOT NULL,
   `date_time_return` datetime NOT NULL,
   `date_time_approve` datetime NOT NULL,
   `floor` varchar(45) NOT NULL,
@@ -89,7 +89,7 @@ CREATE TABLE `transection` (
   `id_transection` int(11) NOT NULL,
   `status` varchar(3) NOT NULL,
   `id_matching` int(11) NOT NULL,
-  `date_time` datetime NOT NULL
+  `date_time` datetime  NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -139,6 +139,7 @@ ALTER TABLE `nodes`
 ALTER TABLE `rent`
   ADD PRIMARY KEY (`id_rent`),
   ADD KEY `FK_users` (`id_user`);
+  ADD KEY `FK_matching` (`id_matching`)
 
 --
 -- Indexes for table `transection`
