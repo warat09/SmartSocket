@@ -69,7 +69,7 @@ CREATE TABLE `rent` (
   `id_rent` int(11) NOT NULL,
   `date_time_rent` datetime NOT NULL,
   `id_user` int(11) NOT NULL,
-  `id_macthing` int(11) NOT NULL,
+  `id_matching` int(11) NOT NULL,
   `date_time_return` datetime NOT NULL,
   `date_time_approve` datetime NOT NULL,
   `floor` varchar(45) NOT NULL,
@@ -138,15 +138,15 @@ ALTER TABLE `nodes`
 --
 ALTER TABLE `rent`
   ADD PRIMARY KEY (`id_rent`),
-  ADD KEY `FK_users` (`id_user`);
-  ADD KEY `FK_matching` (`id_matching`)
+  ADD KEY `FK_users` (`id_user`),
+  ADD KEY `FK_matching` (`id_matching`);
 
 --
 -- Indexes for table `transection`
 --
 ALTER TABLE `transection`
   ADD PRIMARY KEY (`id_transection`),
-  ADD KEY `FK_macthing` (`id_matching`);
+  ADD KEY `FK_matching` (`id_matching`);
 
 --
 -- Indexes for table `users`
