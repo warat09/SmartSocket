@@ -3,19 +3,21 @@ import { Connect, Query } from '../config/mysql';
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {Address,id_assets,Floor,Room,Status} = req.body
-    console.log(req.body)
-    let CheckMatching = `SELECT mac_address FROM matching WHERE mac_address = "${Address}" `;
+    let CheckMatching = `SELECT id_matching FROM matching WHERE mac_address = "${Address}" AND id_assets = "${id_assets}"`;
     let AddMatching = `INSERT INTO matching(mac_address,id_assets,floor,room,status) VALUES ("${Address}","${id_assets}","${Floor}","${Room}","${Status}") `;
     Connect()
-        .then((connection) => {
-            Query(connection, CheckMatching )
-            .then((results)=>{
-                const result:any = Object.values(JSON.parse(JSON.stringify(results)));
-                if(result.length === 0){
-                    Query(connection,AddMatching)
-                    .then(()=>{
+        .then(async(connection) => {
+            await Query(connection, CheckMatching )
+            .then(async(results)=>{
+                const result:any = JSON.parse(JSON.stringify(results));
+                if(Object.values(result).length === 0){
+                    await Query(connection,AddMatching)
+                    .then(async()=>{
                         res.status(200).json({status:1,message: "Insert Success"});
                     })
+                }
+                else{
+                    res.status(200).json({status:1,message: `Have ${Address}`});
                 }
             })
             .catch((error) => {

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 03, 2022 at 10:49 PM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 7.4.30
+-- Generation Time: Oct 04, 2022 at 07:00 PM
+-- Server version: 10.4.24-MariaDB
+-- PHP Version: 7.4.29
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -30,10 +30,17 @@ SET time_zone = "+00:00";
 CREATE TABLE `assets` (
   `id_assets` int(11) NOT NULL,
   `name_assets` varchar(45) NOT NULL,
-  `time_limit` time NULL,
-  `time_remain` time NULL,
+  `time_limit` time DEFAULT NULL,
+  `time_remain` time DEFAULT NULL,
   `maintanent` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `assets`
+--
+
+INSERT INTO `assets` (`id_assets`, `name_assets`, `time_limit`, `time_remain`, `maintanent`) VALUES
+(1, 'คอม', NULL, NULL, 0);
 
 -- --------------------------------------------------------
 
@@ -42,13 +49,20 @@ CREATE TABLE `assets` (
 --
 
 CREATE TABLE `matching` (
-  `id_macthing` int(11) NOT NULL,
+  `id_matching` int(11) NOT NULL,
   `id_assets` int(11) NOT NULL,
   `mac_address` varchar(45) NOT NULL,
   `floor` varchar(45) NOT NULL,
   `room` varchar(45) NOT NULL,
   `status` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `matching`
+--
+
+INSERT INTO `matching` (`id_matching`, `id_assets`, `mac_address`, `floor`, `room`, `status`) VALUES
+(0, 1, '4C:75:25:36:9D:D9', '4', '4', 'rent');
 
 -- --------------------------------------------------------
 
@@ -60,6 +74,13 @@ CREATE TABLE `nodes` (
   `mac_address` varchar(45) NOT NULL,
   `ip_protocol` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `nodes`
+--
+
+INSERT INTO `nodes` (`mac_address`, `ip_protocol`) VALUES
+('4C:75:25:36:9D:D9', '192.168.1.106');
 
 -- --------------------------------------------------------
 
@@ -89,9 +110,9 @@ CREATE TABLE `rent` (
 
 CREATE TABLE `transection` (
   `id_transection` int(11) NOT NULL,
-  `status` varchar(3) NOT NULL,
+  `status` varchar(10) NOT NULL,
   `id_matching` int(11) NOT NULL,
-  `date_time` datetime  NULL
+  `date_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -125,7 +146,7 @@ ALTER TABLE `assets`
 -- Indexes for table `matching`
 --
 ALTER TABLE `matching`
-  ADD PRIMARY KEY (`id_macthing`),
+  ADD PRIMARY KEY (`id_matching`),
   ADD KEY `FK_assets` (`id_assets`),
   ADD KEY `FK_mac_address` (`mac_address`);
 
@@ -164,7 +185,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `rent`

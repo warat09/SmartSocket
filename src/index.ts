@@ -42,7 +42,7 @@ const StartServer = () => {
   // });
   router.post('/', (req: Request, res: Response) => {
     console.log(req.body.count);
-    res.send(`count = ${req.body.count}`);
+    res.send(`ON`);
   });
 
   http
