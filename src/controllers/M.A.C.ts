@@ -39,8 +39,8 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
 
 const getAllMacaddress= async (req: Request, res: Response, next: NextFunction) => {
 
-    let query = `SELECT * FROM macaddress`;
-    
+    let query = `SELECT * FROM nodes`;
+
     Connect()
         .then((connection) => {
             Query(connection, query)
