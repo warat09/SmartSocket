@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 04, 2022 at 07:00 PM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 7.4.29
+-- Generation Time: Oct 05, 2022 at 10:03 AM
+-- Server version: 10.4.25-MariaDB
+-- PHP Version: 7.4.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -35,13 +35,6 @@ CREATE TABLE `assets` (
   `maintanent` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `assets`
---
-
-INSERT INTO `assets` (`id_assets`, `name_assets`, `time_limit`, `time_remain`, `maintanent`) VALUES
-(1, 'คอม', NULL, NULL, 0);
-
 -- --------------------------------------------------------
 
 --
@@ -57,13 +50,6 @@ CREATE TABLE `matching` (
   `status` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
---
--- Dumping data for table `matching`
---
-
-INSERT INTO `matching` (`id_matching`, `id_assets`, `mac_address`, `floor`, `room`, `status`) VALUES
-(0, 1, '4C:75:25:36:9D:D9', '4', '4', 'rent');
-
 -- --------------------------------------------------------
 
 --
@@ -74,13 +60,6 @@ CREATE TABLE `nodes` (
   `mac_address` varchar(45) NOT NULL,
   `ip_protocol` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `nodes`
---
-
-INSERT INTO `nodes` (`mac_address`, `ip_protocol`) VALUES
-('4C:75:25:36:9D:D9', '192.168.1.106');
 
 -- --------------------------------------------------------
 
@@ -185,7 +164,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `matching`
+--
+ALTER TABLE `matching`
+  MODIFY `id_matching` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `rent`
