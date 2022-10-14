@@ -34,6 +34,10 @@ const SendTransection = async (req: Request, res: Response, next: NextFunction) 
         });
 };
 
+const SendTest =async (req: Request, res: Response, next: NextFunction)=>{
+    console.log(req.body)
+}
 
 
-export default {SendTransection};
+
+export default {SendTransection,SendTest};

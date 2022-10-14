@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 05, 2022 at 10:03 AM
+-- Generation Time: Oct 14, 2022 at 03:27 PM
 -- Server version: 10.4.25-MariaDB
 -- PHP Version: 7.4.30
 
@@ -35,6 +35,14 @@ CREATE TABLE `assets` (
   `maintanent` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `assets`
+--
+
+INSERT INTO `assets` (`id_assets`, `name_assets`, `time_limit`, `time_remain`, `maintanent`) VALUES
+(1, 'คอม', NULL, NULL, 0),
+(2, 'ปลั๊ก', NULL, NULL, 0);
+
 -- --------------------------------------------------------
 
 --
@@ -50,6 +58,14 @@ CREATE TABLE `matching` (
   `status` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+--
+-- Dumping data for table `matching`
+--
+
+INSERT INTO `matching` (`id_matching`, `id_assets`, `mac_address`, `floor`, `room`, `status`) VALUES
+(1, 1, 'BC:FF:4D:3A:0D:AB', '3', '4', 'rent'),
+(2, 2, '4C:75:25:36:9D:D9', '3', '4', 'rent');
+
 -- --------------------------------------------------------
 
 --
@@ -60,6 +76,14 @@ CREATE TABLE `nodes` (
   `mac_address` varchar(45) NOT NULL,
   `ip_protocol` varchar(45) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `nodes`
+--
+
+INSERT INTO `nodes` (`mac_address`, `ip_protocol`) VALUES
+('4C:75:25:36:9D:D9', '192.168.43.207'),
+('BC:FF:4D:3A:0D:AB', '192.168.43.41');
 
 -- --------------------------------------------------------
 
@@ -93,6 +117,18 @@ CREATE TABLE `transection` (
   `id_matching` int(11) NOT NULL,
   `date_time` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `transection`
+--
+
+INSERT INTO `transection` (`id_transection`, `status`, `id_matching`, `date_time`) VALUES
+(1, 'ON', 2, '2022-10-07 19:48:26'),
+(2, 'OFF', 2, '2022-10-07 19:49:31'),
+(3, 'ON', 2, '2022-10-13 14:55:12'),
+(4, 'OFF', 2, '2022-10-13 14:59:54'),
+(5, 'ON', 2, '2022-10-13 15:00:39'),
+(6, 'OFF', 2, '2022-10-13 15:01:03');
 
 -- --------------------------------------------------------
 
@@ -164,13 +200,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `assets`
 --
 ALTER TABLE `assets`
-  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_assets` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `matching`
 --
 ALTER TABLE `matching`
-  MODIFY `id_matching` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_matching` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `rent`
@@ -182,7 +218,7 @@ ALTER TABLE `rent`
 -- AUTO_INCREMENT for table `transection`
 --
 ALTER TABLE `transection`
-  MODIFY `id_transection` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_transection` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
