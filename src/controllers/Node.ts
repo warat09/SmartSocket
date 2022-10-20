@@ -3,10 +3,10 @@ import { Connect, Query } from '../config/mysql';
 
 const AddMACAddress = async (req: Request, res: Response, next: NextFunction) => {
     let {Address,LocalIP} = req.body
-    let date = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
-    let CheckMacAddress = `SELECT mac_address FROM nodes WHERE mac_address = "${Address}"`;
-    let AddMacAddress = `INSERT INTO nodes (mac_address,ip_protocol) VALUES ("${Address}","${LocalIP}") `;
-    let UpdateMacAddress = `UPDATE nodes SET ip_protocol= "${LocalIP}" WHERE mac_address = "${Address}";`
+    let Date_node = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
+    let CheckMacAddress = `SELECT mac_address FROM node WHERE mac_address = "${Address}"`;
+    let AddMacAddress = `INSERT INTO node (mac_address,ip,date_node,status_node) VALUES ("${Address}","${LocalIP}","${Date_node}","enable") `;
+    let UpdateMacAddress = `UPDATE node SET ip= "${LocalIP}",date_node="${Date_node}" WHERE mac_address = "${Address}";`
     Connect()
         .then((connection) => {
             Query(connection, CheckMacAddress)
@@ -39,7 +39,7 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
 
 const getAllMacaddress= async (req: Request, res: Response, next: NextFunction) => {
 
-    let query = `SELECT * FROM nodes`;
+    let query = `SELECT * FROM node`;
 
     Connect()
         .then((connection) => {

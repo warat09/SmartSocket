@@ -14,11 +14,13 @@ struct settings {
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-const char* WEBSITE = "http://192.168.43.250:9090/MACAddress/AddMACAddress";
+const char* WEBSITE = "http://192.168.1.100:9090/Node/AddMACAddress";
+const char* IP_DATABASE = "http://192.168.43.250:9090";
 unsigned long prevTime = millis();
 int count = 0;
 String SWITCH_ON = "false";
 String SWITCH_OFF = "false";
+String RUNING = "false";
 bool LEDstatus = LOW;
 WiFiClient wifiClient;
 
@@ -68,22 +70,31 @@ void loop() {
 //  StaticJsonDocument<capacity> doc;
     if (WiFi.status() == WL_CONNECTED) {
       if(currentTime - prevTime > 5000){
-//        if(LEDstatus){
-//          digitalWrite(D4, LOW);
-//          }
-//        else{
-//          digitalWrite(D4, HIGH);
-//        }
-        
-         if(SWITCH_ON == "true"){
+        if(RUNING =="true"){
+          Serial.println(RUNING);
+          http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
+          http.addHeader("Content-Type", "application/json");//Specify request destination
+          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"RUNING"+"\"}");
+          if(httpCode == 200){
+            String response = http.getString();
+            Serial.println(response);
+          }
+          else{
+            Serial.print("Error on sending POST: ");
+            Serial.println(httpCode);
+          }
+          http.end();             
+        }
+         else if(SWITCH_ON == "true"){
           digitalWrite(D4, LOW);
 //        SWITCH_ON = "true";
           Serial.println(SWITCH_ON);
-          http.begin(wifiClient,"http://192.168.43.250:9090/Transection/SendTransection");
+          http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
           http.addHeader("Content-Type", "application/json");//Specify request destination
           int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"ON"+"\"}");
           if(httpCode == 200){
             SWITCH_ON = "false";
+            RUNING = "true";
             String response = http.getString();
             Serial.println(response);
           }
@@ -96,11 +107,12 @@ void loop() {
          else if(SWITCH_OFF == "true"){
             Serial.println(SWITCH_OFF);
             digitalWrite(D4, HIGH);
-            http.begin(wifiClient,"http://192.168.43.250:9090/Transection/SendTransection");
+            http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
             http.addHeader("Content-Type", "application/json");//Specify request destination
             int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"OFF"+"\"}");
             if(httpCode == 200){
               SWITCH_OFF = "false";
+              RUNING = "false";
               String response = http.getString();
               Serial.println(response);
             }

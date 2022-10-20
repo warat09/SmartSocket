@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { Connect, Query } from '../config/mysql';
 
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
-    let {name_assets,time_limit,time_remain,maintanent} = req.body
-    console.log(req.body)
+    let {name_assets,expire_hour,remain_time} = req.body
+    let Date_assets = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
     let CheckAssets = `SELECT name_assets FROM assets WHERE name_assets = "${name_assets}"`;
-    let AddAssets = `INSERT INTO assets(name_assets,time_limit,time_remain,maintanent) VALUES ("${name_assets}","${time_limit}","${time_remain}","${maintanent}") `;
+    let AddAssets = `INSERT INTO assets(name_assets,date_assets,expire_hour,remain_time,maitanent,status_assets) VALUES ("${name_assets}","${Date_assets}","${expire_hour}","${remain_time}","0","enable") `;
     Connect()
         .then((connection) => {
             Query(connection, CheckAssets)
