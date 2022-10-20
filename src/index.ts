@@ -2,9 +2,9 @@ import express, { Application, Request, Response } from 'express';
 import http from 'http';
 import config from './config/config';
 import {Connect} from "./config/mysql";
-import MACRoutes from './routes/M.A.C';
+import Node from './routes/Node';
 import Asset from './routes/Asset';
-import Matching from './routes/Matching';
+import Match from './routes/Match';
 import Transection from './routes/Transection';
 
 var cors = require('cors')
@@ -32,9 +32,9 @@ const StartServer = () => {
       next();
     });
 
-    router.use('/MACAddress', MACRoutes);
-    router.use('/Assets',Asset);
-    router.use('/Matching',Matching);
+    router.use('/Node', Node);
+    router.use('/Asset',Asset);
+    router.use('/Match',Match);
     router.use('/Transection',Transection)
   // router.get('/', (req: Request, res: Response) => {
   //     console.log(req.body)
