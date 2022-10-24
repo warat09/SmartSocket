@@ -3,6 +3,7 @@ import http from 'http';
 import config from './config/config';
 import {Connect} from "./config/mysql";
 import Node from './routes/Node';
+import User from './routes/User';
 import Asset from './routes/Asset';
 import Match from './routes/Match';
 import Transection from './routes/Transection';
@@ -33,6 +34,7 @@ const StartServer = () => {
     });
 
     router.use('/Node', Node);
+    router.use('/User',User)
     router.use('/Asset',Asset);
     router.use('/Match',Match);
     router.use('/Transection',Transection)
