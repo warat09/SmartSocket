@@ -1,55 +1,62 @@
 import express, { Application, Request, Response } from 'express';
 import http from 'http';
 import config from './config/config';
-import {Connect} from "./config/mysql";
+import { AppDataSource } from "../src/data-source"
 import Node from './routes/Node';
 import User from './routes/User';
-import Asset from './routes/Asset';
-import Match from './routes/Match';
-import Transection from './routes/Transection';
+var bodyParser = require('body-parser')
 
-var cors = require('cors')
-const router: Application = express();
 
-Connect().then(()=>{
-  StartServer()
-}).catch((err)=>{
-  console.log("not connect db",err)
-})
-const StartServer = () => {
-  router.use(express.json({ limit: "100mb" }));
-  router.use(express.urlencoded({ extended: true, limit: "100mb" }));
-  router.use(cors())
-  router.use((req, res, next) => {
-      res.header("Access-Control-Allow-Origin", "*");
-      res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With,Content-Type,Accept, Authorization"
-      );
-      if (req.method === "OPTIONS") {
-        res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
-        return res.status(200).json({});
-      }
-      next();
-    });
+AppDataSource.initialize().then(async () => {
 
-    router.use('/Node', Node);
-    router.use('/User',User)
-    router.use('/Asset',Asset);
-    router.use('/Match',Match);
-    router.use('/Transection',Transection)
-  // router.get('/', (req: Request, res: Response) => {
-  //     console.log(req.body)
-  //     res.send('get + TypeScript Server');
-  // });
-  router.post('/', (req: Request, res: Response) => {
-    console.log(req.body.count);
-    res.send(`ON`);
-  });
+    // create express app
+    var cors = require('cors')
+    const router: Application = express();
+    router.use(bodyParser.json())
+    router.use(express.json({ limit: "100mb" }));
+    router.use(express.urlencoded({ extended: true, limit: "100mb" }));
+    router.use(cors())
+    router.use((req: Request, res: Response, next: Function) => {
+        res.header("Access-Control-Allow-Origin", "*");
+        res.header(
+          "Access-Control-Allow-Headers",
+          "Origin, X-Requested-With,Content-Type,Accept, Authorization"
+        );
+        if (req.method === "OPTIONS") {
+          res.header("Access-Control-Allow-Methods", "PUT,POST,PATCH,DELETE,GET");
+          return res.status(200).json({});
+        }
+        next();
+      });
 
-  http
-  .createServer(router)
-  .listen(config.server.port,() =>
-    console.log(`Server is running at http://localhost:${config.server.port}`)
-  );
-}
+      router.use('/Node', Node);
+      router.use('/User', User);
+
+    // setup express app here
+    // ...
+
+    // start express server
+    http
+    .createServer(router)
+    .listen(config.server.port,() =>
+        console.log(`Server is running at http://localhost:${config.server.port}`)
+    );
+
+    // // insert new users for test
+    // await AppDataSource.manager.save(
+    //     AppDataSource.manager.create(User, {
+    //         firstName: "Timber",
+    //         lastName: "Saw",
+    //         age: 27
+    //     })
+    // )
+
+    // await AppDataSource.manager.save(
+    //     AppDataSource.manager.create(User, {
+    //         firstName: "Phantom",
+    //         lastName: "Assassin",
+    //         age: 24
+    //     })
+    // )
+
+}).catch(error => console.log(error))

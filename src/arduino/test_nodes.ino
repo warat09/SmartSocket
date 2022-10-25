@@ -2,27 +2,36 @@
 #include <ESP8266WebServer.h>
 #include <EEPROM.h>
 #include <WiFiClient.h>
+#include <NTPClient.h>
 #include <ESP8266HTTPClient.h>
+#include <WiFiUdp.h>
 #include <ArduinoJson.h> //v6
 //#define LED D4
 
 ESP8266WebServer server(80);
-
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP,"pool.ntp.org");
 struct settings {
   char ssid[30];
   char password[30];
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-const char* WEBSITE = "http://192.168.1.100:9090/Node/AddMACAddress";
-const char* IP_DATABASE = "http://192.168.43.250:9090";
+String IP_DATABASE = "http://192.168.43.250:9090";
 unsigned long prevTime = millis();
 int count = 0;
+int timezone= 7*3600;
+int dst=0;
 String SWITCH_ON = "false";
 String SWITCH_OFF = "false";
 String RUNING = "false";
 bool LEDstatus = LOW;
 WiFiClient wifiClient;
+
+String weekDays[7]={"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
+
+//Month names
+String months[12]={"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 
 void setup() {
@@ -39,6 +48,12 @@ void setup() {
   while(count <= 3000){
     if(WiFi.status() == WL_CONNECTED){
     Serial.println("cn");
+    timeClient.begin();
+    timeClient.setTimeOffset(25200);
+    Serial.println("\nLoading time");
+    while(!time(nullptr)){
+      Serial.print("*");
+    }
    server.on("/",handle_OnConnect);
     break;
     }
@@ -63,33 +78,37 @@ void setup() {
 
 void loop() {
   server.handleClient();
+  timeClient.update();
   String value = WiFi.macAddress();
   unsigned long currentTime = millis();
+  unsigned long start_time=0;
+  unsigned long end_time=0;
+  unsigned long used_time=0;
+  int day=0;
+  int month=0;
+  int year=0;
+  String on_date="";
+  String off_date="";
+  time_t epochTime = timeClient.getEpochTime();
+  struct tm *ptm = gmtime ((time_t *)&epochTime);
+//  time_t now =time(nullptr);
+//  struct tm* p_tm=localtime(&now);
   HTTPClient http;    //Declare object of class HTTPClient
 //  const int capacity = JSON_OBJECT_SIZE(2);
 //  StaticJsonDocument<capacity> doc;
     if (WiFi.status() == WL_CONNECTED) {
       if(currentTime - prevTime > 5000){
-        if(RUNING =="true"){
-          Serial.println(RUNING);
-          http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
-          http.addHeader("Content-Type", "application/json");//Specify request destination
-          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"RUNING"+"\"}");
-          if(httpCode == 200){
-            String response = http.getString();
-            Serial.println(response);
-          }
-          else{
-            Serial.print("Error on sending POST: ");
-            Serial.println(httpCode);
-          }
-          http.end();             
-        }
-         else if(SWITCH_ON == "true"){
+
+        if(SWITCH_ON == "true"){
           digitalWrite(D4, LOW);
-//        SWITCH_ON = "true";
+          SWITCH_ON = "true";
+          start_time = timeClient.getEpochTime();
+          day=ptm->tm_mday;
+          month=ptm->tm_mon+1;
+          year=ptm->tm_year+1900;
+          on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
           Serial.println(SWITCH_ON);
-          http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
+          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
           http.addHeader("Content-Type", "application/json");//Specify request destination
           int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"ON"+"\"}");
           if(httpCode == 200){
@@ -107,7 +126,13 @@ void loop() {
          else if(SWITCH_OFF == "true"){
             Serial.println(SWITCH_OFF);
             digitalWrite(D4, HIGH);
-            http.begin(wifiClient,"http://192.168.1.100:9090/Transection/SendTransection");
+            end_time = timeClient.getEpochTime();
+            day=ptm->tm_mday;
+            month=ptm->tm_mon+1;
+            year=ptm->tm_year+1900;
+            off_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
+            used_time= (end_time-start_time)*1000;
+            http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
             http.addHeader("Content-Type", "application/json");//Specify request destination
             int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"OFF"+"\"}");
             if(httpCode == 200){
@@ -122,6 +147,22 @@ void loop() {
             }
             http.end();
           }
+
+         else if(RUNING =="true"){
+          Serial.println(RUNING);
+          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+          http.addHeader("Content-Type", "application/json");//Specify request destination
+          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"RUNING"+"\"}");
+          if(httpCode == 200){
+            String response = http.getString();
+            Serial.println(response);
+          }
+          else{
+            Serial.print("Error on sending POST: ");
+            Serial.println(httpCode);
+          }
+          http.end();             
+        }
           prevTime = currentTime;
         }
   } 
@@ -151,7 +192,7 @@ void handlePortal() {
 void sentaddress(){
   Serial.println(WiFi.localIP());
   HTTPClient http;    //Declare object of class HTTPClient
-  http.begin(wifiClient,WEBSITE);      //Specify request destination
+  http.begin(wifiClient,IP_DATABASE+"/Node/AddMACAddress");      //Specify request destination
   http.addHeader("Content-Type", "application/json");
   int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"LocalIP\":\""+WiFi.localIP().toString()+"\"}");
   if(httpCode == 200){
