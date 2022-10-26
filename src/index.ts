@@ -4,6 +4,10 @@ import config from './config/config';
 import { AppDataSource } from "../src/data-source"
 import Node from './routes/Node';
 import User from './routes/User';
+import Transection from './routes/Transection';
+import Usermatch from './routes/Usermatch';
+import Asset from './routes/Asset';
+import Match from './routes/Match';
 var bodyParser = require('body-parser')
 
 
@@ -31,6 +35,10 @@ AppDataSource.initialize().then(async () => {
 
       router.use('/Node', Node);
       router.use('/User', User);
+      router.use('/Asset', Asset)
+      router.use('/Match', Match)
+      router.use('/Transection',Transection)
+      router.use('/Usermatch',Usermatch)
 
     // setup express app here
     // ...

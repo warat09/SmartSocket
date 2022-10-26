@@ -9,11 +9,11 @@ export class User_match {
     id_user_match : number
 
     @OneToOne(() => User, (User) => User.id_user)
-    @JoinColumn()
+    @JoinColumn({ name: 'id_user' })
     id_user: User
     
     @OneToOne(() => Match, (Match) => Match.id_match)
-    @JoinColumn({ name: 'id_assets' })
+    @JoinColumn({ name: 'id_match' })
     id_match: Match
 
     @Column()
