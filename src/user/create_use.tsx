@@ -4,7 +4,7 @@ import axios from "axios";
 const CreateUser: React.FC = () => {
   //user
   const [name, setName] = useState("");
-  const [surname, setUsrname] = useState("");
+  const [surname, setSurname] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -52,47 +52,47 @@ const CreateUser: React.FC = () => {
           className="form-control"
           placeholder="Enter name"
           onChange={(e) => {
-            set(e.target.value);
+            setSurname(e.target.value);
           }}
         ></input>
 
-        <label>name</label>
+        <label>email</label>
         <input
           type="text"
           className="form-control"
           placeholder="Enter name"
           onChange={(e) => {
-            setName(e.target.value);
+            setEmail(e.target.value);
           }}
         ></input>
 
-        <label>name</label>
+        <label>telephone</label>
         <input
           type="text"
           className="form-control"
           placeholder="Enter name"
           onChange={(e) => {
-            setName(e.target.value);
+            setPhone(e.target.value);
           }}
         ></input>
 
-        <label>name</label>
+        <label>role</label>
         <input
           type="text"
           className="form-control"
           placeholder="Enter name"
           onChange={(e) => {
-            setName(e.target.value);
+            setRole(e.target.value);
           }}
         ></input>
 
-        <label>name</label>
+        <label>departure</label>
         <input
           type="text"
           className="form-control"
           placeholder="Enter name"
           onChange={(e) => {
-            setName(e.target.value);
+            setDeparture(e.target.value);
           }}
         ></input>
       </div>
