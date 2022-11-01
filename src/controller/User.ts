@@ -2,6 +2,22 @@ import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { User } from '../entity/User';
 
+const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
+    let {username,password} = req.body;
+    const CheckUser = await AppDataSource.getRepository(User).find({
+        where: {
+            username: username,
+            password: password,
+        },
+      });
+
+      if(Object.values(CheckUser).length === 0){
+        return res.status(401).json({status:'error',message: "Login Failed"});
+      }
+      else{
+        return res.status(200).json({status:'ok',message: "Login Success"});
+      }
+}
 const AddUser = async (req: Request, res: Response, next: NextFunction) => {
     let {name,surname,username,password,email,role,departure,status} = req.body;
     const user = new User();
@@ -37,4 +53,4 @@ const GetAllUser = async(req:Request,  res: Response, next: NextFunction) => {
 }
 
 
-export default {AddUser,GetAllUser};
+export default {AddUser,GetAllUser,LoginUser};
