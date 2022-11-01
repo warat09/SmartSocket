@@ -39,4 +39,5 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
     res.json(AllMatching)
 };
 
+
 export default {MatchingAsset,GetAllMatching};

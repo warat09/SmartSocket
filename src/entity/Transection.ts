@@ -17,6 +17,11 @@ export class Node_Transection {
     @Column({type: 'bigint'})
     time_used: number
 
+    @Column({type: 'datetime',
+    default: () => 'NOW()',
+    })
+    time_update: Date
+
     @Column()
     on_date: string
 
