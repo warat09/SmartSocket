@@ -4,7 +4,8 @@ const Assets:React.FC=()=>{
     
     return(
         <div>
-            Assets
+            <h1>Assets</h1>
+
         </div>
     )
 };
