@@ -3,13 +3,14 @@ import { AppDataSource } from "../data-source"
 import {Match} from "../entity/Match"
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
-    let {Address,id_assets,status,remain_time,active_datetime,Room,floor} = req.body
+    let {Address,id_assets,status,remain_time,Room,floor} = req.body
+    let Datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
     const match = new Match()
     match.id_assets = id_assets;
     match.mac_address = Address;
     match.status = status;
-    match.remain_time = remain_time;
-    match.active_datetime = active_datetime;
+    match.remain_time = remain_time;//ดึงasset expire_hour noapiinput
+    match.active_datetime = Datetime;
     match.room = Room;
     match.floor = floor;
 
@@ -30,7 +31,11 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
-    const AllMatching = await AppDataSource.getRepository(Match).find()
+    const AllMatching = await AppDataSource.getRepository(Match).find({
+        relations: {
+            id_assets : true
+        },
+    })
     res.json(AllMatching)
 };
 

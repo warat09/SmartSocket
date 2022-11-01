@@ -4,7 +4,7 @@ import controller from '../controller/Asset';
 
 const router = express.Router();
 
-router.post('/AddMACAddress', controller.AddAsset);
-router.get('/AllMACAddress', controller.GetAllAsset);
+router.post('/AddAsset', controller.AddAsset);
+router.get('/AllAsset', controller.GetAllAsset);
 
 export = router;

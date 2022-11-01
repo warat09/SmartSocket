@@ -25,6 +25,14 @@ int dst=0;
 String SWITCH_ON = "false";
 String SWITCH_OFF = "false";
 String RUNING = "false";
+unsigned long start_time=0;
+unsigned long end_time=0;
+unsigned long used_time=0;
+int day=0;
+int month=0;
+int year=0;
+String on_date="";
+String off_date="";
 bool LEDstatus = LOW;
 WiFiClient wifiClient;
 
@@ -81,14 +89,7 @@ void loop() {
   timeClient.update();
   String value = WiFi.macAddress();
   unsigned long currentTime = millis();
-  unsigned long start_time=0;
-  unsigned long end_time=0;
-  unsigned long used_time=0;
-  int day=0;
-  int month=0;
-  int year=0;
-  String on_date="";
-  String off_date="";
+
   time_t epochTime = timeClient.getEpochTime();
   struct tm *ptm = gmtime ((time_t *)&epochTime);
 //  time_t now =time(nullptr);
@@ -101,27 +102,30 @@ void loop() {
 
         if(SWITCH_ON == "true"){
           digitalWrite(D4, LOW);
-          SWITCH_ON = "true";
           start_time = timeClient.getEpochTime();
           day=ptm->tm_mday;
           month=ptm->tm_mon+1;
           year=ptm->tm_year+1900;
           on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
-          Serial.println(SWITCH_ON);
-          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
-          http.addHeader("Content-Type", "application/json");//Specify request destination
-          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"ON"+"\"}");
-          if(httpCode == 200){
-            SWITCH_ON = "false";
-            RUNING = "true";
-            String response = http.getString();
-            Serial.println(response);
+          if(SWITCH_ON == "true"){
+            SWITCH_ON="false";
+            Serial.println(start_time);
+            Serial.println(on_date);
           }
-          else{
-            Serial.print("Error on sending POST: ");
-            Serial.println(httpCode);
-          }
-          http.end();
+//          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+//          http.addHeader("Content-Type", "application/json");//Specify request destination
+//          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"ON"+"\"}");
+//          if(httpCode == 200){
+//            SWITCH_ON = "false";
+//            RUNING = "true";
+//            String response = http.getString();
+//            Serial.println(response);
+//          }
+//          else{
+//            Serial.print("Error on sending POST: ");
+//            Serial.println(httpCode);
+//          }
+//          http.end();
          }
          else if(SWITCH_OFF == "true"){
             Serial.println(SWITCH_OFF);
@@ -132,12 +136,17 @@ void loop() {
             year=ptm->tm_year+1900;
             off_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
             used_time= (end_time-start_time)*1000;
+            Serial.println(start_time);
+            Serial.println(end_time);
+            Serial.println(on_date);
+            Serial.println(off_date);
             http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
             http.addHeader("Content-Type", "application/json");//Specify request destination
-            int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"OFF"+"\"}");
+            int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"active"+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
+            if(SWITCH_OFF == "true"){
+              SWITCH_OFF="false";
+            }
             if(httpCode == 200){
-              SWITCH_OFF = "false";
-              RUNING = "false";
               String response = http.getString();
               Serial.println(response);
             }
@@ -148,21 +157,21 @@ void loop() {
             http.end();
           }
 
-         else if(RUNING =="true"){
-          Serial.println(RUNING);
-          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
-          http.addHeader("Content-Type", "application/json");//Specify request destination
-          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"RUNING"+"\"}");
-          if(httpCode == 200){
-            String response = http.getString();
-            Serial.println(response);
-          }
-          else{
-            Serial.print("Error on sending POST: ");
-            Serial.println(httpCode);
-          }
-          http.end();             
-        }
+//         else if(RUNING =="true"){
+//          Serial.println(RUNING);
+//          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+//          http.addHeader("Content-Type", "application/json");//Specify request destination
+//          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"RUNING"+"\"}");
+//          if(httpCode == 200){
+//            String response = http.getString();
+//            Serial.println(response);
+//          }
+//          else{
+//            Serial.print("Error on sending POST: ");
+//            Serial.println(httpCode);
+//          }
+//          http.end();             
+//        }
           prevTime = currentTime;
         }
   } 
@@ -218,8 +227,6 @@ void sentaddress(){
 
 void handle_OnConnect() {
   LEDstatus = LOW;
-  SWITCH_ON = "true";
-  Serial.println("LED: ON");
   server.send(200, "text/html", updateWebpage(LEDstatus)); 
 }
 

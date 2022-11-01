@@ -9,11 +9,12 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
     node.mac_address = Address
     node.ip = LocalIP
     node.date_node = Date_node;
+    node.status_node = "enable"
 
     const CheckMacAddress = await AppDataSource.getRepository(Node).findOneBy({
         mac_address: Address,
     })
-    if(Object.values(CheckMacAddress).length === 0){
+    if(CheckMacAddress === null){
         const AddMacAddress = AppDataSource.getRepository(Node).create(node)
         const results = await AppDataSource.getRepository(Node).save(AddMacAddress)
         return res.status(200).json({status:1,data:results,message: "Insert Success"});
@@ -21,7 +22,7 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
     else{
         AppDataSource.getRepository(Node).merge(CheckMacAddress, node)
         const results = await AppDataSource.getRepository(Node).save(CheckMacAddress)
-        return res.send(results)
+        return res.status(200).json({status:1,data:results,message: "Update Success"});
     }
 };
 
