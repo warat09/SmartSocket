@@ -41,6 +41,16 @@ String weekDays[7]={"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Fri
 //Month names
 String months[12]={"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
+//------setup voltage------//
+double sensorValue1 = 0;
+double sensorValue2 = 0;
+int crosscount = 0;
+int climb_flag = 0;
+int val[100];
+int max_v = 0;
+double VmaxD = 0;
+double VeffD = 0;
+double Veff = 0;
 
 void setup() {
   Serial.begin(9600);
@@ -99,36 +109,53 @@ void loop() {
 //  StaticJsonDocument<capacity> doc;
     if (WiFi.status() == WL_CONNECTED) {
       if(currentTime - prevTime > 5000){
+        for ( int i = 0; i < 100; i++ ) {
+          sensorValue1 = analogRead(A0);
+          if (analogRead(A0) > 600) {
+            val[i] = sensorValue1;
+          }
+          else {
+            val[i] = 0;
+          }
+          delay(1);
+        }
 
-        if(SWITCH_ON == "true"){
+        max_v = 0;
+
+        for ( int i = 0; i < 100; i++ ){
+          if ( val[i] > max_v )
+          {
+            max_v = val[i];
+          }
+          val[i] = 0;
+        }
+        if (max_v != 0) {
+          VmaxD = max_v;
+          VeffD = VmaxD / sqrt(2);
+          Veff = (((VeffD - 420.76) / -90.24) * -210.2) + 210.2;
+        }
+        else {
+          Veff = 0;
+        }
+        Serial.print("Voltage: ");
+        Serial.println(Veff);
+        if(Veff >= 635){//SWITCH_ON == "true"
+          Serial.println("SWITCH_ON Veff>=635");
           digitalWrite(D4, LOW);
           start_time = timeClient.getEpochTime();
           day=ptm->tm_mday;
           month=ptm->tm_mon+1;
           year=ptm->tm_year+1900;
           on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
-          if(SWITCH_ON == "true"){
-            SWITCH_ON="false";
+          if(Veff >= 635){
+//            SWITCH_ON="false";
             Serial.println(start_time);
             Serial.println(on_date);
           }
-//          http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
-//          http.addHeader("Content-Type", "application/json");//Specify request destination
-//          int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"ON"+"\"}");
-//          if(httpCode == 200){
-//            SWITCH_ON = "false";
-//            RUNING = "true";
-//            String response = http.getString();
-//            Serial.println(response);
-//          }
-//          else{
-//            Serial.print("Error on sending POST: ");
-//            Serial.println(httpCode);
-//          }
-//          http.end();
          }
-         else if(SWITCH_OFF == "true"){
-            Serial.println(SWITCH_OFF);
+         else{
+//            Serial.println(SWITCH_OFF);
+            Serial.println("SWITCH_OFF Veff<635");
             digitalWrite(D4, HIGH);
             end_time = timeClient.getEpochTime();
             day=ptm->tm_mday;
@@ -143,9 +170,9 @@ void loop() {
             http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
             http.addHeader("Content-Type", "application/json");//Specify request destination
             int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"active"+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
-            if(SWITCH_OFF == "true"){
-              SWITCH_OFF="false";
-            }
+            // if(SWITCH_OFF == "true"){
+            //   SWITCH_OFF="false";
+            // }
             if(httpCode == 200){
               String response = http.getString();
               Serial.println(response);
@@ -172,6 +199,7 @@ void loop() {
 //          }
 //          http.end();             
 //        }
+          VmaxD = 0;
           prevTime = currentTime;
         }
   } 
