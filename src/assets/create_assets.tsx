@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,HTMLInputTypeAttribute } from "react";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -18,9 +18,9 @@ export interface Assets {
 }
 
 const CreateAssets: React.FC = () => {
-  const [nameassets, SetNameassets] = useState<Assets>();
-  const [timelimit, SetTimelimit] = useState<Assets>();
-  const [date, SetDate] = useState<Assets>();
+  const [nameassets, SetNameassets] = useState("");
+  const [timelimit, SetTimelimit] = useState(0);
+  const [date, SetDate] = useState(Date);
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
 
   const getAssets = () => {
@@ -65,6 +65,11 @@ const CreateAssets: React.FC = () => {
     getAssets();
   }, []);
 
+
+//   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+//     SetNameassets(event.target.value);
+//     console.log(event.target.value);
+//   }
   return (
     <div className="container">
       <h1>Assets</h1>
@@ -78,6 +83,9 @@ const CreateAssets: React.FC = () => {
               type="text"
               className="form-control"
               placeholder="Name Assets"
+              onChange={(e)=>{
+                SetNameassets(e.target.value)
+              }}
             />
           </div>
           <div className="mb-3">
@@ -88,16 +96,19 @@ const CreateAssets: React.FC = () => {
               type="number"
               className="form-control"
               placeholder="expiration time"
+              onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
+                SetTimelimit(e.target.valueAsNumber)
+              }}
             />
           </div>
           <div className="button-submit">
-            <button>ADD Assets</button>
+            <button onClick={addAssets}>ADD Assets</button>
           </div>
         </form>
       </div>
       <hr />
       <div className="assets">
-        <button>Show assets</button>
+        <button onClick={getAssets}>Show assets</button>
 
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
