@@ -9,32 +9,32 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 export interface Assets {
-  nameassets?: string;
-  timelimit?: number;
-  status?: string;
-  maintanent?: boolean;
-  date?: Date;
+  name_assets?: string;
+  expire_hour?: number;
+  status_assets?: string;
+  maintenance?: boolean;
+  date_assets?: Date;
   //   children?: React.ReactNode;
 }
 
 const CreateAssets: React.FC = () => {
-  const [nameassets, SetNameassets] = useState("");
-  const [timelimit, SetTimelimit] = useState(0);
+  const [name_assets, SetNameassets] = useState("");
+  const [expire_hour, SetExpire_hour] = useState(0);
   const [date, SetDate] = useState(Date);
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
 
   const getAssets = () => {
-    const url = "";
+    const url = "http://localhost:9090/Asset/AllAsset";
     axios
       .get(url)
       .then((response) => {
         const results = response.data;
         const { status, data } = results;
-        if (status !== "SUCCESS") {
+        if (response.status !== 200) {
           alert(status);
         } else {
-          SetDataassetslist(data);
-          console.log(data);
+          SetDataassetslist(response.data);
+          console.log(new Date(response.data[0].date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }))
         }
       })
       .catch((err) => {
@@ -43,8 +43,8 @@ const CreateAssets: React.FC = () => {
   };
 
   const addAssets = () => {
-    const url = "";
-    const attibute_assets = { nameassets, timelimit };
+    const url = "http://localhost:9090/Asset/AddAsset";
+    const attibute_assets = { name_assets, expire_hour };
     axios
       .post(url, attibute_assets)
       .then((response) => {
@@ -97,7 +97,7 @@ const CreateAssets: React.FC = () => {
               className="form-control"
               placeholder="expiration time"
               onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                SetTimelimit(e.target.valueAsNumber)
+                SetExpire_hour(e.target.valueAsNumber)
               }}
             />
           </div>
@@ -122,20 +122,23 @@ const CreateAssets: React.FC = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {listassets.map((val) => (
+              {listassets.map((row:any,i:any) => (
                 <TableRow
-                  key={val.nameassets}
+                  key={row.name_assets}
                   sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                 >
                   <TableCell component="th" scope="row">
-                    {val.nameassets}
+                    {row.name_assets}
                   </TableCell>
-                  <TableCell align="right">{val.timelimit}</TableCell>
+                  <TableCell align="right">{new Date(Number(row.expire_hour)).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
                   <TableCell align="right">
-                    {val.date?.toDateString()}
+                    {new Date(row.date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}
                   </TableCell>
-                  <TableCell align="right">{val.status}</TableCell>
-                  <TableCell align="right">{val.maintanent}</TableCell>
+                  <TableCell align="right">{row.status_assets}</TableCell>
+                  <TableCell align="right">
+                    {row.maintenance === false && "ยังไม่ซ่อม"}
+                    {row.maintenance === true && "ควรส่งซ่อม"}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

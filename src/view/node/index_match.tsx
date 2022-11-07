@@ -69,3 +69,5 @@ const HomeNode: React.FC = () => {
     </div>
   );
 };
+export default HomeNode
+
