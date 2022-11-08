@@ -6,9 +6,9 @@ const Navbar :React.FC = () =>{
                 <li><Link to="/">Dashboard</Link></li>
                 <li><Link to="/login">Login</Link></li>
                 <li><Link to="/node">Node</Link></li>
-                <li><Link to="/asset">Asset</Link></li>
-                <li><Link to="/createasset">CreateAsset</Link></li>
+                <li><Link to="/createasset">Asset</Link></li>
                 <li><Link to="/matching">Matching</Link></li>
+                <li><Link to="/transection">Transection</Link></li>
             </ul>
         </>
     )

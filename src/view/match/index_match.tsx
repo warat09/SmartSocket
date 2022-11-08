@@ -17,13 +17,12 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import { exec } from "child_process";
 
 const MatchingHome: React.FC = () => {
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
   const [listassets, setlistassets] = useState<Assets[]>([]);
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
-  const [listmatching2, setlistmatching2] = useState<any[]>([]);
+
   const [inputassets, setInputassets] = useState<string>("");
   const [inputnode, setInputnode] = useState<string>("");
   const [room, SetRoom] = useState("");
@@ -45,19 +44,16 @@ const MatchingHome: React.FC = () => {
   };
   const Getnode = async (id:any) => {
     setlistnode(await serviceapi.SelectMatchNode(id));
-    // console.log(await serviceapi.SelectMatchNode(id))
   };
 
-  const GetMatching=async()=>{
-    try{
-      setlistmatching(await serviceapi.getMatching())
-      setlistmatching2(await serviceapi.getMatching())
-      console.log(listmatching2)
-    }
-    catch(err){
-      console.log(err)
-    }
-
+  const GetMatching= async () => {
+    // try{
+    //   setlistmatching(await serviceapi.getMatching());
+    // }
+    // catch(err){
+    //   console.log(err)
+    // }
+    setlistmatching(await serviceapi.getMatching());
   }
 
   const handleSubmit=async()=>{
@@ -69,18 +65,20 @@ const MatchingHome: React.FC = () => {
     // handleGetnode()
     // handleGetassets()
     // GetMatching()
+    GetMatching();
     GetAssets();
     // GetMatching();
     Getnode(inputassets);
+    
     inputnodeRef.current=listnode
     listmatchingRef.current=listmatching
     // setlistnode(await serviceapi.SelectMatchNode(inputassets));
   }, [inputassets,inputnode,listmatching]);
 
   return (
-    <div>
+    <div className="container">
       <h1>Matching</h1>
-      <h2>{inputassets}</h2>
+      <hr />
       <button onClick={GetAssets}>test</button>
       <br></br>
       <br></br>
@@ -167,11 +165,10 @@ const MatchingHome: React.FC = () => {
         <button onClick={GetMatching}>show</button>
       </Box>
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table2">
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
-            <TableCell>id_match</TableCell>
-            <TableCell align="right">id_assets</TableCell>
+            <TableCell >assets</TableCell>
             <TableCell align="right">mac_address&nbsp;</TableCell>
             <TableCell align="right">room&nbsp;</TableCell>
             <TableCell align="right">floor&nbsp;</TableCell>
@@ -180,20 +177,19 @@ const MatchingHome: React.FC = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {listmatching2.map((row) => (
+          {listmatching.map((row:any) => (
             <TableRow
-              key={row.id_match}
+              key={row.Asset_name_assets}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.id_match}
+                {row.Asset_name_assets}
               </TableCell>
-              <TableCell align="right">{row.id_assets.id_assets}</TableCell>
-              <TableCell align="right">{row.mac_address.mac_address}</TableCell>
-              <TableCell align="right">{row.room}</TableCell>
-              <TableCell align="right">{row.floor}</TableCell>
-              <TableCell align="right"> {new Date(row.active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-              <TableCell align="right">{row.status}</TableCell>
+              <TableCell align="right">{row.Match_mac_address}</TableCell>
+              <TableCell align="right">{row.Match_room}</TableCell>
+              <TableCell align="right">{row.Match_floor}</TableCell>
+              <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+              <TableCell align="right">{row.Match_status}</TableCell>
             </TableRow>
           ))}
         </TableBody>

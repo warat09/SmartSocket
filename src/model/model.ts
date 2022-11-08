@@ -22,12 +22,20 @@ export interface Assets {
     Node_status_node?:  string;
   }
   export interface Matching{
-    id_matching?: number;
-    MAC_address?: string;
-    id_assets?: number;
-    status_matching?: string;
+    Asset_name_assets?: string;
+    Match_mac_address?: string;
+    Match_status?: string;
     // date_match?: Date;
-    remain_time?: number;
-    room?: string;
-    floor?:string;
+    Match_active_datetime?: Date;
+    Match_room?: string;
+    Match_floor?:string;
+  }
+  export interface Transection{
+    Asset_name_assets?: string;
+    Match_mac_address?: string;
+    Transection_status_action?: string;
+    Transection_time_used?: string;
+    Transection_time_update?: string;
+    Transection_on_date?:string;
+    Transection_off_date?:string;
   }

@@ -22,9 +22,7 @@ const CreateAssets: React.FC = () => {
     await serviceapi.addAssets(name_assets,expire_hour)
   }
 
-
-
-
+  
   useEffect(() => {
     handleGetassets();
   }, []);
@@ -37,6 +35,7 @@ const CreateAssets: React.FC = () => {
   return (
     <div className="container">
       <h1>Assets</h1>
+      <hr />
       <div className="information">
         <form action="">
           <div className="mb-3">

@@ -101,8 +101,8 @@ const getMatching = async ():Promise<any> => {
     .get(url)
     .then((response) => {
       const results = response.data;
+      console.log(response)
       list = response.data;
-      console.log(response.data)
     })
     .catch((err) => {
       console.log(err);
@@ -126,4 +126,23 @@ const SelectMatchNode = async (id:any) => {
     });
     return list
 };
-export default {login,getAssets,addAssets,getNode,SelectMatchNode,addMatching,getMatching };
+const getTransection = async ():Promise<any>=> {
+  const url = "http://localhost:9090/Transection/AllTransection";
+  let list:any
+  await axios
+    .get(url)
+    .then((response) => {
+      const results = response.data;
+      list = response.data;
+      const { status, data } = results;
+        // SetDataassetslist(response.data);    
+        // console.log(new Date(response.data[0].date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }))
+        // console.log(response.data)
+
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+     return list
+};
+export default {login,getAssets,addAssets,getNode,SelectMatchNode,addMatching,getMatching,getTransection };

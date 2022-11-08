@@ -21,7 +21,9 @@ const HomeNode: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
+      <h1>NodeMCU</h1>
+      <hr />
       <button onClick={handleGetNode}>Show Node</button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
