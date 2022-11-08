@@ -1,41 +1,58 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
+import { Assets } from '../entity/Asset';
 import {Match} from "../entity/Match"
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
-    let {Address,id_assets,status,remain_time,Room,floor} = req.body
+    let {mac_address,id_assets,room,floor} = req.body
     let Datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
+    console.log(id_assets)
+    // const MatchAsset = await AppDataSource.getRepository(Match).createQueryBuilder()
+    // .select("mac_address").where(`id_assets = ${id_assets}`).getQuery();
+
+    const InputRemainTime= await AppDataSource
+    .getRepository(Assets)
+    .createQueryBuilder()
+    .select("expire_hour")
+    .where(`id_assets=${id_assets}`)
+    .getRawOne()
+
     const match = new Match()
     match.id_assets = id_assets;
-    match.mac_address = Address;
-    match.status = status;
-    match.remain_time = remain_time;//ดึงasset expire_hour noapiinput
+    match.mac_address = mac_address;
+    match.status = "Not_Rent" ;
+    match.remain_time = InputRemainTime.expire_hour//ดึง asset expire_hour no apiinput
     match.active_datetime = Datetime;
-    match.room = Room;
+    match.room = room;
     match.floor = floor;
 
     const CheckMatch = await AppDataSource.getRepository(Match).find({
         where: {
-            mac_address: Address,
+            mac_address: mac_address,
             id_assets: id_assets,
         },
     });
+
+
+
     if(Object.values(CheckMatch).length === 0){
         const AddMatch = AppDataSource.getRepository(Match).create(match)
         const results = await AppDataSource.getRepository(Match).save(AddMatch)
         return res.status(200).json({status:1,data:results,message: "Insert Success"});
     }
     else{
-        res.status(200).json({status:1,message: `Have ${Address}`});
+        res.status(200).json({status:1,message: `Have ${mac_address}`});
     }
 };
 
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).find({
         relations: {
-            id_assets : true
+            id_assets : true,
+            mac_address:true
         },
     })
+    console.log(AllMatching)
     res.json(AllMatching)
 };
 
