@@ -6,7 +6,7 @@ import Login from './view/Userlogin';
 import HomeNode from './view/node/index_match';
 import HomeAsset from './view/assets/index_assets';
 import CreateAssets from './view/assets/create_assets';
-
+import Matching from './view/match/index_match'
 const App: React.FC =()=> {
   return (
     <div>
@@ -18,6 +18,7 @@ const App: React.FC =()=> {
           <Route path="node" element={<HomeNode/>}/>
           <Route path="asset" element={<HomeAsset/>}/>
           <Route path="createasset" element={<CreateAssets/>}/>
+          <Route path="matching" element={<Matching/>}/>
         </Routes>
       </Router>
     </div>

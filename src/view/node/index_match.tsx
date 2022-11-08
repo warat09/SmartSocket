@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import {Node} from '../../model/model'
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,46 +7,30 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import serviceapi from '../../services/apiservice'
 
-interface Node {
-  MAC_address?: string;
-  ip?: string;
-  date?: Date;
-  status?: string;
-}
 
 const HomeNode: React.FC = () => {
   const [listnode, SetlistNode] = useState<Node[]>([]);
 
-  const getAssets = () => {
-    const url = "";
-    axios
-      .get(url)
-      .then((response) => {
-        const results = response.data;
-        const { status, data } = results;
-        if (status !== "SUCCESS") {
-          alert(status);
-        } else {
-          SetlistNode(data);
-          console.log(data);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+  const handleGetNode= async() => {
+    SetlistNode(await serviceapi.getNode())
+  }
+  // useEffect(() => {
+  //   handleGetNode();
+  // }, []);
+
   return (
     <div>
+      <button onClick={handleGetNode}>Show Node</button>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
-              <TableCell>Assets</TableCell>
-              <TableCell align="right">expired</TableCell>
-              <TableCell align="right">Date&nbsp;(g)</TableCell>
-              <TableCell align="right">Status&nbsp;(g)</TableCell>
-              <TableCell align="right">Maintanent&nbsp;(g)</TableCell>
+              <TableCell>M.A.C Addreess</TableCell>
+              <TableCell align="right">i.p.&nbsp;</TableCell>
+              <TableCell align="right">Date&nbsp;</TableCell>
+              <TableCell align="right">status_node&nbsp;</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -59,8 +43,8 @@ const HomeNode: React.FC = () => {
                   {val.MAC_address}
                 </TableCell>
                 <TableCell align="right">{val.ip}</TableCell>
-                <TableCell align="right">{val.date?.toDateString()}</TableCell>
-                <TableCell align="right">{val.status}</TableCell>
+                <TableCell align="right">{val.date_node?.toDateString()}</TableCell>
+                <TableCell align="right">{val.status_node}</TableCell>
               </TableRow>
             ))}
           </TableBody>

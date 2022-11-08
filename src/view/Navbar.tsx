@@ -8,6 +8,7 @@ const Navbar :React.FC = () =>{
                 <li><Link to="/node">Node</Link></li>
                 <li><Link to="/asset">Asset</Link></li>
                 <li><Link to="/createasset">CreateAsset</Link></li>
+                <li><Link to="/matching">Matching</Link></li>
             </ul>
         </>
     )
