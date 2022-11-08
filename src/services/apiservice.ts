@@ -58,23 +58,35 @@ const addAssets = async(name_assets:string,expire_hour:number) => {
     });
 };
 
-const getNode = () => {
-  const url = "http://localhost:9090/Node/GetAllMacAddress";
+const getNode = async ():Promise<any> => {
+  const url = "http://localhost:9090/Node/AllMACAddress";
   let list:any
-  axios
+  await axios
     .get(url)
     .then((response) => {
       const results = response.data;
-      const { status, data } = results;
-      if (status !== "SUCCESS") {
-        alert(status);
-      } else {
-        console.log(data);
-      }
+      list = response.data;
     })
     .catch((err) => {
       console.log(err);
     });
     return list
 };
-export default {login,getAssets,addAssets,getNode};
+
+const SelectMatchNode = async (id:any) => {
+  console.log("id is ",id)
+  const url = "http://localhost:9090/Node/SelectNode";
+  let list:any
+  await axios
+    .post(url,{
+      id_assets:id
+    })
+    .then((response) => {
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+};
+export default {login,getAssets,addAssets,getNode,SelectMatchNode};

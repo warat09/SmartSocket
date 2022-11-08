@@ -16,9 +16,9 @@ const HomeNode: React.FC = () => {
   const handleGetNode= async() => {
     SetlistNode(await serviceapi.getNode())
   }
-  // useEffect(() => {
-  //   handleGetNode();
-  // }, []);
+  useEffect(() => {
+    handleGetNode();
+  }, []);
 
   return (
     <div>
@@ -34,16 +34,16 @@ const HomeNode: React.FC = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {listnode.map((val) => (
+            {listnode.map((val:any) => (
               <TableRow
-                key={val.MAC_address}
+                key={val.mac_address}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
                 <TableCell component="th" scope="row">
-                  {val.MAC_address}
+                  {val.mac_address}
                 </TableCell>
                 <TableCell align="right">{val.ip}</TableCell>
-                <TableCell align="right">{val.date_node?.toDateString()}</TableCell>
+                <TableCell align="right">{new Date(val.date_node).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
                 <TableCell align="right">{val.status_node}</TableCell>
               </TableRow>
             ))}
