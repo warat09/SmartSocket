@@ -4,6 +4,7 @@ import controller from '../controller/Transection';
 const router = express.Router();
 
 router.post('/SendTransection', controller.SendTransection);
+router.get('/AllTransection',controller.GetAllTransection);
 
 
 export = router;

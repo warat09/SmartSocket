@@ -30,11 +30,11 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
 const SelectMacAddressAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {id_assets} = req.body
     if(id_assets !== ''){
-        console.log(id_assets)
-        const MatchAsset = await AppDataSource.getRepository(Match).createQueryBuilder()
+        // console.log(id_assets)
+        const MatchAsset = AppDataSource.getRepository(Match).createQueryBuilder()
         .select("mac_address").where(`id_assets = ${id_assets}`).getQuery();
     
-        const AllMacAddress = await AppDataSource.getRepository(Node).createQueryBuilder()
+        const AllMacAddress = AppDataSource.getRepository(Node).createQueryBuilder()
         .where("mac_address NOT IN (" + MatchAsset+ ")");
         // .where("node.mac_address NOT IN (:...mac_address)", { mac_address: ["12:13:14:15"] })
         // .where("node.mac_address NOT IN (SELECT mac_address FROM `match` m WHERE m.id_assets = "+id_assets+")");

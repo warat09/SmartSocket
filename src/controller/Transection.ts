@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import {Match} from "../entity/Match"
 import {Node_Transection} from "../entity/Transection"
+import { Assets } from '../entity/Asset';
 
 
 const SendTransection = async (req: Request, res: Response, next: NextFunction) => {
@@ -33,6 +34,11 @@ const SendTransection = async (req: Request, res: Response, next: NextFunction) 
         return res.status(200).json({status:1,message: `Adress ${Address} not match`});
     }
 };
+const GetAllTransection = async (req: Request, res: Response, next: NextFunction) => {
+    const AllTransection = await AppDataSource.getRepository(Node_Transection).createQueryBuilder('Transection')
+    .innerJoinAndSelect(Match, 'Match', 'Transection.id_match = Match.id_match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
+    res.json(AllTransection)
+};
 
-
-export default {SendTransection};
+export default {SendTransection,GetAllTransection};

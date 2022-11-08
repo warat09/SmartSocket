@@ -46,13 +46,8 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
-    const AllMatching = await AppDataSource.getRepository(Match).find({
-        relations: {
-            id_assets : true,
-            mac_address:true
-        },
-    })
-    console.log(AllMatching)
+    const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
     res.json(AllMatching)
 };
 

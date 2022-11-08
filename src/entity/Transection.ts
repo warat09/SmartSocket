@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column ,ManyToOne , JoinColumn} from "typeorm"
+import {Match} from "../entity/Match"
 
 @Entity()
 export class Node_Transection {
@@ -6,6 +7,8 @@ export class Node_Transection {
     @PrimaryGeneratedColumn('increment')
     id_txn : string
 
+    @ManyToOne(() => Match, (Match) => Match.id_match)
+    @JoinColumn({ name: 'id_match'})
     @Column()
     id_match: number
 
