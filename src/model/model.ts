@@ -26,6 +26,8 @@ export interface Assets {
     MAC_address?: string;
     id_assets?: number;
     status_matching?: string;
-    date_match?: Date;
+    // date_match?: Date;
     remain_time?: number;
+    room?: string;
+    floor?:string;
   }

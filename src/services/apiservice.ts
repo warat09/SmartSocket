@@ -58,6 +58,27 @@ const addAssets = async(name_assets:string,expire_hour:number) => {
     });
 };
 
+const addMatching=async (id_assets:string,mac_address:string,room:string,floor:string)=>{
+  const url = "http://localhost:9090/Match/MatchingAssets";
+  const attibute_matching = {id_assets,mac_address,room,floor };
+  console.log(attibute_matching)
+  await axios
+  .post(url,attibute_matching)
+  .then((response)=>{
+    const results = response.data;
+    const { status, data } = results;
+    console.log(response.data)
+    if (status !== "SUCCESS") {
+      alert(status);
+    } else {
+      console.log(data);
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
 const getNode = async ():Promise<any> => {
   const url = "http://localhost:9090/Node/AllMACAddress";
   let list:any
@@ -66,6 +87,22 @@ const getNode = async ():Promise<any> => {
     .then((response) => {
       const results = response.data;
       list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+};
+
+const getMatching = async ():Promise<any> => {
+  const url = "http://localhost:9090/Match/AllMatching";
+  let list:any
+  await axios
+    .get(url)
+    .then((response) => {
+      const results = response.data;
+      list = response.data;
+      console.log(response.data)
     })
     .catch((err) => {
       console.log(err);
@@ -89,4 +126,4 @@ const SelectMatchNode = async (id:any) => {
     });
     return list
 };
-export default {login,getAssets,addAssets,getNode,SelectMatchNode};
+export default {login,getAssets,addAssets,getNode,SelectMatchNode,addMatching,getMatching };

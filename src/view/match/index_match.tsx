@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -17,23 +17,26 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
+import { exec } from "child_process";
 
 const MatchingHome: React.FC = () => {
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
   const [listassets, setlistassets] = useState<Assets[]>([]);
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
+  const [listmatching2, setlistmatching2] = useState<any[]>([]);
   const [inputassets, setInputassets] = useState<string>("");
   const [inputnode, setInputnode] = useState<string>("");
   const [room, SetRoom] = useState("");
   const [floor, SetFloor] = useState("");
-
+  const inputnodeRef=useRef(listnode)
+  const listmatchingRef=useRef(listmatching)
   const handleChangeAssets = (event: SelectChangeEvent) => {
     setInputassets(event.target.value);
   };
 
   const handleChangeNode = (event: SelectChangeEvent) => {
     setInputnode(event.target.value);
-    console.log(inputassets);
+    console.log(inputnode);
   };
 
   const GetAssets = async () => {
@@ -45,14 +48,34 @@ const MatchingHome: React.FC = () => {
     // console.log(await serviceapi.SelectMatchNode(id))
   };
 
+  const GetMatching=async()=>{
+    try{
+      setlistmatching(await serviceapi.getMatching())
+      setlistmatching2(await serviceapi.getMatching())
+      console.log(listmatching2)
+    }
+    catch(err){
+      console.log(err)
+    }
+
+  }
+
+  const handleSubmit=async()=>{
+    await serviceapi.addMatching(inputassets,inputnode,room,floor)
+  }
+
   useEffect(() => {
     // console.log("test")
     // handleGetnode()
     // handleGetassets()
+    // GetMatching()
     GetAssets();
+    // GetMatching();
     Getnode(inputassets);
+    inputnodeRef.current=listnode
+    listmatchingRef.current=listmatching
     // setlistnode(await serviceapi.SelectMatchNode(inputassets));
-  }, [inputassets]);
+  }, [inputassets,inputnode,listmatching]);
 
   return (
     <div>
@@ -69,7 +92,7 @@ const MatchingHome: React.FC = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={inputassets}
-              label="Age"
+              label="Assets"
               onChange={handleChangeAssets}
             >
               {listassets.map((inputassets) => {
@@ -92,7 +115,7 @@ const MatchingHome: React.FC = () => {
               labelId="demo-simple-select-label"
               id="demo-simple-select"
               value={inputnode}
-              label="Age"
+              label="Node"
               onChange={handleChangeNode}
             >
               {listnode.map((inputnode) => {
@@ -129,7 +152,7 @@ const MatchingHome: React.FC = () => {
                 type="text"
                 className="form-control"
                 placeholder="Floor"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                onChange={(e) => {
                   SetFloor(e.target.value);
                 }}
               />
@@ -138,8 +161,44 @@ const MatchingHome: React.FC = () => {
         </FormControl>
         <br />
         <br />
-        <button>Matching</button>
+        <button onClick={handleSubmit}>Matching</button>
+        <br />
+        <br />
+        <button onClick={GetMatching}>show</button>
       </Box>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table2">
+        <TableHead>
+          <TableRow>
+            <TableCell>id_match</TableCell>
+            <TableCell align="right">id_assets</TableCell>
+            <TableCell align="right">mac_address&nbsp;</TableCell>
+            <TableCell align="right">room&nbsp;</TableCell>
+            <TableCell align="right">floor&nbsp;</TableCell>
+            <TableCell align="right">Date&nbsp;</TableCell>
+            <TableCell align="right">Status&nbsp;</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {listmatching2.map((row) => (
+            <TableRow
+              key={row.id_match}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.id_match}
+              </TableCell>
+              <TableCell align="right">{row.id_assets.id_assets}</TableCell>
+              <TableCell align="right">{row.mac_address.mac_address}</TableCell>
+              <TableCell align="right">{row.room}</TableCell>
+              <TableCell align="right">{row.floor}</TableCell>
+              <TableCell align="right"> {new Date(row.active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+              <TableCell align="right">{row.status}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
     </div>
   );
 };
