@@ -2,7 +2,7 @@ import axios from 'axios';
 // import {Node,Assets,Matching} from '../model/model'
 
 const link = "http://localhost:9090";
-const login = async(path:string,username:string,password:string) => {
+export const login = async(path:string,username:string,password:string) => {
   let message;
   await axios.post(link+path, {
     username: username,
@@ -19,7 +19,7 @@ const login = async(path:string,username:string,password:string) => {
   return message
 }
 
-const getAssets = async ():Promise<any>=> {
+export const getAssets = async ():Promise<any>=> {
   const url = "http://localhost:9090/Asset/AllAsset";
   let list:any
   await axios
@@ -39,7 +39,7 @@ const getAssets = async ():Promise<any>=> {
      return list
 };
 
-const addAssets = async(name_assets:string,expire_hour:number) => {
+export const addAssets = async(name_assets:string,expire_hour:number) => {
   const url = "http://localhost:9090/Asset/AddAsset";
   const attibute_assets = { name_assets, expire_hour };
   await axios
@@ -58,7 +58,7 @@ const addAssets = async(name_assets:string,expire_hour:number) => {
     });
 };
 
-const addMatching=async (id_assets:string,mac_address:string,room:string,floor:string)=>{
+export const addMatching=async (id_assets:string,mac_address:string,room:string,floor:string)=>{
   const url = "http://localhost:9090/Match/MatchingAssets";
   const attibute_matching = {id_assets,mac_address,room,floor };
   console.log(attibute_matching)
@@ -79,7 +79,7 @@ const addMatching=async (id_assets:string,mac_address:string,room:string,floor:s
   });
 }
 
-const getNode = async ():Promise<any> => {
+export const getNode = async ():Promise<any> => {
   const url = "http://localhost:9090/Node/AllMACAddress";
   let list:any
   await axios
@@ -94,7 +94,7 @@ const getNode = async ():Promise<any> => {
     return list
 };
 
-const getMatching = async ():Promise<any> => {
+export const getMatching = async ():Promise<any> => {
   const url = "http://localhost:9090/Match/AllMatching";
   let list:any
   await axios
@@ -110,7 +110,7 @@ const getMatching = async ():Promise<any> => {
     return list
 };
 
-const SelectMatchNode = async (id:any) => {
+export const SelectMatchNode = async (id:any) => {
   console.log("id is ",id)
   const url = "http://localhost:9090/Node/SelectNode";
   let list:any
@@ -126,23 +126,10 @@ const SelectMatchNode = async (id:any) => {
     });
     return list
 };
-const getTransection = async ():Promise<any>=> {
+export const getTransection =async()=> {
   const url = "http://localhost:9090/Transection/AllTransection";
   let list:any
-  await axios
-    .get(url)
-    .then((response) => {
-      const results = response.data;
-      list = response.data;
-      const { status, data } = results;
-        // SetDataassetslist(response.data);    
-        // console.log(new Date(response.data[0].date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }))
-        // console.log(response.data)
-
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+    const a = await axios.get(url)
+    list = a.data;
      return list
 };
-export default {login,getAssets,addAssets,getNode,SelectMatchNode,addMatching,getMatching,getTransection };

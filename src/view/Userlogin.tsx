@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import serviceapi from "../services/apiservice";
+import {login} from "../services/apiservice";
 // import { UsersProps} from "../interfaces/User";
 
 const Login :React.FC = () =>{
@@ -22,10 +22,11 @@ const Login :React.FC = () =>{
           };
           const username = target.username.value; // typechecks!
           const password = target.password.value; // typechecks!
-          serviceapi.login("/User/Login",username,password).then((results)=>{
+          login("/User/Login",username,password).then((results)=>{
             const login = JSON.parse(JSON.stringify(results))
             if(login.status === "ok"){
                 alert(login.message);
+                localStorage.setItem("User", username);
                 navigate('/');
             }
             else{

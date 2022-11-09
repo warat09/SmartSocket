@@ -1,4 +1,4 @@
-import React, { useEffect, useState,HTMLInputTypeAttribute } from "react";
+import React, { useEffect, useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,19 +7,26 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Transection} from '../../model/model'
-import serviceapi from "../../services/apiservice"
+import {getTransection} from "../../services/apiservice"
 
 const CreateTransection: React.FC = () => {
   
   const [listassets, SetDataassetslist] = useState<Transection[]>([]);
 
   const handleGetTransection=async()=>{
-    SetDataassetslist(await serviceapi.getTransection())
+    getTransection().then(res=>{
+      SetDataassetslist(res)
+    })
   }
 
   useEffect(() => {
-    handleGetTransection();
-  }, []);
+    console.log("node_tran");
+    // getTransection().then(res=>{
+    //   console.log()
+      // SetDataassetslist(res)
+      handleGetTransection();
+
+  },[]);
 
   return (
     <div className="container">

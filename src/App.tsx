@@ -5,22 +5,20 @@ import Dashboard from './view/Dashboard';
 import Login from './view/Userlogin';
 import HomeNode from './view/node';
 import HomeAsset from './view/assets';
-import CreateAssets from './view/assets';
 import Matching from './view/match'
 import Transection from './view/node_transection'
 const App: React.FC =()=> {
   return (
     <div>
       <Router>
-        <Navbar/>
+      <Navbar/>
         <Routes>
           <Route path="/" element={<Dashboard />} />
-          <Route path="login" element={<Login/>} />
-          <Route path="node" element={<HomeNode/>}/>
-          <Route path="asset" element={<HomeAsset/>}/>
-          <Route path="createasset" element={<CreateAssets/>}/>
-          <Route path="matching" element={<Matching/>}/>
-          <Route path="transection" element={<Transection/>}/>
+          <Route path="/login" element={<Login/>} />
+          <Route path="/node" element={<HomeNode/>}/>
+          <Route path="/asset" element={<HomeAsset/>}/>
+          <Route path="/match" element={<Matching/>}/>
+          <Route path="/transection" element={<Transection/>}/>
         </Routes>
       </Router>
     </div>

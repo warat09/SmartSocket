@@ -1,4 +1,5 @@
 import React, { useEffect, useState,HTMLInputTypeAttribute } from "react";
+import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,24 +8,33 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Assets} from '../../model/model'
-import serviceapi from "../../services/apiservice"
+import {getAssets,addAssets} from "../../services/apiservice"
 
 const CreateAssets: React.FC = () => {
+  const navigate = useNavigate();
   const [name_assets, SetNameassets] = useState("");
   const [expire_hour, SetExpire_hour] = useState(0);
   const [date, SetDate] = useState(Date);
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
+  const [user, setuser] = useState("");
+
 
   const handleGetassets=async()=>{
-    SetDataassetslist(await serviceapi.getAssets())
+    SetDataassetslist(await getAssets())
   }
   const handleSubmit=async()=>{
-    await serviceapi.addAssets(name_assets,expire_hour)
+    await addAssets(name_assets,expire_hour)
   }
 
-  
   useEffect(() => {
-    handleGetassets();
+    const item = localStorage.getItem("User");
+      if (item && item !== "undefined") {
+        setuser(item)
+        handleGetassets();
+      }
+      else{
+        navigate('/login')
+      }
   }, []);
 
 
@@ -35,6 +45,7 @@ const CreateAssets: React.FC = () => {
   return (
     <div className="container">
       <h1>Assets</h1>
+      <h2>{user}</h2>
       <hr />
       <div className="information">
         <form action="">

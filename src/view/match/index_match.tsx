@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -8,7 +7,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Node, Assets, Matching ,NodeSelection} from "../../model/model";
-import serviceapi from "../../services/apiservice";
+import {getAssets,SelectMatchNode,getMatching,addMatching} from "../../services/apiservice";
 import {
   Box,
   FormControl,
@@ -18,7 +17,7 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
-const MatchingHome: React.FC = () => {
+const CreateMatch: React.FC = () => {
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
   const [listassets, setlistassets] = useState<Assets[]>([]);
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
@@ -29,8 +28,16 @@ const MatchingHome: React.FC = () => {
   const [floor, SetFloor] = useState("");
   const inputnodeRef=useRef(listnode)
   const listmatchingRef=useRef(listmatching)
+
+  const ComponentMatch= async () => {
+    setlistmatching(await getMatching());
+    setlistassets(await getAssets());
+  }
+
   const handleChangeAssets = (event: SelectChangeEvent) => {
     setInputassets(event.target.value);
+    Getnode(event.target.value);
+
   };
 
   const handleChangeNode = (event: SelectChangeEvent) => {
@@ -38,49 +45,31 @@ const MatchingHome: React.FC = () => {
     console.log(inputnode);
   };
 
-  const GetAssets = async () => {
-    setlistassets(await serviceapi.getAssets());
-    console.log(listassets);
-  };
-  const Getnode = async (id:any) => {
-    setlistnode(await serviceapi.SelectMatchNode(id));
-  };
-
-  const GetMatching= async () => {
-    // try{
-    //   setlistmatching(await serviceapi.getMatching());
-    // }
-    // catch(err){
-    //   console.log(err)
-    // }
-    setlistmatching(await serviceapi.getMatching());
-  }
-
   const handleSubmit=async()=>{
-    await serviceapi.addMatching(inputassets,inputnode,room,floor)
+    await addMatching(inputassets,inputnode,room,floor)
   }
+
+  const Getnode = async (id:any) => {
+    setlistnode(await SelectMatchNode(id));
+  };
 
   useEffect(() => {
+    console.log("match");
     // console.log("test")
     // handleGetnode()
     // handleGetassets()
     // GetMatching()
-    GetMatching();
-    GetAssets();
+    ComponentMatch();
     // GetMatching();
-    Getnode(inputassets);
-    
-    inputnodeRef.current=listnode
-    listmatchingRef.current=listmatching
+    // Getnode(inputassets);
+
     // setlistnode(await serviceapi.SelectMatchNode(inputassets));
-  }, [inputassets,inputnode,listmatching]);
+  }, []);
 
   return (
     <div className="container">
       <h1>Matching</h1>
       <hr />
-      <button onClick={GetAssets}>test</button>
-      <br></br>
       <br></br>
       <Box sx={{ minWidth: 120 }}>
         <FormControl  fullWidth>
@@ -161,8 +150,6 @@ const MatchingHome: React.FC = () => {
         <br />
         <button onClick={handleSubmit}>Matching</button>
         <br />
-        <br />
-        <button onClick={GetMatching}>show</button>
       </Box>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
@@ -198,4 +185,4 @@ const MatchingHome: React.FC = () => {
     </div>
   );
 };
-export default MatchingHome;
+export default CreateMatch;
