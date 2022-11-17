@@ -2,7 +2,48 @@ import axios from 'axios';
 // import {Node,Assets,Matching} from '../model/model'
 
 const link = "http://localhost:9090";
+export const register = async(name:string,surname:string,username:string,password:string,email:string,role:string,departure:string) => {
+  const url = "http://localhost:9090/User/Register";
+  let message;
+  await axios.post(url, {
+    name:name,
+    surname:surname,
+    username:username,
+    password:password,
+    email:email,
+    role:role,
+    departure:departure,
+    status:"active"
+  }).then(async(response)=>{
+      message = response.data
+  }).catch(error=> {
+    if (axios.isAxiosError(error) && error.response) {
+        message = error.response.data;
+    } else{
+        message = String(error);
+    }
+  });
+  return message
+}
+
 export const login = async(path:string,username:string,password:string) => {
+  let message;
+  await axios.post(link+path, {
+    username: username,
+    password: password
+  }).then(async(response)=>{
+      message = response.data
+  }).catch(error=> {
+    if (axios.isAxiosError(error) && error.response) {
+        message = error.response.data;
+    } else{
+        message = String(error);
+    }
+  });
+  return message
+}
+
+export const checktoken = async(path:string,username:string,password:string) => {
   let message;
   await axios.post(link+path, {
     username: username,
@@ -132,4 +173,24 @@ export const getTransection =async()=> {
     const a = await axios.get(url)
     list = a.data;
      return list
+};
+export const Checktoken =async(token:string)=> {
+  const url = "http://localhost:9090/User/CheckToken";
+  let list:any 
+  await axios
+    .post(url,{
+      token: token
+    })
+    .then((response) => {
+      if(response.status !== 200){
+        list = false;
+      }
+      else{
+        list = true;
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list;
 };

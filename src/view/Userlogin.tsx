@@ -24,9 +24,14 @@ const Login :React.FC = () =>{
           const password = target.password.value; // typechecks!
           login("/User/Login",username,password).then((results)=>{
             const login = JSON.parse(JSON.stringify(results))
+            console.log(login)
             if(login.status === "ok"){
                 alert(login.message);
-                localStorage.setItem("User", username);
+                const userData = {
+                    username:username,
+                    token:login.token
+                  };
+                localStorage.setItem("User", JSON.stringify(userData));
                 navigate('/');
             }
             else{

@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Assets} from '../../model/model'
-import {getAssets,addAssets} from "../../services/apiservice"
+import {getAssets,addAssets,Checktoken} from "../../services/apiservice"
 
 const CreateAssets: React.FC = () => {
   const navigate = useNavigate();
@@ -18,24 +18,34 @@ const CreateAssets: React.FC = () => {
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
   const [user, setuser] = useState("");
 
-
   const handleGetassets=async()=>{
     SetDataassetslist(await getAssets())
   }
-  const handleSubmit=async()=>{
+  const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
+    e.preventDefault()
     await addAssets(name_assets,expire_hour)
   }
 
   useEffect(() => {
+    // const event = (e:any) => {
+    //   e.preventDefaut
+    // }
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
-        setuser(item)
-        handleGetassets();
+        const user = JSON.parse(item);
+        setuser(user.username);
+        Checktoken(user.token).then((status)=>{
+          if(status === true){
+            handleGetassets();
+          }else{
+            localStorage.clear()
+          }
+        })
       }
       else{
         navigate('/login')
       }
-  }, []);
+  },[]);
 
 
 //   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -76,7 +86,7 @@ const CreateAssets: React.FC = () => {
             />
           </div>
           <div className="button-submit">
-            <button onClick={handleSubmit}>ADD Assets</button>
+            <button onClick={()=> handleSubmit}>ADD Assets</button>
           </div>
         </form>
       </div>
