@@ -5,6 +5,7 @@ dotenv.config();
 const MYSQL_HOST = process.env.host;
 const MYSQL_DATABASE = process.env.database;
 const MYSQL_USER = process.env.user;
+const TOKEN_SECRET = process.env.TOKEN_SECRET|| '';
 // const MYSQL_PASS = process.env.password;
 
 const MYSQL = {
@@ -24,7 +25,8 @@ const SERVER = {
 
 const config = {
     mysql: MYSQL,
-    server: SERVER
+    server: SERVER,
+    token:TOKEN_SECRET
 };
 
 export default config;
