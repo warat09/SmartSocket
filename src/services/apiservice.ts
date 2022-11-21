@@ -120,6 +120,26 @@ export const addMatching=async (id_assets:string,mac_address:string,room:string,
   });
 }
 
+export const addUserMatching=async (token:string,id_match:string,room:string,floor:string,description:string)=>{
+  const url = "http://localhost:9090/Usermatch/AddUsermatch";
+  const attibute_matching = { token,id_match,room,floor,description };
+  await axios
+  .post(url,attibute_matching)
+  .then((response)=>{
+    const results = response.data;
+    const { status, data } = results;
+    console.log(response.data)
+    if (status !== "SUCCESS") {
+      alert(status);
+    } else {
+      console.log(data);
+    }
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+}
+
 export const getNode = async ():Promise<any> => {
   const url = "http://localhost:9090/Node/AllMACAddress";
   let list:any
@@ -151,8 +171,38 @@ export const getMatching = async ():Promise<any> => {
     return list
 };
 
+export const GetRequestRent = async (token:string) => {
+  const url = "http://localhost:9090/Usermatch/GetRequestRent";
+  let list:any
+  await axios
+    .post(url,{
+      token:token
+    })
+    .then((response) => {
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+};
+
+export const getRentMatch = async ():Promise<any> => {
+  const url = "http://localhost:9090/Match/SelectRentMatch";
+  let list:any
+  await axios
+    .get(url)
+    .then((response) => {
+      const results = response.data;
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+};
+
 export const SelectMatchNode = async (id:any) => {
-  console.log("id is ",id)
   const url = "http://localhost:9090/Node/SelectNode";
   let list:any
   await axios

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {Node} from '../../model/model'
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -7,18 +8,30 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {getNode} from '../../services/apiservice'
-
+import {getNode,Checktoken} from '../../services/apiservice'
 
 const HomeNode: React.FC = () => {
+  const navigate = useNavigate();
   const [listnode, SetlistNode] = useState<Node[]>([]);
 
   const handleGetNode= async() => {
     SetlistNode(await getNode())
   }
   useEffect(() => {
-    console.log("node");
-    handleGetNode();
+    const item = localStorage.getItem("User");
+    if (item && item !== "undefined") {
+      const user = JSON.parse(item);
+      Checktoken(user.token).then((status)=>{
+        if(status === true){
+          handleGetNode();
+        }else{
+          localStorage.clear()
+        }
+      })
+    }
+    else{
+      navigate('/login')
+    }
   }, []);
 
   return (

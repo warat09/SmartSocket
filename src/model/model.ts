@@ -30,6 +30,18 @@ export interface Assets {
     Match_room?: string;
     Match_floor?:string;
   }
+  export interface UserMatch {
+    Asset_name_assets?: string;
+    UserMatch_room?: string;
+    UserMatch_floor?: string;
+    UserMatch_sum_used_time?: string;
+    UserMatch_datetime?:string;
+    UserMatch_status?:string;
+  }
+  export interface MatchRentSelection {
+    Asset_name_assets?: string;
+    Match_id_match?: number;
+  }
   export interface Transection{
     Asset_name_assets?: string;
     Match_mac_address?: string;

@@ -54,6 +54,17 @@ function NavList() {
             match
           </NavLink>
         </li>
+
+        <li>
+          <NavLink
+            to="usermatch"
+            style={({ isActive }) =>
+              isActive ? activeStyle : undefined
+            }
+          >
+            usermatch
+          </NavLink>
+        </li>
         
         <li>
           <NavLink

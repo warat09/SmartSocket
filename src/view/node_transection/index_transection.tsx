@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -7,10 +8,10 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Transection} from '../../model/model'
-import {getTransection} from "../../services/apiservice"
+import {getTransection,Checktoken} from "../../services/apiservice"
 
 const CreateTransection: React.FC = () => {
-  
+  const navigate = useNavigate();
   const [listassets, SetDataassetslist] = useState<Transection[]>([]);
 
   const handleGetTransection=async()=>{
@@ -20,12 +21,20 @@ const CreateTransection: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log("node_tran");
-    // getTransection().then(res=>{
-    //   console.log()
-      // SetDataassetslist(res)
-      handleGetTransection();
-
+    const item = localStorage.getItem("User");
+    if (item && item !== "undefined") {
+      const user = JSON.parse(item);
+      Checktoken(user.token).then((status)=>{
+        if(status === true){
+          handleGetTransection();
+        }else{
+          localStorage.clear()
+        }
+      })
+    }
+    else{
+      navigate('/login')
+    }
   },[]);
 
   return (

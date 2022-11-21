@@ -21,37 +21,28 @@ const CreateAssets: React.FC = () => {
   const handleGetassets=async()=>{
     SetDataassetslist(await getAssets())
   }
-  const handleSubmit=async(e:React.FormEvent<HTMLFormElement>)=>{
-    e.preventDefault()
+  const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
     await addAssets(name_assets,expire_hour)
   }
 
   useEffect(() => {
-    // const event = (e:any) => {
-    //   e.preventDefaut
-    // }
     const item = localStorage.getItem("User");
-      if (item && item !== "undefined") {
-        const user = JSON.parse(item);
-        setuser(user.username);
-        Checktoken(user.token).then((status)=>{
-          if(status === true){
-            handleGetassets();
-          }else{
-            localStorage.clear()
-          }
-        })
-      }
-      else{
-        navigate('/login')
-      }
+    if (item && item !== "undefined") {
+      const user = JSON.parse(item);
+      setuser(user.username);
+      Checktoken(user.token).then((status)=>{
+        if(status === true){
+          handleGetassets();
+        }else{
+          localStorage.clear()
+        }
+      })
+    }
+    else{
+      navigate('/login')
+    }
   },[]);
-
-
-//   const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-//     SetNameassets(event.target.value);
-//     console.log(event.target.value);
-//   }
   return (
     <div className="container">
       <h1>Assets</h1>
@@ -86,13 +77,12 @@ const CreateAssets: React.FC = () => {
             />
           </div>
           <div className="button-submit">
-            <button onClick={()=> handleSubmit}>ADD Assets</button>
+            <button onClick={handleSubmit}>ADD Assets</button>
           </div>
         </form>
       </div>
       <hr />
       <div className="assets">
-        <button onClick={handleGetassets}>Show assets</button>
 
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">

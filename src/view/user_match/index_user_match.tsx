@@ -7,8 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Node, Assets, Matching ,NodeSelection} from "../../model/model";
-import {getAssets,SelectMatchNode,getMatching,addMatching,Checktoken} from "../../services/apiservice";
+import {MatchRentSelection, UserMatch} from "../../model/model";
+import {getRentMatch,GetRequestRent,addUserMatching,Checktoken} from "../../services/apiservice";
 import {
   Box,
   FormControl,
@@ -18,39 +18,29 @@ import {
   SelectChangeEvent,
 } from "@mui/material";
 
-const CreateMatch: React.FC = () => {
+const CreateUserMatch: React.FC = () => {
   const navigate = useNavigate();
-  const [listnode, setlistnode] = useState<NodeSelection[]>([]);
-  const [listassets, setlistassets] = useState<Assets[]>([]);
-  const [listmatching, setlistmatching] = useState<Matching[]>([]);
+  const [listassets, setlistassets] = useState<MatchRentSelection[]>([]);
+  const [listmatching, setlistmatching] = useState<UserMatch[]>([]);
 
   const [inputassets, setInputassets] = useState<string>("");
-  const [inputnode, setInputnode] = useState<string>("");
+  const [token, setToken] = useState<string>("");
   const [room, SetRoom] = useState("");
   const [floor, SetFloor] = useState("");
+  const [description, Setdescription] = useState("");
 
-  const ComponentMatch= async () => {
-    setlistmatching(await getMatching());
-    setlistassets(await getAssets());
+  const ComponentUserMatch= async (token:string) => {
+    setlistmatching(await GetRequestRent(token));
+    setlistassets(await getRentMatch());
   }
 
   const handleChangeAssets = (event: SelectChangeEvent) => {
     setInputassets(event.target.value);
-    Getnode(event.target.value);
-  };
-
-  const handleChangeNode = (event: SelectChangeEvent) => {
-    setInputnode(event.target.value);
-    console.log(inputnode);
   };
 
   const handleSubmit=async()=>{
-    await addMatching(inputassets,inputnode,room,floor)
+    await addUserMatching(token,inputassets,room,floor,description)
   }
-
-  const Getnode = async (id:any) => {
-    setlistnode(await SelectMatchNode(id));
-  };
 
   useEffect(() => {
     const item = localStorage.getItem("User");
@@ -58,7 +48,8 @@ const CreateMatch: React.FC = () => {
         const user = JSON.parse(item);
         Checktoken(user.token).then((status)=>{
           if(status === true){
-            ComponentMatch();
+            ComponentUserMatch(user.token);
+            setToken(user.token);
           }else{
             localStorage.clear()
           }
@@ -71,13 +62,13 @@ const CreateMatch: React.FC = () => {
 
   return (
     <div className="container">
-      <h1>Matching</h1>
+      <h1>UserMatch</h1>
       <hr />
       <br></br>
       <Box sx={{ minWidth: 120 }}>
         <FormControl  fullWidth>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Assets</InputLabel>
+            <InputLabel id="demo-simple-select-label">Rent</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -88,33 +79,10 @@ const CreateMatch: React.FC = () => {
               {listassets.map((inputassets) => {
                 return (
                   <MenuItem
-                    value={inputassets.id_assets}
-                    key={inputassets.id_assets}
+                    value={inputassets.Match_id_match}
+                    key={inputassets.Match_id_match}
                   >
-                    {inputassets.name_assets}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <br></br>
-          <br></br>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Node</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={inputnode}
-              label="Node"
-              onChange={handleChangeNode}
-            >
-              {listnode.map((inputnode) => {
-                return (
-                  <MenuItem
-                    value={inputnode.Node_mac_address}
-                    key={inputnode.Node_mac_address}
-                  >
-                    {inputnode.Node_mac_address}
+                    {inputassets.Asset_name_assets}
                   </MenuItem>
                 );
               })}
@@ -147,6 +115,19 @@ const CreateMatch: React.FC = () => {
                 }}
               />
             </div>
+            <div className="mb-3">
+              <label htmlFor="timelimit" className="form-label">
+              Description:
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Description"
+                onChange={(e) => {
+                  Setdescription(e.target.value);
+                }}
+              />
+            </div>
           </form>
         </FormControl>
         <br />
@@ -159,11 +140,12 @@ const CreateMatch: React.FC = () => {
         <TableHead>
           <TableRow>
             <TableCell >assets</TableCell>
-            <TableCell align="right">mac_address&nbsp;</TableCell>
             <TableCell align="right">room&nbsp;</TableCell>
             <TableCell align="right">floor&nbsp;</TableCell>
-            <TableCell align="right">Date&nbsp;</TableCell>
-            <TableCell align="right">Status&nbsp;</TableCell>
+            <TableCell align="right">description&nbsp;</TableCell>
+            <TableCell align="right">sumuse&nbsp;</TableCell>
+            <TableCell align="right">datetime&nbsp;</TableCell>
+            <TableCell align="right">status&nbsp;</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -175,11 +157,12 @@ const CreateMatch: React.FC = () => {
               <TableCell component="th" scope="row">
                 {row.Asset_name_assets}
               </TableCell>
-              <TableCell align="right">{row.Match_mac_address}</TableCell>
-              <TableCell align="right">{row.Match_room}</TableCell>
-              <TableCell align="right">{row.Match_floor}</TableCell>
-              <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-              <TableCell align="right">{row.Match_status}</TableCell>
+              <TableCell align="right">{row.UserMatch_room}</TableCell>
+              <TableCell align="right">{row.UserMatch_floor}</TableCell>
+              <TableCell align="right">{row.UserMatch_description }</TableCell>
+              <TableCell align="right">{row.UserMatch_sum_used_time}</TableCell>
+              <TableCell align="right">{new Date(row.UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+              <TableCell align="right">{row.UserMatch_status}</TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -188,4 +171,4 @@ const CreateMatch: React.FC = () => {
     </div>
   );
 };
-export default CreateMatch;
+export default CreateUserMatch;
