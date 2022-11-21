@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { Assets } from '../entity/Asset';
 import {Match} from "../entity/Match"
+import {User_match} from "../entity/Usermatch"
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {mac_address,id_assets,room,floor} = req.body
@@ -20,11 +21,12 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
     const match = new Match()
     match.id_assets = id_assets;
     match.mac_address = mac_address;
-    match.status = "Not_Rent" ;
+    match.status = "enable";
     match.remain_time = InputRemainTime.expire_hour//ดึง asset expire_hour no apiinput
     match.active_datetime = Datetime;
     match.room = room;
     match.floor = floor;
+    match.status_rent = "available";
 
     const CheckMatch = await AppDataSource.getRepository(Match).find({
         where: {
@@ -45,6 +47,14 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
     }
 };
 
+const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => {
+    const SelectUserMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').getQuery();
+    const GetRentMatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    .where(`Match.status_rent = :status_rent AND Match.status = :status AND Match.id_match NOT IN (${SelectUserMatch})`, {status_rent: "available",status:"enable"}).getRawMany();
+    res.json(GetRentMatch)
+};
+
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
@@ -52,4 +62,4 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
 };
 
 
-export default {MatchingAsset,GetAllMatching};
+export default {MatchingAsset,GetRentMatch,GetAllMatching};

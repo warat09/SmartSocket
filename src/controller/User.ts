@@ -20,7 +20,10 @@ const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
         bycript.compare(password,CheckUser[0].password).then((result) => {
             if (result) {
                 const token = jwt.sign(
-                    { username: username },
+                    { 
+                        id:CheckUser[0].id_user,
+                        username: username
+                    },
                     config.token,
                     { expiresIn: "30d" }
                 );

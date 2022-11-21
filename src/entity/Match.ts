@@ -16,9 +16,6 @@ export class Match{
     @JoinColumn({ name: 'mac_address' })
     mac_address: Node
 
-    @Column()
-    status: string
-
     @Column({type: 'bigint'})
     remain_time: number
 
@@ -30,4 +27,10 @@ export class Match{
 
     @Column()
     floor:string
+
+    @Column()
+    status_rent: string
+
+    @Column()
+    status: string
 }
