@@ -8,6 +8,9 @@ import Transection from './routes/Transection';
 import Usermatch from './routes/Usermatch';
 import Asset from './routes/Asset';
 import Match from './routes/Match';
+import Test from './routes/Test'
+
+import {auth} from './middleware/auth'
 var bodyParser = require('body-parser')
 
 
@@ -39,6 +42,7 @@ AppDataSource.initialize().then(async () => {
       router.use('/Match', Match)
       router.use('/Transection',Transection)
       router.use('/Usermatch',Usermatch)
+      router.use('/test',auth,Test)
 
     // setup express app here
     // ...
