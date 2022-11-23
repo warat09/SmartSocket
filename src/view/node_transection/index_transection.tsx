@@ -63,11 +63,11 @@ const CreateTransection: React.FC = () => {
                     {row.Asset_name_assets}
                   </TableCell>
                   <TableCell align="right">{row.Match_mac_address}</TableCell>
-                  <TableCell align="right">{row.Transection_status_action}</TableCell>
-                  <TableCell align="right">{row.Transection_time_used}</TableCell>
-                  <TableCell align="right">{new Date(row.Transection_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-                  <TableCell align="right">{row.Transection_on_date}</TableCell>
-                  <TableCell align="right">{row.Transection_off_date}</TableCell>
+                  <TableCell align="right">{row.Transaction_status_transaction}</TableCell>
+                  <TableCell align="right">{row.Transaction_time_used}</TableCell>
+                  <TableCell align="right">{new Date(row.Transaction_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                  <TableCell align="right">{row.Transaction_on_date}</TableCell>
+                  <TableCell align="right">{row.Transaction_off_date}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
