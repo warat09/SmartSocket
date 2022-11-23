@@ -10,7 +10,7 @@ const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
     const CheckUser = await AppDataSource.getRepository(User).find({
         where: {
             username: username,
-            status:'active'
+            status_user:'Active'
         },
       });
       if(Object.values(CheckUser).length === 0){
@@ -30,7 +30,7 @@ const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
                 return res.status(200).json({status:'ok',token:token,message: "Login Success"});
             //   res.json({ message: "Login Success!!", Token: token });
             } else {
-                return res.status(403).json({status:'error',message: "Password not corrct" });
+                return res.status(403).json({status:'error',message: "Password not correct" });
             }
           });
         // const sendtoken = jwt.sign(
@@ -75,7 +75,7 @@ const AddUser = async (req: Request, res: Response, next: NextFunction) => {
             user.email = email;
             user.role = role;
             user.departure = departure;
-            user.status = status;
+            user.status_user = 'Active';
             const CheckUser = await AppDataSource.getRepository(User).find({
                 where: [
                     { username: username },

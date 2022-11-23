@@ -14,4 +14,6 @@ export class Maintenance_Assets{
     @Column()
     date_maintenance:Date
 
+    @Column()
+    status_maintenance: string
 }

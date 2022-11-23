@@ -22,7 +22,7 @@ const AddUsermatch = async (req: Request, res: Response, next: NextFunction) => 
             usermatch.room = room;
             usermatch.floor = floor;
             usermatch.description = description;
-            usermatch.status = "wait";
+            usermatch.status_user_match = "Wait for Approve";
             usermatch.datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
             const AddUsermatch = AppDataSource.getRepository(User_match).create(usermatch)
             const results = await AppDataSource.getRepository(User_match).save(AddUsermatch)
@@ -31,21 +31,11 @@ const AddUsermatch = async (req: Request, res: Response, next: NextFunction) => 
     });
 }
 const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
-    let {token} = req.body;
-    console.log("tokennnnnn",token)
-    jwt.verify(token, config.token,async (err: any, user: any)=>{
-        if (err) {
-            console.log("err");     
-            return res.status(401).json({status:'error',message: "Token expired"});
-        }
-        else{
-            const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
-            .where(`UserMatch.id_user = :id_user`, {id_user: user.id}).getRawMany();            
+            .where(`UserMatch.id_user = :id_user`, {id_user: req["user"].id}).getRawMany();     
             return res.status(200).json(RequestRent);
-        }
-    });
 }
 const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) => {
     const AllUser = await AppDataSource.getRepository(User_match).find({

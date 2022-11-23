@@ -28,7 +28,7 @@ export class User_match {
     description: string
 
     @Column()
-    status: string
+    status_user_match: string
 
     @Column()
     datetime: Date

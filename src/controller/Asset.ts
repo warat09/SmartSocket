@@ -12,7 +12,7 @@ const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     assets.date_assets = new Date(Date_assets);
     assets.expire_hour = new Date().getTime()+HourtoMillisecond;
     assets.maintenance = false;
-    assets.status_assets = "active";
+    assets.status_assets = "Active";
 
     const CheckNameAsset = await AppDataSource.getRepository(Assets).findOneBy({
         name_assets: name_assets,

@@ -14,7 +14,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
                     return res.status(401).json({status:'error',message: "Token expired"});
                 }
                 else{
-                    req["user"] = user // ERROR: Property 'user' does not exist on type 'Request'
+                    req["user"] = user;
                     return next()
                 }
             });

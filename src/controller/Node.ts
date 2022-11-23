@@ -10,7 +10,7 @@ const AddMACAddress = async (req: Request, res: Response, next: NextFunction) =>
     node.mac_address = Address
     node.ip = LocalIP
     node.date_node = Date_node;
-    node.status_node = "enable"
+    node.status_node = "Enable"
 
     const CheckMacAddress = await AppDataSource.getRepository(Node).findOneBy({
         mac_address: Address,

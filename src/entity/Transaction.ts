@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column ,ManyToOne , JoinColumn} from "typeorm"
-import {Match} from "../entity/Match"
+import {Match} from "./Match"
 
 @Entity()
-export class Node_Transection {
+export class Node_Transaction {
 
     @PrimaryGeneratedColumn('increment')
     id_txn : string
@@ -15,7 +15,7 @@ export class Node_Transection {
     @Column({
         nullable:true
     })
-    status_action: string
+    status_transaction: string
 
     @Column({type: 'bigint'})
     time_used: number

@@ -21,12 +21,12 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
     const match = new Match()
     match.id_assets = id_assets;
     match.mac_address = mac_address;
-    match.status = "enable";
+    match.status_match = "Enable";
     match.remain_time = InputRemainTime.expire_hour//ดึง asset expire_hour no apiinput
     match.active_datetime = Datetime;
     match.room = room;
     match.floor = floor;
-    match.status_rent = "available";
+    match.status_rent = "Available";
 
     const CheckMatch = await AppDataSource.getRepository(Match).find({
         where: {
@@ -51,7 +51,7 @@ const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => 
     const SelectUserMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').getQuery();
     const GetRentMatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`Match.status_rent = :status_rent AND Match.status = :status AND Match.id_match NOT IN (${SelectUserMatch})`, {status_rent: "available",status:"enable"}).getRawMany();
+    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Match.id_match NOT IN (${SelectUserMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
     res.json(GetRentMatch)
 };
 

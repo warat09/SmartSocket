@@ -28,6 +28,6 @@ export class User {
     departure: string
 
     @Column()
-    status: string
+    status_user: string
 
 }

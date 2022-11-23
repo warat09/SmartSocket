@@ -32,5 +32,5 @@ export class Match{
     status_rent: string
 
     @Column()
-    status: string
+    status_match: string
 }
