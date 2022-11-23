@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {MatchRentSelection, UserMatch} from "../../model/model";
-import {getRentMatch,GetRequestRent,addUserMatching,Checktoken} from "../../services/apiservice";
+import {getRentMatch,getRequestRent,addUserMatching,Checktoken} from "../../services/apiservice";
 import {
   Box,
   FormControl,
@@ -30,8 +30,8 @@ const CreateUserMatch: React.FC = () => {
   const [description, Setdescription] = useState("");
 
   const ComponentUserMatch= async (token:string) => {
-    setlistmatching(await GetRequestRent(token));
-    setlistassets(await getRentMatch());
+    setlistmatching(await getRequestRent(token));
+    setlistassets(await getRentMatch(token));
   }
 
   const handleChangeAssets = (event: SelectChangeEvent) => {

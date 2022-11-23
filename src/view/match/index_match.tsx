@@ -29,9 +29,9 @@ const CreateMatch: React.FC = () => {
   const [room, SetRoom] = useState("");
   const [floor, SetFloor] = useState("");
 
-  const ComponentMatch= async () => {
-    setlistmatching(await getMatching());
-    setlistassets(await getAssets());
+  const ComponentMatch= async (token:string) => {
+    setlistmatching(await getMatching(token));
+    setlistassets(await getAssets(token));
   }
 
   const handleChangeAssets = (event: SelectChangeEvent) => {
@@ -58,7 +58,7 @@ const CreateMatch: React.FC = () => {
         const user = JSON.parse(item);
         Checktoken(user.token).then((status)=>{
           if(status === true){
-            ComponentMatch();
+            ComponentMatch(user.token);
           }else{
             localStorage.clear()
           }

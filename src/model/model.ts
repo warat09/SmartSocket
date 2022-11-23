@@ -24,7 +24,7 @@ export interface Assets {
   export interface Matching{
     Asset_name_assets?: string;
     Match_mac_address?: string;
-    Match_status?: string;
+    Match_status_match?: string;
     // date_match?: Date;
     Match_active_datetime?: Date;
     Match_room?: string;
@@ -36,18 +36,18 @@ export interface Assets {
     UserMatch_floor?: string;
     UserMatch_sum_used_time?: string;
     UserMatch_datetime?:string;
-    UserMatch_status?:string;
+    UserMatch_status_user_match?:string;
   }
   export interface MatchRentSelection {
     Asset_name_assets?: string;
     Match_id_match?: number;
   }
-  export interface Transection{
+  export interface Transaction{
     Asset_name_assets?: string;
     Match_mac_address?: string;
-    Transection_status_action?: string;
-    Transection_time_used?: string;
-    Transection_time_update?: string;
-    Transection_on_date?:string;
-    Transection_off_date?:string;
+    Transaction_status_transaction?: string;
+    Transaction_time_used?: string;
+    Transaction_time_update?: string;
+    Transaction_on_date?:string;
+    Transaction_off_date?:string;
   }

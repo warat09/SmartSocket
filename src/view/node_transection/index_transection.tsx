@@ -7,17 +7,15 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import {Transection} from '../../model/model'
+import {Transaction} from '../../model/model'
 import {getTransection,Checktoken} from "../../services/apiservice"
 
 const CreateTransection: React.FC = () => {
   const navigate = useNavigate();
-  const [listassets, SetDataassetslist] = useState<Transection[]>([]);
+  const [listassets, SetDataassetslist] = useState<Transaction[]>([]);
 
   const handleGetTransection=async()=>{
-    getTransection().then(res=>{
-      SetDataassetslist(res)
-    })
+    SetDataassetslist(await getTransection());
   }
 
   useEffect(() => {
@@ -39,11 +37,9 @@ const CreateTransection: React.FC = () => {
 
   return (
     <div className="container">
-      <h1>Transection</h1>
+      <h1>Transaction</h1>
       <hr />
       <div className="assets">
-        <button onClick={handleGetTransection}>Show Transection</button>
-
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>

@@ -60,11 +60,12 @@ export const checktoken = async(path:string,username:string,password:string) => 
   return message
 }
 
-export const getAssets = async ():Promise<any>=> {
+export const getAssets = async (token:string):Promise<any>=> {
   const url = "http://localhost:9090/Asset/AllAsset";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   let list:any
   await axios
-    .get(url)
+    .get(url,config)
     .then((response) => {
       const results = response.data;
       list = response.data;
@@ -123,8 +124,9 @@ export const addMatching=async (id_assets:string,mac_address:string,room:string,
 export const addUserMatching=async (token:string,id_match:string,room:string,floor:string,description:string)=>{
   const url = "http://localhost:9090/Usermatch/AddUsermatch";
   const attibute_matching = { token,id_match,room,floor,description };
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   await axios
-  .post(url,attibute_matching)
+  .post(url,attibute_matching,config)
   .then((response)=>{
     const results = response.data;
     const { status, data } = results;
@@ -155,11 +157,12 @@ export const getNode = async ():Promise<any> => {
     return list
 };
 
-export const getMatching = async ():Promise<any> => {
+export const getMatching = async (token:string):Promise<any> => {
   const url = "http://localhost:9090/Match/AllMatching";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   let list:any
   await axios
-    .get(url)
+    .get(url,config)
     .then((response) => {
       const results = response.data;
       console.log(response)
@@ -171,13 +174,12 @@ export const getMatching = async ():Promise<any> => {
     return list
 };
 
-export const GetRequestRent = async (token:string) => {
+export const getRequestRent = async (token:string) => {
   const url = "http://localhost:9090/Usermatch/GetRequestRent";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   let list:any
   await axios
-    .post(url,{
-      token:token
-    })
+    .get(url,config)
     .then((response) => {
       list = response.data;
     })
@@ -187,11 +189,12 @@ export const GetRequestRent = async (token:string) => {
     return list
 };
 
-export const getRentMatch = async ():Promise<any> => {
+export const getRentMatch = async (token:string):Promise<any> => {
   const url = "http://localhost:9090/Match/SelectRentMatch";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   let list:any
   await axios
-    .get(url)
+    .get(url,config)
     .then((response) => {
       const results = response.data;
       list = response.data;
@@ -218,12 +221,33 @@ export const SelectMatchNode = async (id:any) => {
     return list
 };
 export const getTransection =async()=> {
-  const url = "http://localhost:9090/Transection/AllTransection";
+  const url = "http://localhost:9090/Transaction/AllTransaction";
   let list:any
-    const a = await axios.get(url)
-    list = a.data;
-     return list
+  await axios
+    .get(url)
+    .then((response) => {
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
 };
+export const getDashboard=async(token:string)=>{
+  const url = "http://localhost:9090/Dashboard/AllDashboard";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  let list:any 
+  await axios
+    .get(url,config)
+    .then((response) => {
+      const results = response.data;
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+}
 export const Checktoken =async(token:string)=> {
   const url = "http://localhost:9090/User/CheckToken";
   let list:any 

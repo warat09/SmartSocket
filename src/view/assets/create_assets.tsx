@@ -18,8 +18,8 @@ const CreateAssets: React.FC = () => {
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
   const [user, setuser] = useState("");
 
-  const handleGetassets=async()=>{
-    SetDataassetslist(await getAssets())
+  const handleGetassets=async(token:string)=>{
+    SetDataassetslist(await getAssets(token))
   }
   const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
@@ -33,7 +33,7 @@ const CreateAssets: React.FC = () => {
       setuser(user.username);
       Checktoken(user.token).then((status)=>{
         if(status === true){
-          handleGetassets();
+          handleGetassets(user.token);
         }else{
           localStorage.clear()
         }
@@ -46,7 +46,6 @@ const CreateAssets: React.FC = () => {
   return (
     <div className="container">
       <h1>Assets</h1>
-      <h2>{user}</h2>
       <hr />
       <div className="information">
         <form action="">
