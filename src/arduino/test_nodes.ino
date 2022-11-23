@@ -17,7 +17,7 @@ struct settings {
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-String IP_DATABASE = "http://192.168.42.223:9090";
+String IP_DATABASE = "http://192.168.43.250:9090";
 unsigned long prevTime = millis();
 int count = 0;
 int timezone= 7*3600;
@@ -139,16 +139,16 @@ void loop() {
         }
         Serial.print("Voltage: ");
         Serial.println(Veff);
-        if(Veff >= 750){//SWITCH_ON == "true"
+        if(Veff >730){//SWITCH_ON == "true"
           Serial.println("SWITCH_ON Veff>=635");
           digitalWrite(D4, LOW);
-          start_time = timeClient.getEpochTime();
-          day=ptm->tm_mday;
-          month=ptm->tm_mon+1;
-          year=ptm->tm_year+1900;
-          on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
-          if(Veff >= 750){
-//            SWITCH_ON="false";
+          if(RUNING=="false"){
+            RUNING="true";
+            start_time = timeClient.getEpochTime();
+            day=ptm->tm_mday;
+            month=ptm->tm_mon+1;
+            year=ptm->tm_year+1900;
+            on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
             Serial.println(start_time);
             Serial.println(on_date);
           }
@@ -157,29 +157,30 @@ void loop() {
 //            Serial.println(SWITCH_OFF);
             Serial.println("SWITCH_OFF Veff<635");
             digitalWrite(D4, HIGH);
-            end_time = timeClient.getEpochTime();
-            day=ptm->tm_mday;
-            month=ptm->tm_mon+1;
-            year=ptm->tm_year+1900;
-            off_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
-            used_time= (end_time-start_time)*1000;
-            Serial.println(start_time);
-            Serial.println(end_time);
-            Serial.println(on_date);
-            Serial.println(off_date);
-            http.begin(wifiClient,IP_DATABASE+"/Transaction/SendTransaction");
-            http.addHeader("Content-Type", "application/json");//Specify request destination
-            int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
-            // if(SWITCH_OFF == "true"){
-            //   SWITCH_OFF="false";
-            // }
-            if(httpCode == 200){
-              String response = http.getString();
-              Serial.println(response);
+            if(RUNING =="true"){
+               RUNING="false";
+               end_time = timeClient.getEpochTime();
+               used_time= (end_time-start_time)*1000;
+               day=ptm->tm_mday;
+               month=ptm->tm_mon+1;
+               year=ptm->tm_year+1900;
+               off_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
+               Serial.println(off_date);
+               Serial.println(start_time);
+               Serial.println(end_time);
+               Serial.println(used_time);
+              http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+              http.addHeader("Content-Type", "application/json");//Specify request destination
+              int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"active"+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
             }
+            
+//            if(httpCode == 200){
+//              String response = http.getString();
+//              Serial.println(response);
+//            }
             else{
               Serial.print("Error on sending POST: ");
-              Serial.println(httpCode);
+//              Serial.println(httpCode);
             }
             http.end();
           }
