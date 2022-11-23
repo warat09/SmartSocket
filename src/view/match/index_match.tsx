@@ -28,6 +28,7 @@ const CreateMatch: React.FC = () => {
   const [inputnode, setInputnode] = useState<string>("");
   const [room, SetRoom] = useState("");
   const [floor, SetFloor] = useState("");
+  const [token, SetToken] = useState("")
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching(token));
@@ -45,7 +46,7 @@ const CreateMatch: React.FC = () => {
   };
 
   const handleSubmit=async()=>{
-    await addMatching(inputassets,inputnode,room,floor)
+    await addMatching(token,inputassets,inputnode,room,floor)
   }
 
   const Getnode = async (id:any) => {
@@ -59,6 +60,7 @@ const CreateMatch: React.FC = () => {
         Checktoken(user.token).then((status)=>{
           if(status === true){
             ComponentMatch(user.token);
+            SetToken(user.token)
           }else{
             localStorage.clear()
           }
@@ -179,7 +181,7 @@ const CreateMatch: React.FC = () => {
               <TableCell align="right">{row.Match_room}</TableCell>
               <TableCell align="right">{row.Match_floor}</TableCell>
               <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-              <TableCell align="right">{row.Match_status}</TableCell>
+              <TableCell align="right">{row.Match_status_match}</TableCell>
             </TableRow>
           ))}
         </TableBody>

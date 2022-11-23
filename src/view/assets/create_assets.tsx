@@ -14,26 +14,25 @@ const CreateAssets: React.FC = () => {
   const navigate = useNavigate();
   const [name_assets, SetNameassets] = useState("");
   const [expire_hour, SetExpire_hour] = useState(0);
-  const [date, SetDate] = useState(Date);
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
-  const [user, setuser] = useState("");
+  const [token, settoken] = useState("");
 
   const handleGetassets=async(token:string)=>{
     SetDataassetslist(await getAssets(token))
   }
   const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
-    await addAssets(name_assets,expire_hour)
+    await addAssets(token,name_assets,expire_hour)
   }
 
   useEffect(() => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      setuser(user.username);
       Checktoken(user.token).then((status)=>{
         if(status === true){
           handleGetassets(user.token);
+          settoken(user.token)
         }else{
           localStorage.clear()
         }

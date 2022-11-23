@@ -162,7 +162,7 @@ const CreateUserMatch: React.FC = () => {
               <TableCell align="right">{row.UserMatch_description }</TableCell>
               <TableCell align="right">{row.UserMatch_sum_used_time}</TableCell>
               <TableCell align="right">{new Date(row.UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-              <TableCell align="right">{row.UserMatch_status}</TableCell>
+              <TableCell align="right">{row.UserMatch_status_user_match}</TableCell>
             </TableRow>
           ))}
         </TableBody>

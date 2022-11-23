@@ -81,11 +81,12 @@ export const getAssets = async (token:string):Promise<any>=> {
      return list
 };
 
-export const addAssets = async(name_assets:string,expire_hour:number) => {
+export const addAssets = async(token:string,name_assets:string,expire_hour:number) => {
   const url = "http://localhost:9090/Asset/AddAsset";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   const attibute_assets = { name_assets, expire_hour };
   await axios
-    .post(url, attibute_assets)
+    .post(url,attibute_assets,config)
     .then((response) => {
       const results = response.data;
       const { status, data } = results;
@@ -100,12 +101,12 @@ export const addAssets = async(name_assets:string,expire_hour:number) => {
     });
 };
 
-export const addMatching=async (id_assets:string,mac_address:string,room:string,floor:string)=>{
+export const addMatching=async (token:string,id_assets:string,mac_address:string,room:string,floor:string)=>{
   const url = "http://localhost:9090/Match/MatchingAssets";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   const attibute_matching = {id_assets,mac_address,room,floor };
-  console.log(attibute_matching)
   await axios
-  .post(url,attibute_matching)
+  .post(url,attibute_matching,config)
   .then((response)=>{
     const results = response.data;
     const { status, data } = results;
