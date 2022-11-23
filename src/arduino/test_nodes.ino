@@ -17,7 +17,7 @@ struct settings {
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-String IP_DATABASE = "http://192.168.43.250:9090";
+String IP_DATABASE = "http://192.168.42.223:9090";
 unsigned long prevTime = millis();
 int count = 0;
 int timezone= 7*3600;
@@ -139,7 +139,7 @@ void loop() {
         }
         Serial.print("Voltage: ");
         Serial.println(Veff);
-        if(Veff >= 635){//SWITCH_ON == "true"
+        if(Veff >= 750){//SWITCH_ON == "true"
           Serial.println("SWITCH_ON Veff>=635");
           digitalWrite(D4, LOW);
           start_time = timeClient.getEpochTime();
@@ -147,7 +147,7 @@ void loop() {
           month=ptm->tm_mon+1;
           year=ptm->tm_year+1900;
           on_date = String(year) + "-" + String(month) + "-" + String(day)+" "+String( timeClient.getFormattedTime());
-          if(Veff >= 635){
+          if(Veff >= 750){
 //            SWITCH_ON="false";
             Serial.println(start_time);
             Serial.println(on_date);
@@ -167,9 +167,9 @@ void loop() {
             Serial.println(end_time);
             Serial.println(on_date);
             Serial.println(off_date);
-            http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+            http.begin(wifiClient,IP_DATABASE+"/Transaction/SendTransaction");
             http.addHeader("Content-Type", "application/json");//Specify request destination
-            int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"active"+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
+            int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
             // if(SWITCH_OFF == "true"){
             //   SWITCH_OFF="false";
             // }

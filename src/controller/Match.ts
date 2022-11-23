@@ -34,9 +34,6 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
             id_assets: id_assets,
         },
     });
-
-
-
     if(Object.values(CheckMatch).length === 0){
         const AddMatch = AppDataSource.getRepository(Match).create(match)
         const results = await AppDataSource.getRepository(Match).save(AddMatch)

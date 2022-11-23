@@ -3,7 +3,6 @@ import { AppDataSource } from "../data-source"
 import { Assets } from '../entity/Asset';
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {name_assets,expire_hour} = req.body
-    console.log(req.body)
     let Date_assets = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
     let HourtoMillisecond = (expire_hour * (60000 * 60));
    

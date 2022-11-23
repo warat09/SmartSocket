@@ -5,6 +5,7 @@ import { Match } from '../entity/Match';
 
 const AddMACAddress = async (req: Request, res: Response, next: NextFunction) => {
     let {Address,LocalIP} = req.body
+    console.log(req.body)
     let Date_node = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
     const node = new Node()
     node.mac_address = Address
