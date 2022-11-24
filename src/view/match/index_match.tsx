@@ -7,8 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Node, Assets, Matching ,NodeSelection} from "../../model/model";
-import {getAssets,SelectMatchNode,getMatching,addMatching,Checktoken} from "../../services/apiservice";
+import { MatchAsset, Matching ,NodeSelection} from "../../model/model";
+import {getMatchAssets,SelectMatchNode,getMatching,addMatching,Checktoken} from "../../services/apiservice";
 import {
   Box,
   FormControl,
@@ -21,7 +21,7 @@ import {
 const CreateMatch: React.FC = () => {
   const navigate = useNavigate();
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
-  const [listassets, setlistassets] = useState<Assets[]>([]);
+  const [listassets, setlistassets] = useState<MatchAsset[]>([]);
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
 
   const [inputassets, setInputassets] = useState<string>("");
@@ -32,7 +32,8 @@ const CreateMatch: React.FC = () => {
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching(token));
-    setlistassets(await getAssets(token));
+    // console.log(await getMatchAssets(token))
+    setlistassets(await getMatchAssets(token));
   }
 
   const handleChangeAssets = (event: SelectChangeEvent) => {
@@ -90,10 +91,10 @@ const CreateMatch: React.FC = () => {
               {listassets.map((inputassets) => {
                 return (
                   <MenuItem
-                    value={inputassets.id_assets}
-                    key={inputassets.id_assets}
+                    value={inputassets.Assets_id_assets}
+                    key={inputassets.Assets_id_assets}
                   >
-                    {inputassets.name_assets}
+                    {inputassets.Assets_name_assets}
                   </MenuItem>
                 );
               })}

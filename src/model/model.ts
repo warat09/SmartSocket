@@ -1,3 +1,12 @@
+export interface Dashboards {
+    asset?: number
+    match?: number
+    matchapprove?: number
+    matchnotrent?: number
+    matchrent?: number
+    node?: number
+    user?: number
+}
 export interface Assets {
     id_assets?: number;
     name_assets?: string;
@@ -7,7 +16,14 @@ export interface Assets {
     date_assets?: Date;
     //   children?: React.ReactNode;
   }
-
+  export interface MatchAsset{
+    Assets_name_assets?:string;
+    Assets_id_assets?:string;
+    Assets_expire_hour?:number
+    Assets_status_assets?: string;
+    Assets_maintenance?: boolean;
+    Assets_date_assets?: Date;
+  }
   export interface Node {
     mac_address?: string;
     ip?: string;

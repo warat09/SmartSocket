@@ -81,6 +81,27 @@ export const getAssets = async (token:string):Promise<any>=> {
      return list
 };
 
+export const getMatchAssets = async (token:string):Promise<any>=> {
+  const url = "http://localhost:9090/Asset/SelectMatchAsset";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  let list:any
+  await axios
+    .get(url,config)
+    .then((response) => {
+      const results = response.data;
+      list = response.data;
+      const { status, data } = results;
+        // SetDataassetslist(response.data);    
+        // console.log(new Date(response.data[0].date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }))
+        // console.log(response.data)
+
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+     return list
+};
+
 export const addAssets = async(token:string,name_assets:string,expire_hour:number) => {
   const url = "http://localhost:9090/Asset/AddAsset";
   const config = { headers: { Authorization: `Bearer ${token}` } }
@@ -166,7 +187,6 @@ export const getMatching = async (token:string):Promise<any> => {
     .get(url,config)
     .then((response) => {
       const results = response.data;
-      console.log(response)
       list = response.data;
     })
     .catch((err) => {
