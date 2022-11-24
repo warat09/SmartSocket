@@ -45,10 +45,12 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => {
-    const SelectUserMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').getQuery();
+    // const SelectUserMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').getQuery();
+    const SelectIdMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').where(`UserMatch.status_user_match IN ("Wait for Approve","Approve")`).getQuery();
+    // const SelectDistanceRent = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('mac_address').distinct(true).where('Match.status_rent = :status', {status:"Rent"}).getQuery();
     const GetRentMatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Match.id_match NOT IN (${SelectUserMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
+    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Match.id_match NOT IN (${SelectIdMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
     res.json(GetRentMatch)
 };
 

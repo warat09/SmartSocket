@@ -15,7 +15,7 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const countmatchnotrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Available'}).getCount();
     // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').getCount();
-    const attribute = {
+    const attribute = [{
         asset:countasset,
         node:countnode,
         match:countmatch,
@@ -23,7 +23,7 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
         matchrent:countmatchrent,
         matchnotrent:countmatchnotrent,
         user:countuser
-    }
+    }]
     return res.status(200).json(attribute)
 }
 

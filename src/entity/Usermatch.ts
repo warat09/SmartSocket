@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column , OneToOne , JoinColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column , ManyToOne , OneToOne , JoinColumn } from "typeorm"
 import { User } from "./User"
 import { Match } from "./Match"
 
@@ -8,7 +8,7 @@ export class User_match {
     @PrimaryGeneratedColumn('increment')
     id_user_match : number
 
-    @OneToOne(() => User, (User) => User.id_user)
+    @ManyToOne(() => User, (User) => User.id_user)
     @JoinColumn({ name: 'id_user' })
     id_user: User
     

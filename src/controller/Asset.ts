@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { Assets } from '../entity/Asset';
+import { Match } from '../entity/Match';
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {name_assets,expire_hour} = req.body
     let Date_assets = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
@@ -28,9 +29,14 @@ const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     }
     
 };
+const GetMatchAsset = async(req:Request,  res: Response, next: NextFunction) => {
+    const SelectMatch = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('id_assets').getQuery();
+    const SelectIdAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').where(`Assets.id_assets NOT IN (${SelectMatch})`).getRawMany();
+    res.json(SelectIdAsset)
+}
 const GetAllAsset = async(req:Request,  res: Response, next: NextFunction) => {
     const AllAssets = await AppDataSource.getRepository(Assets).find()
     res.json(AllAssets)
 };
 
-export default {AddAsset,GetAllAsset};
+export default {AddAsset,GetAllAsset,GetMatchAsset};

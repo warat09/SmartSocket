@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column ,OneToOne, JoinColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column ,OneToOne,ManyToOne, JoinColumn } from "typeorm"
 import { Assets } from "./Asset"
 import { Node } from "./Node"
 
@@ -12,7 +12,7 @@ export class Match{
     @JoinColumn({ name: 'id_assets' })
     id_assets: Assets
 
-    @OneToOne(() => Node, (Node) => Node.mac_address)
+    @ManyToOne(() => Node, (Node) => Node.mac_address)
     @JoinColumn({ name: 'mac_address' })
     mac_address: Node
 
