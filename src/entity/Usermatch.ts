@@ -33,7 +33,7 @@ export class User_match {
     @Column()
     datetime: Date
 
-    @Column()
+    @Column({type: 'bigint'})
     sum_used_time: number
 
 }

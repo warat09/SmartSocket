@@ -5,12 +5,11 @@ import { Match } from '../entity/Match';
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {name_assets,expire_hour} = req.body
     let Date_assets = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
-    let HourtoMillisecond = (expire_hour * (60000 * 60));
    
     const assets = new Assets()
     assets.name_assets = name_assets;
     assets.date_assets = new Date(Date_assets);
-    assets.expire_hour = new Date().getTime()+HourtoMillisecond;
+    assets.expire_hour = expire_hour;
     assets.maintenance = false;
     assets.status_assets = "Active";
 

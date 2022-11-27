@@ -22,7 +22,7 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
     match.id_assets = id_assets;
     match.mac_address = mac_address;
     match.status_match = "Enable";
-    match.remain_time = InputRemainTime.expire_hour//ดึง asset expire_hour no apiinput
+    match.remain_time = (InputRemainTime.expire_hour*(3600/ 0.001)) //ดึง asset expire_hour no apiinput
     match.active_datetime = Datetime;
     match.room = room;
     match.floor = floor;

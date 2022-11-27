@@ -12,7 +12,7 @@ export class Assets{
     @Column("timestamp")
     date_assets: Date
 
-    @Column({type: 'bigint'})
+    @Column()
     expire_hour: number
 
     @Column()
