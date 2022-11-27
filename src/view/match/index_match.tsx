@@ -54,6 +54,31 @@ const CreateMatch: React.FC = () => {
     setlistnode(await SelectMatchNode(id));
   };
 
+  const formatTime = (milliseconds:number) => {
+
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    // const days = Math.floor(totalHours / 24);
+  
+    const seconds = totalSeconds % 60;
+    const minutes = totalMinutes % 60;
+    const hours = totalHours % 24;
+  
+    let time = '1s';
+    // if (days > 0) {
+    //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
+    // } else 
+    if (hours > 0) {
+      time = `${totalHours}Hours ${minutes}Minutes ${seconds} Seconds`;
+    } else if (minutes > 0) {
+      time = `${minutes}Minutes ${seconds} Seconds`;
+    } else if (seconds > 0) {
+      time = `${seconds} Seconds`;
+    }
+    return time;
+  }
+
   useEffect(() => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
@@ -165,6 +190,7 @@ const CreateMatch: React.FC = () => {
             <TableCell align="right">mac_address&nbsp;</TableCell>
             <TableCell align="right">room&nbsp;</TableCell>
             <TableCell align="right">floor&nbsp;</TableCell>
+            <TableCell align="right">remain_time&nbsp;</TableCell>
             <TableCell align="right">Date&nbsp;</TableCell>
             <TableCell align="right">Status&nbsp;</TableCell>
           </TableRow>
@@ -181,6 +207,7 @@ const CreateMatch: React.FC = () => {
               <TableCell align="right">{row.Match_mac_address}</TableCell>
               <TableCell align="right">{row.Match_room}</TableCell>
               <TableCell align="right">{row.Match_floor}</TableCell>
+              <TableCell align="right">{formatTime(row.Match_remain_time)}</TableCell>
               <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
               <TableCell align="right">{row.Match_status_match}</TableCell>
             </TableRow>

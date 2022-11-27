@@ -42,6 +42,31 @@ const CreateUserMatch: React.FC = () => {
     await addUserMatching(token,inputassets,room,floor,description)
   }
 
+  const formatTime = (milliseconds:number) => {
+
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    // const days = Math.floor(totalHours / 24);
+  
+    const seconds = totalSeconds % 60;
+    const minutes = totalMinutes % 60;
+    const hours = totalHours % 24;
+  
+    let time = '1s';
+    // if (days > 0) {
+    //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
+    // } else 
+    if (hours > 0) {
+      time = `${totalHours}Hours ${minutes}Minutes ${seconds} Seconds`;
+    } else if (minutes > 0) {
+      time = `${minutes}Minutes ${seconds} Seconds`;
+    } else if (seconds > 0) {
+      time = `${seconds} Seconds`;
+    }
+    return time;
+  }
+
   useEffect(() => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
@@ -160,7 +185,10 @@ const CreateUserMatch: React.FC = () => {
               <TableCell align="right">{row.UserMatch_room}</TableCell>
               <TableCell align="right">{row.UserMatch_floor}</TableCell>
               <TableCell align="right">{row.UserMatch_description }</TableCell>
-              <TableCell align="right">{row.UserMatch_sum_used_time}</TableCell>
+              <TableCell align="right">
+                {row.UserMatch_sum_used_time == 0 && "Not use"}
+                {row.UserMatch_sum_used_time > 0 && formatTime(row.UserMatch_sum_used_time)}
+              </TableCell>
               <TableCell align="right">{new Date(row.UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
               <TableCell align="right">{row.UserMatch_status_user_match}</TableCell>
             </TableRow>

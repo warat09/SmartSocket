@@ -102,7 +102,7 @@ const CreateAssets: React.FC = () => {
                   <TableCell component="th" scope="row">
                     {row.name_assets}
                   </TableCell>
-                  <TableCell align="right">{new Date(Number(row.expire_hour)).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                  <TableCell align="right">{row.expire_hour} Hours</TableCell>
                   <TableCell align="right">
                     {new Date(row.date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}
                   </TableCell>
