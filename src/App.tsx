@@ -9,23 +9,25 @@ import Matching from './view/match';
 import UserMatch from './view/user_match';
 import Transection from './view/node_transection'
 import Register from './view/user/create_use';
+import Layout from './view/layouts/applicationlayout';
 const App: React.FC =()=> {
   return (
-    <div>
+    <>
       <Router>
-      <Navbar/>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/login" element={<Login/>} />
-          <Route path="/register" element={<Register/>} />
-          <Route path="/node" element={<HomeNode/>}/>
-          <Route path="/asset" element={<HomeAsset/>}/>
-          <Route path="/match" element={<Matching/>}/>
-          <Route path="/usermatch" element={<UserMatch/>}/>
-          <Route path="/transection" element={<Transection/>}/>
+          <Route path={"/"} element={<Layout/>}>
+            <Route index element={<Dashboard/>}/>
+            <Route path={"node"} element={<HomeNode/>}/>
+            <Route path={"asset"} element={<HomeAsset/>}/>
+            <Route path={"match"} element={<Matching/>}/>
+            <Route path={"usermatch"} element={<UserMatch/>}/>
+            <Route path={"transection"} element={<Transection/>}/>
+          </Route>
+          <Route path={"login"} element={<Login/>} />
+          <Route path={"register"} element={<Register/>} />
         </Routes>
       </Router>
-    </div>
+    </>
   );
 }
 

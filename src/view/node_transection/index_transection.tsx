@@ -14,20 +14,6 @@ const CreateTransection: React.FC = () => {
   const navigate = useNavigate();
   const [listassets, SetDataassetslist] = useState<Transaction[]>([]);
 
-//   function formatTime(timeMS:any) {
-//     const [MS_IN_SEC, SEC_IN_DAY, SEC_IN_HOUR, SEC_IN_MIN] = [1000, 86400, 3600, 60];
-//     let seconds = Math.round(Math.abs(timeMS) / MS_IN_SEC);
-//     const days = Math.floor(seconds / SEC_IN_DAY);
-//     seconds = Math.floor(seconds % SEC_IN_DAY);
-//     const hours = Math.floor(seconds / SEC_IN_HOUR);
-//     seconds = Math.floor(seconds % SEC_IN_HOUR);
-//     const minutes = Math.floor(seconds / SEC_IN_MIN);
-//     seconds = Math.floor(seconds % SEC_IN_MIN);
-//     const [dd, hh, mm, ss] = [days, hours, minutes, seconds]
-//         .map(item => item < 10 ? '0' + item : item.toString());
-//     return dd + ':' + hh + ':' + mm + ':' + ss;
-// }
-
 const formatTime = (milliseconds:number) => {
 
   const totalSeconds = Math.floor(milliseconds / 1000);
