@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboard, Checktoken } from "./../services/apiservice";
 import { Dashboards } from "../model/model";
-import { Card, CardActionArea, CardContent, Typography } from "@mui/material";
+import {
+  Card,
+  CardActionArea,
+  CardContent,
+  Grid,
+  Typography,
+} from "@mui/material";
 
 const Dashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -30,25 +36,29 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container">
-      <br/>
+      <br />
       <h1>Dashboard</h1>
       <hr />
       <br></br>
       <div>
-      {ConDashboard.map((row:any,i:any) => (
-        <Card sx={{ maxWidth: 345 }}>
-        <CardActionArea>
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-            {row.topic}
-            </Typography>
-            <Typography variant="h4" color="text.secondary">
-              {row.amount}
-              </Typography>
-          </CardContent>
-        </CardActionArea>
-    </Card>   
-      ))}
+        <Grid container spacing={2}>
+        {ConDashboard.map((row: any, i: any) => (
+            <Grid item xs={4}>
+              <Card>
+                <CardActionArea>
+                  <CardContent>
+                    <Typography gutterBottom variant="h5" component="div">
+                      {row.topic}
+                    </Typography>
+                    <Typography variant="h4" color="text.secondary">
+                      {row.amount}
+                    </Typography>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Grid>
+            ))}
+        </Grid>
       </div>
     </div>
   );
