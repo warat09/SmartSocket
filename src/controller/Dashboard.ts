@@ -15,16 +15,18 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const countmatchnotrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Available'}).getCount();
     // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').getCount();
-    const attribute = [{
-        asset:countasset,
-        node:countnode,
-        match:countmatch,
-        matchapprove:countmatchapprove,
-        matchrent:countmatchrent,
-        matchnotrent:countmatchnotrent,
-        user:countuser
-    }]
-    return res.status(200).json(attribute)
+    const topic = ["Assets","nodes","matching","Wait for approve","rent","not_rent","people"]
+    const amount = [countasset,countnode,countmatch,countmatchapprove,countmatchrent,countmatchnotrent,countuser]
+    const array = []
+    topic.map((v:any,i:any)=>{
+        const attribute = {
+            topic:v,
+            amount:amount[i]
+        }
+        array.push(attribute)
+    })
+    
+    return res.status(200).json(array)
 }
 
 
