@@ -87,6 +87,7 @@ const CreateUserMatch: React.FC = () => {
 
   return (
     <div className="container">
+      <br/>
       <h1>UserMatch</h1>
       <hr />
       <br></br>
@@ -156,8 +157,8 @@ const CreateUserMatch: React.FC = () => {
           </form>
         </FormControl>
         <br />
+        <button onClick={handleSubmit}>ADD</button>
         <br />
-        <button onClick={handleSubmit}>Matching</button>
         <br />
       </Box>
     <TableContainer component={Paper}>

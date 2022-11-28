@@ -19,6 +19,7 @@ const CreateAssets: React.FC = () => {
 
   const handleGetassets=async(token:string)=>{
     SetDataassetslist(await getAssets(token))
+    console.log(await getAssets(token))
   }
   const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
     e.preventDefault();
@@ -44,6 +45,7 @@ const CreateAssets: React.FC = () => {
   },[]);
   return (
     <div className="container">
+      <br/>
       <h1>Assets</h1>
       <hr />
       <div className="information">
@@ -75,7 +77,7 @@ const CreateAssets: React.FC = () => {
             />
           </div>
           <div className="button-submit">
-            <button onClick={handleSubmit}>ADD Assets</button>
+            <button onClick={handleSubmit}>ADD</button>
           </div>
         </form>
       </div>

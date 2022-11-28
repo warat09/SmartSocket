@@ -99,6 +99,7 @@ const CreateMatch: React.FC = () => {
 
   return (
     <div className="container">
+      <br/>
       <h1>Matching</h1>
       <hr />
       <br></br>
@@ -177,9 +178,8 @@ const CreateMatch: React.FC = () => {
             </div>
           </form>
         </FormControl>
+        <button onClick={handleSubmit}>ADD</button>
         <br />
-        <br />
-        <button onClick={handleSubmit}>Matching</button>
         <br />
       </Box>
     <TableContainer component={Paper}>

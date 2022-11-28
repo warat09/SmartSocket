@@ -29,47 +29,26 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div>
+    <div className="container">
+      <br/>
       <h1>Dashboard</h1>
+      <hr />
       <br></br>
       <div>
-        {/* <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Assets
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {ConDashboard[0].asset}
-                  </Typography>
-              </CardContent>
-            </CardActionArea>
-        </Card>
-
+      {ConDashboard.map((row:any,i:any) => (
         <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  Node
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                {ConDashboard[0].node}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-        </Card>
-        <Card sx={{ maxWidth: 345 }}>
-            <CardActionArea>
-              <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
-                  User
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                {ConDashboard[0].user}
-                </Typography>
-              </CardContent>
-            </CardActionArea>
-        </Card> */}
+        <CardActionArea>
+          <CardContent>
+            <Typography gutterBottom variant="h5" component="div">
+            {row.topic}
+            </Typography>
+            <Typography variant="h4" color="text.secondary">
+              {row.amount}
+              </Typography>
+          </CardContent>
+        </CardActionArea>
+    </Card>   
+      ))}
       </div>
     </div>
   );

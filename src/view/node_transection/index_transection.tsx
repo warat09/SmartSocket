@@ -62,6 +62,7 @@ const formatTime = (milliseconds:number) => {
 
   return (
     <div className="container">
+      <br/>
       <h1>Transaction</h1>
       <hr />
       <div className="assets">
