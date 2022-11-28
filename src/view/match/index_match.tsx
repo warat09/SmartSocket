@@ -65,14 +65,14 @@ const CreateMatch: React.FC = () => {
     const minutes = totalMinutes % 60;
     const hours = totalHours % 24;
   
-    let time = '1s';
+    let time = 'Not use';
     // if (days > 0) {
     //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
     // } else 
     if (hours > 0) {
-      time = `${totalHours}Hours ${minutes}Minutes ${seconds} Seconds`;
+      time = `${totalHours} Hours ${minutes}Minutes ${seconds} Seconds`;
     } else if (minutes > 0) {
-      time = `${minutes}Minutes ${seconds} Seconds`;
+      time = `${minutes} Minutes ${seconds} Seconds`;
     } else if (seconds > 0) {
       time = `${seconds} Seconds`;
     }
