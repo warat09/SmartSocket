@@ -169,9 +169,9 @@ void loop() {
                Serial.println(start_time);
                Serial.println(end_time);
                Serial.println(used_time);
-              http.begin(wifiClient,IP_DATABASE+"/Transection/SendTransection");
+              http.begin(wifiClient,IP_DATABASE+"/Transaction/SendTransaction");
               http.addHeader("Content-Type", "application/json");//Specify request destination
-              int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"Status\":\""+"active"+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
+              int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
             }
             
 //            if(httpCode == 200){
