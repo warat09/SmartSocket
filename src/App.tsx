@@ -21,7 +21,7 @@ const App: React.FC =()=> {
             <Route path={"asset"} element={<HomeAsset/>}/>
             <Route path={"match"} element={<Matching/>}/>
             <Route path={"usermatch"} element={<UserMatch/>}/>
-            <Route path={"transection"} element={<Transection/>}/>
+            <Route path={"transaction"} element={<Transection/>}/>
           </Route>
           <Route path={"login"} element={<Login/>} />
           <Route path={"register"} element={<Register/>} />
