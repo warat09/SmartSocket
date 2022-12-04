@@ -36,7 +36,6 @@ const HomeNode: React.FC = () => {
 
   return (
     <div className="container">
-      <br/>
       <h1>NodeMCU</h1>
       <hr />
       <TableContainer component={Paper}>

@@ -99,7 +99,6 @@ const CreateMatch: React.FC = () => {
 
   return (
     <div className="container">
-      <br/>
       <h1>Matching</h1>
       <hr />
       <br></br>

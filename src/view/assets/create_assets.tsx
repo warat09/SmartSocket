@@ -45,7 +45,6 @@ const CreateAssets: React.FC = () => {
   },[]);
   return (
     <div className="container">
-      <br/>
       <h1>Assets</h1>
       <hr />
       <div className="information">

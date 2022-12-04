@@ -87,7 +87,6 @@ const CreateUserMatch: React.FC = () => {
 
   return (
     <div className="container">
-      <br/>
       <h1>UserMatch</h1>
       <hr />
       <br></br>
