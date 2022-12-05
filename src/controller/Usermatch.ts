@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source"
 import { User_match } from '../entity/Usermatch';
 import {Match} from '../entity/Match'
 import {Assets} from '../entity/Asset'
+import { User } from '../entity/User';
 import  config from "../config/config";
 import jwt from "jsonwebtoken";
 
@@ -37,6 +38,14 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             .where(`UserMatch.id_user = :id_user`, {id_user: req["user"].id}).getRawMany();     
             return res.status(200).json(RequestRent);
 }
+const GetApprove =async(req:Request, res:Response, next:NextFunction)=>{
+    const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+            .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
+            .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
+            .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+            .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();     
+            return res.status(200).json(RequestRent);
+}
 const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) => {
     const AllUser = await AppDataSource.getRepository(User_match).find({
         relations: {
@@ -47,4 +56,4 @@ const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) =
     return res.status(200).json({status:1,data: AllUser});
 }
 
-export default {AddUsermatch,GetAllUsermatch,GetRequestRent};
+export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove};
