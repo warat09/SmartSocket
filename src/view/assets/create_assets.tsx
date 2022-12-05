@@ -91,7 +91,7 @@ const CreateAssets: React.FC = () => {
                 <TableCell align="right">expired</TableCell>
                 <TableCell align="right">Date&nbsp;</TableCell>
                 <TableCell align="right">Status&nbsp;</TableCell>
-                <TableCell align="right">Maintanent&nbsp;</TableCell>
+                <TableCell align="right">Maintenance&nbsp;</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>

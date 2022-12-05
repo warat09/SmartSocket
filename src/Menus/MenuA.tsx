@@ -11,6 +11,7 @@ import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import DevicesTwoToneIcon from '@mui/icons-material/DevicesTwoTone';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 
 export default function MenuA() {
   const location = useLocation();
@@ -58,9 +59,22 @@ export default function MenuA() {
 
       <ListItem
         component={Link}
-        to="/usermatch"
+        to="/approve"
         button
         key={"4"}
+        selected={"/approve" === path}
+      >
+        <ListItemIcon>
+          <HowToRegIcon />
+        </ListItemIcon>
+        <ListItemText primary={"Approve"} />
+      </ListItem>
+
+      <ListItem
+        component={Link}
+        to="/usermatch"
+        button
+        key={"5"}
         selected={"/usermatch" === path}
       >
         <ListItemIcon>
@@ -73,7 +87,7 @@ export default function MenuA() {
         component={Link}
         to="/transaction"
         button
-        key={"4"}
+        key={"6"}
         selected={"/transaction" === path}
       >
         <ListItemIcon>

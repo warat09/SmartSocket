@@ -46,6 +46,17 @@ export interface Assets {
     Match_room?: string;
     Match_floor?:string;
   }
+  export interface Approve {
+    Asset_name_assets?: string;
+    UserMatch_room?: string;
+    UserMatch_floor?: string;
+    UserMatch_description?: string;
+    UserMatch_datetime?:string;
+    User_name?:string;
+    User_surname?:string;
+    User_username?:string;
+    UserMatch_status_user_match?:string;
+  }
   export interface UserMatch {
     Asset_name_assets?: string;
     UserMatch_room?: string;

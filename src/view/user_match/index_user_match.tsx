@@ -89,7 +89,6 @@ const CreateUserMatch: React.FC = () => {
     <div className="container">
       <h1>UserMatch</h1>
       <hr />
-      <br></br>
       <Box sx={{ minWidth: 120 }}>
         <FormControl  fullWidth>
           <FormControl fullWidth>

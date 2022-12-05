@@ -210,6 +210,21 @@ export const getRequestRent = async (token:string) => {
     return list
 };
 
+export const getApprove = async (token:any) => {
+  const url = "http://localhost:9090/UserMatch/GetApprove";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  let list:any
+  await axios
+    .get(url,config)
+    .then((response) => {
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+};
+
 export const getRentMatch = async (token:string):Promise<any> => {
   const url = "http://localhost:9090/Match/SelectRentMatch";
   const config = { headers: { Authorization: `Bearer ${token}` } }
@@ -241,6 +256,7 @@ export const SelectMatchNode = async (id:any) => {
     });
     return list
 };
+
 export const getTransection =async()=> {
   const url = "http://localhost:9090/Transaction/AllTransaction";
   let list:any

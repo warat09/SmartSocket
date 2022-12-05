@@ -86,8 +86,8 @@ function ResponsiveAppBar(props:any) {
       <AppBar
       position="fixed"
       sx={{
-        // bgcolor: "#192846",
-        // width: "100%",
+        bgcolor: "#192846",
+        width: "100%",
         zIndex: "999998"
       }}
       >

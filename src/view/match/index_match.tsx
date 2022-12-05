@@ -101,7 +101,6 @@ const CreateMatch: React.FC = () => {
     <div className="container">
       <h1>Matching</h1>
       <hr />
-      <br></br>
       <Box sx={{ minWidth: 120 }}>
         <FormControl  fullWidth>
           <FormControl fullWidth>
@@ -125,7 +124,6 @@ const CreateMatch: React.FC = () => {
               })}
             </Select>
           </FormControl>
-          <br></br>
           <br></br>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Node</InputLabel>
