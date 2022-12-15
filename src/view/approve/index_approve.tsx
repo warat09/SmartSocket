@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Button
 } from "@mui/material";
 
 const CreateApprove: React.FC = () => {
@@ -24,6 +25,17 @@ const CreateApprove: React.FC = () => {
 
   const ComponentMatch= async (token:string) => {
     setlistapprove(await getApprove(token))
+  }
+
+  const Checkapprove = async (asset:string,username:string,status:number) => {
+    console.log(asset,username,status)
+    if(status === 1){
+      console.log("approve")
+    }
+    else{
+      console.log("reject")
+    }
+
   }
 
   useEffect(() => {
@@ -52,7 +64,9 @@ const CreateApprove: React.FC = () => {
       <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
         <TableHead>
           <TableRow>
-            <TableCell >assets</TableCell>
+            <TableCell>status&nbsp;</TableCell>
+            <TableCell align="center">action</TableCell>
+            <TableCell align="right">assets</TableCell>
             <TableCell align="right">room&nbsp;</TableCell>
             <TableCell align="right">floor&nbsp;</TableCell>
             <TableCell align="right">description&nbsp;</TableCell>
@@ -60,18 +74,22 @@ const CreateApprove: React.FC = () => {
             <TableCell align="right">name&nbsp;</TableCell>
             <TableCell align="right">surname&nbsp;</TableCell>
             <TableCell align="right">username&nbsp;</TableCell>
-            <TableCell align="right">status&nbsp;</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {listapprove.map((row:any) => (
             <TableRow
-              key={row.Asset_name_assets}
+              key={row.UserMatch_status_user_match}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.Asset_name_assets}
+                {row.UserMatch_status_user_match}
               </TableCell>
+              <TableCell align="right">
+                <Button variant="contained" size="small"color="success" onClick={()=>Checkapprove(row.Asset_name_assets,row.User_username,1)}>Approve</Button>&nbsp;
+                <Button variant="contained" size="small"color="error" onClick={()=>Checkapprove(row.Asset_name_assets,row.User_username,0)}>Reject</Button>
+              </TableCell>
+              <TableCell align="right">{row.Asset_name_assets}</TableCell>
               <TableCell align="right">{row.UserMatch_room}</TableCell>
               <TableCell align="right">{row.UserMatch_floor}</TableCell>
               <TableCell align="right">{row.UserMatch_description}</TableCell>
@@ -79,7 +97,6 @@ const CreateApprove: React.FC = () => {
               <TableCell align="right">{row.User_name}</TableCell>
               <TableCell align="right">{row.User_surname}</TableCell>
               <TableCell align="right">{row.User_username}</TableCell>
-              <TableCell align="right">{row.UserMatch_status_user_match}</TableCell>
             </TableRow>
           ))}
         </TableBody>
