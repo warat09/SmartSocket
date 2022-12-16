@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Container
 } from "@mui/material";
 
 const CreateUserMatch: React.FC = () => {
@@ -86,10 +87,11 @@ const CreateUserMatch: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <Container>
       <h1>UserMatch</h1>
       <hr />
-      <Box sx={{ minWidth: 120 }}>
+      <Box component="main"
+        sx={{ flexGrow: 1, bgcolor: "background.default", p: 3 }}>
         <FormControl  fullWidth>
           <FormControl fullWidth>
             <InputLabel id="demo-simple-select-label">Rent</InputLabel>
@@ -195,7 +197,7 @@ const CreateUserMatch: React.FC = () => {
         </TableBody>
       </Table>
     </TableContainer>
-    </div>
+    </Container>
   );
 };
 export default CreateUserMatch;
