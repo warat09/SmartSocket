@@ -56,4 +56,8 @@ const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) =
     return res.status(200).json({status:1,data: AllUser});
 }
 
-export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove};
+const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunction) => {
+    console.log(req.params.id);
+}
+
+export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove};
