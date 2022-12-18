@@ -10,11 +10,14 @@ import UserMatch from './view/user_match';
 import Transection from './view/node_transection'
 import Register from './view/user/create_use';
 import Layout from './view/layouts/applicationlayout';
+
 const App: React.FC =()=> {
   return (
     <>
       <Router>
         <Routes>
+          <Route path={"login"} element={<Login/>} />
+          <Route path={"register"} element={<Register/>} />
           <Route path={"/"} element={<Layout/>}>
             <Route index element={<Dashboard/>}/>
             <Route path={"node"} element={<HomeNode/>}/>
@@ -24,8 +27,6 @@ const App: React.FC =()=> {
             <Route path={"usermatch"} element={<UserMatch/>}/>
             <Route path={"transaction"} element={<Transection/>}/>
           </Route>
-          <Route path={"login"} element={<Login/>} />
-          <Route path={"register"} element={<Register/>} />
         </Routes>
       </Router>
     </>

@@ -47,6 +47,7 @@ export interface Assets {
     Match_floor?:string;
   }
   export interface Approve {
+    UserMatch_id_user_match?: number;
     Asset_name_assets?: string;
     UserMatch_room?: string;
     UserMatch_floor?: string;

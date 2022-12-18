@@ -1,5 +1,5 @@
 import React, { Dispatch,useEffect, useState } from "react";
-import {BrowserRouter as Router, Route, Routes,Link, useNavigate} from "react-router-dom";
+import {BrowserRouter as Router,Route, Routes,Link, useNavigate} from "react-router-dom";
 import { Checktoken } from "../services/apiservice";
 import MenuA from '../Menus/MenuA';
 import AppBar from "@mui/material/AppBar";
@@ -17,18 +17,10 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Drawer from "@mui/material/Drawer";
 import PowerTwoToneIcon from '@mui/icons-material/PowerTwoTone';
-
-
 // import Link from '@mui/material/Link';
-const pages = [
-  { text: "node", href: "/Node" },
-  { text: "assets", href: "/asset" },
-  { text: "match", href: "/match" },
-  { text: "usermatch", href: "/usermatch" },
-  { text: "transaction", href: "/transaction" },
-];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
-const drawerWidth = 220;
+const drawerWidth = 200;
+
 function ResponsiveAppBar(props:any) {
   const { window } = props;
   const navigate = useNavigate();
@@ -96,6 +88,15 @@ function ResponsiveAppBar(props:any) {
         >
           <Container maxWidth="xl">
             <Toolbar disableGutters>
+            <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 4, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
               <PowerTwoToneIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
               <Typography
                 variant="h6"
@@ -116,7 +117,7 @@ function ResponsiveAppBar(props:any) {
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
+                {/* <IconButton
                   size="large"
                   aria-label="account of current user"
                   aria-controls="menu-appbar"
@@ -125,8 +126,8 @@ function ResponsiveAppBar(props:any) {
                   color="inherit"
                 >
                   <MenuIcon />
-                </IconButton>
-                <Menu
+                </IconButton> */}
+                {/* <Menu
                   id="menu-appbar"
                   anchorEl={anchorElNav}
                   anchorOrigin={{
@@ -156,7 +157,7 @@ function ResponsiveAppBar(props:any) {
                       </Typography>
                     </MenuItem>
                   ))}
-                </Menu>
+                </Menu> */}
               </Box>
               <PowerTwoToneIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
               <Typography
@@ -177,22 +178,7 @@ function ResponsiveAppBar(props:any) {
               >
                 SmartSocket
               </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                {/* {pages.map((page) => (
-                  <Button
-                    key={page.href}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    <Link
-                      to={page.href}
-                      style={{ textDecoration: "none", color: "white" }}
-                    >
-                      {page.text}
-                    </Link>
-                  </Button>
-                ))} */}
-              </Box>
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}/>
 
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
@@ -253,9 +239,10 @@ function ResponsiveAppBar(props:any) {
           >
             {drawer}
           </Drawer>
-
         </Box>
-    </Box>    
+    </Box>
   );
+  
 }
+
 export default ResponsiveAppBar;

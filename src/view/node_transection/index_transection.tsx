@@ -9,6 +9,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Transaction} from '../../model/model'
 import {getTransection,Checktoken} from "../../services/apiservice"
+import {
+  Container
+} from "@mui/material";
 
 const CreateTransection: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +64,7 @@ const formatTime = (milliseconds:number) => {
   },[]);
 
   return (
-    <div className="container">
+    <Container>
       <h1>Transaction</h1>
       <hr />
       <div className="assets">
@@ -99,7 +102,7 @@ const formatTime = (milliseconds:number) => {
           </Table>
         </TableContainer>
       </div>
-    </div>
+    </Container>
   );
 };
 export default CreateTransection;

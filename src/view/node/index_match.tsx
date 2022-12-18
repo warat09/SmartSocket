@@ -9,6 +9,9 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {getNode,Checktoken} from '../../services/apiservice'
+import {
+  Container
+} from "@mui/material";
 
 const HomeNode: React.FC = () => {
   const navigate = useNavigate();
@@ -35,7 +38,7 @@ const HomeNode: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <Container>
       <h1>NodeMCU</h1>
       <hr />
       <TableContainer component={Paper}>
@@ -65,7 +68,7 @@ const HomeNode: React.FC = () => {
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Container>
   );
 };
 export default HomeNode

@@ -9,6 +9,9 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import {Assets} from '../../model/model'
 import {getAssets,addAssets,Checktoken} from "../../services/apiservice"
+import {
+  Container
+} from "@mui/material";
 
 const CreateAssets: React.FC = () => {
   const navigate = useNavigate();
@@ -44,7 +47,7 @@ const CreateAssets: React.FC = () => {
     }
   },[]);
   return (
-    <div className="container">
+    <Container>
       <h1>Assets</h1>
       <hr />
       <div className="information">
@@ -118,7 +121,7 @@ const CreateAssets: React.FC = () => {
           </Table>
         </TableContainer>
       </div>
-    </div>
+    </Container>
   );
 };
 export default CreateAssets;

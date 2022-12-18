@@ -16,6 +16,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Container
 } from "@mui/material";
 
 const CreateMatch: React.FC = () => {
@@ -98,7 +99,7 @@ const CreateMatch: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <Container>
       <h1>Matching</h1>
       <hr />
       <Box sx={{ minWidth: 120 }}>
@@ -212,7 +213,7 @@ const CreateMatch: React.FC = () => {
         </TableBody>
       </Table>
     </TableContainer>
-    </div>
+    </Container>
   );
 };
 export default CreateMatch;

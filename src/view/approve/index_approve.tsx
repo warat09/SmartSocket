@@ -8,7 +8,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Approve } from "../../model/model";
-import {getMatchAssets,SelectMatchNode,getMatching,getApprove,Checktoken} from "../../services/apiservice";
+import {getMatchAssets,SelectMatchNode,getMatching,getApprove,Checktoken,ApproveUserMatch} from "../../services/apiservice";
 import {
   Box,
   FormControl,
@@ -16,26 +16,78 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Button
+  Button,
+  Container
 } from "@mui/material";
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const CreateApprove: React.FC = () => {
   const navigate = useNavigate();
   const [listapprove, setlistapprove] = useState<Approve[]>([]);
+  const [open, setOpen] = React.useState(false);
+  const [dialog,setdialog] = React.useState({header:"",body:"",id:0,status:0})
+  const [openAlert, setOpenAlert] = React.useState(false);
+  const [token, SetToken] = useState("")
 
   const ComponentMatch= async (token:string) => {
     setlistapprove(await getApprove(token))
   }
 
-  const Checkapprove = async (asset:string,username:string,status:number) => {
-    console.log(asset,username,status)
-    if(status === 1){
-      console.log("approve")
+  const handleClickOpen = (id:number,status:number,asset:string) => {
+    setOpen(true);
+    if(status == 1){
+      setdialog({header:"Approve?",body:`Do you want approve asset ${asset}`,id:id,status:status})
     }
     else{
-      console.log("reject")
+      setdialog({header:"Reject?",body:`Do you want reject asset ${asset}`,id:id,status:status})
+    }
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClick = () => {
+    setOpenAlert(true);
+  };
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
     }
 
+    setOpenAlert(false);
+  };
+
+  const Checkapprove = async (id:number,status:number) => {
+    handleClose()
+    console.log(id,status)
+    if(status === 1){
+      // handleClickOpen(status,asset)
+      console.log("approve")
+      await ApproveUserMatch(id,token)
+      handleClick()
+    }
+    else{
+      // handleClickOpen(status,asset)
+      console.log("reject")
+    }
   }
 
   useEffect(() => {
@@ -45,6 +97,7 @@ const CreateApprove: React.FC = () => {
         Checktoken(user.token).then((status)=>{
           if(status === true){
             ComponentMatch(user.token);
+            SetToken(user.token)
           }else{
             localStorage.clear()
           }
@@ -56,7 +109,7 @@ const CreateApprove: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <Container>
       <h1>Approve</h1>
       <hr />
       <br></br>
@@ -86,8 +139,10 @@ const CreateApprove: React.FC = () => {
                 {row.UserMatch_status_user_match}
               </TableCell>
               <TableCell align="right">
-                <Button variant="contained" size="small"color="success" onClick={()=>Checkapprove(row.Asset_name_assets,row.User_username,1)}>Approve</Button>&nbsp;
-                <Button variant="contained" size="small"color="error" onClick={()=>Checkapprove(row.Asset_name_assets,row.User_username,0)}>Reject</Button>
+                <Button variant="contained" size="small"color="success" onClick={()=>handleClickOpen(row.UserMatch_id_user_match,1,row.Asset_name_assets)}>Approve</Button>&nbsp;
+                <Button variant="contained" size="small"color="error" onClick={()=>handleClickOpen(row.UserMatch_id_user_match,0,row.Asset_name_assets)}>Reject</Button>
+                {/* <Dialog variant={"contained"} color={"success"} btn={"Approve"} test={Checkapprove}/>
+                <Dialog variant={"contained"} color={"error"} btn={"Reject"}/> */}
               </TableCell>
               <TableCell align="right">{row.Asset_name_assets}</TableCell>
               <TableCell align="right">{row.UserMatch_room}</TableCell>
@@ -102,7 +157,36 @@ const CreateApprove: React.FC = () => {
         </TableBody>
       </Table>
     </TableContainer>
-    </div>
+
+    <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {dialog.header}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            {dialog.body}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={()=>Checkapprove(dialog.id,dialog.status)} autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar open={openAlert} autoHideDuration={6000} onClose={handleCloseAlert}>
+        <Alert onClose={handleCloseAlert} severity="success" sx={{ width: "100%" }}>
+          This is a success message!
+        </Alert>
+      </Snackbar>
+
+    </Container>
   );
 };
 export default CreateApprove;

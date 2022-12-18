@@ -225,6 +225,12 @@ export const getApprove = async (token:any) => {
     return list
 };
 
+export const ApproveUserMatch = async (id:number,token:string) => {
+  const url = "http://localhost:9090/UserMatch/Approve/";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  await axios.put(url+id,config).catch(error => console.log(error))
+}
+
 export const getRentMatch = async (token:string):Promise<any> => {
   const url = "http://localhost:9090/Match/SelectRentMatch";
   const config = { headers: { Authorization: `Bearer ${token}` } }
