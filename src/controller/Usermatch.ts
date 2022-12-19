@@ -35,7 +35,8 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
     const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
-            .where(`UserMatch.id_user = :id_user`, {id_user: req["user"].id}).getRawMany();     
+            .where(`UserMatch.id_user = :id_user`, {id_user: req["user"].id}).getRawMany();   
+            console.log(RequestRent)  
             return res.status(200).json(RequestRent);
 }
 const GetApprove =async(req:Request, res:Response, next:NextFunction)=>{
@@ -43,7 +44,8 @@ const GetApprove =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
             .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-            .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();     
+            .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();   
+            console.log("checkApprove:",RequestRent)    
             return res.status(200).json(RequestRent);
 }
 const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) => {
@@ -57,7 +59,40 @@ const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) =
 }
 
 const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunction) => {
-    console.log(req.params.id);
+    const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
+    .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();
+    const array=Object.values(RequestRent)
+    const id=Number(req.params.id)
+    // const id=req.params.id
+    const data=req.body.UserMatch_status_user_match
+    // console.log(typeof(id))
+    const user_match=new User_match()
+    user_match.status_user_match=data
+        console.log("test1")
+        const CheckUserMatch = await AppDataSource.getRepository(User_match).findOne({
+            where: {
+                id_user_match: id,
+
+            },
+        })
+            AppDataSource.getRepository(User_match).merge(CheckUserMatch, user_match )
+            const results = await AppDataSource.getRepository(User_match).save(CheckUserMatch)
+            console.log("test2")
+            return res.status(200).json({status:1,data:results,message: "Update Success"});
+
+
+    // const test=array.find(r => r.UserMatch_id_user_match===id)
+    // if(test){
+    //     const entity = await AppDataSource.manager.findOne(Entity, id)
+    //     // const results = await AppDataSource.getRepository(User_match).save(CheckMacAddress)
+    //     // return res.status(200).json({status:1,data:results,message: "Update Success"});
+    // }
+    // if(RequestRent.find(r=>r.UserMatch_id_user_match === req.params.id)){
+    //     console.log(true)
+    // }
 }
 
 export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove};
