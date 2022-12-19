@@ -225,10 +225,13 @@ export const getApprove = async (token:any) => {
     return list
 };
 
-export const ApproveUserMatch = async (id:number,token:string) => {
+export const ApproveUserMatch = async (id:number,token:string,status_Approve:any) => {
   const url = "http://localhost:9090/UserMatch/Approve/";
   const config = { headers: { Authorization: `Bearer ${token}` } }
-  await axios.put(url+id,config).catch(error => console.log(error))
+  console.log("token:",config)
+  // const data={UserMatch_id_user_match: id,UserMatch_status_user_match:"Approve"}
+  const data={UserMatch_status_user_match:status_Approve}
+  await axios.patch(url+(id),data,config).catch(error => console.log(error))
 }
 
 export const getRentMatch = async (token:string):Promise<any> => {
