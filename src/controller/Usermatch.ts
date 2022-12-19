@@ -7,8 +7,6 @@ import { User } from '../entity/User';
 import  config from "../config/config";
 import jwt from "jsonwebtoken";
 
-
-
 const AddUsermatch = async (req: Request, res: Response, next: NextFunction) => {
     let {token,id_match,room,floor,description} = req.body;
     const usermatch = new User_match()
@@ -69,19 +67,42 @@ const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunctio
     // const id=req.params.id
     const data=req.body.UserMatch_status_user_match
     // console.log(typeof(id))
-    const user_match=new User_match()
-    user_match.status_user_match=data
-        console.log("test1")
-        const CheckUserMatch = await AppDataSource.getRepository(User_match).findOne({
-            where: {
-                id_user_match: id,
+    // const user_match=new User_match();
+    // user_match.status_user_match=data
+        // const CheckUserMatch = await AppDataSource.getRepository(User_match).findOne({
+        //     where: {
+        //         id_user_match: id,
+        //     },
+        // })
+        const CheckUserMatch = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+        .where(`UserMatch.id_user_match = ${id}`).andWhere(`UserMatch.status_user_match = :status`,{status:"Wait for Approve"}).getRawOne();
+        if(Object.values(CheckUserMatch).length !== 0){
+            console.log(CheckUserMatch.UserMatch_id_match)
+            // AppDataSource.getRepository(User_match).merge(CheckUserMatch, user_match )
+            // const results = await AppDataSource.getRepository(User_match).save(CheckUserMatch)
+            const UpdateStatusUserMatch = await AppDataSource
+            .createQueryBuilder()
+            .update(User_match)
+            .set({
+                status_user_match: data
+            })
+            .where("id_user_match = :id", { id: CheckUserMatch.UserMatch_id_user_match }).execute()
+            if(UpdateStatusUserMatch){
+                const CheckIdMatch = await AppDataSource.getRepository(Match).findOne({
+                    where: {
+                        id_match: CheckUserMatch.UserMatch_id_match
+                    },
+                })
+                if(Object.values(CheckIdMatch).length !== 0){
+                    const match=new Match();
+                    match.status_rent = "Rent";
+                    AppDataSource.getRepository(Match).merge(CheckIdMatch, match )
+                    const results = await AppDataSource.getRepository(Match).save(CheckIdMatch)
+                    return res.status(200).json({status:1,data:results,message: "Update Success"});
+                }
+            }
+        }
 
-            },
-        })
-            AppDataSource.getRepository(User_match).merge(CheckUserMatch, user_match )
-            const results = await AppDataSource.getRepository(User_match).save(CheckUserMatch)
-            console.log("test2")
-            return res.status(200).json({status:1,data:results,message: "Update Success"});
 
 
     // const test=array.find(r => r.UserMatch_id_user_match===id)
