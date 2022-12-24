@@ -4,14 +4,14 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import HomeIcon from "@mui/icons-material/Home";
-import PersonIcon from "@mui/icons-material/Person";
 import AccountTreeIcon from "@mui/icons-material/AccountTree";
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import DevicesTwoToneIcon from '@mui/icons-material/DevicesTwoTone';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
+import DashboardIcon from "@mui/icons-material/Dashboard";
+
 
 export default function MenuA() {
   const location = useLocation();
@@ -20,9 +20,22 @@ export default function MenuA() {
     <List>
       <ListItem
         component={Link}
-        to="/node"
+        to="/"
         button
         key={"1"}
+        selected={"/" === path}
+      >
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary={"Dashboard"} />
+      </ListItem>
+
+      <ListItem
+        component={Link}
+        to="/node"
+        button
+        key={"2"}
         selected={"/node" === path}
       >
         <ListItemIcon>
@@ -35,7 +48,7 @@ export default function MenuA() {
         component={Link}
         to="/asset"
         button
-        key={"2"}
+        key={"3"}
         selected={"/asset" === path}
       >
         <ListItemIcon>
@@ -48,7 +61,7 @@ export default function MenuA() {
         component={Link}
         to="/match"
         button
-        key={"3"}
+        key={"4"}
         selected={"/match" === path}
       >
         <ListItemIcon>
@@ -61,7 +74,7 @@ export default function MenuA() {
         component={Link}
         to="/approve"
         button
-        key={"4"}
+        key={"5"}
         selected={"/approve" === path}
       >
         <ListItemIcon>
@@ -74,7 +87,7 @@ export default function MenuA() {
         component={Link}
         to="/usermatch"
         button
-        key={"5"}
+        key={"6"}
         selected={"/usermatch" === path}
       >
         <ListItemIcon>
@@ -87,7 +100,7 @@ export default function MenuA() {
         component={Link}
         to="/transaction"
         button
-        key={"6"}
+        key={"7"}
         selected={"/transaction" === path}
       >
         <ListItemIcon>

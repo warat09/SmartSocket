@@ -1,7 +1,7 @@
 import React, { Dispatch,useEffect, useState } from "react";
 import {BrowserRouter as Router,Route, Routes,Link, useNavigate} from "react-router-dom";
-import { Checktoken } from "../services/apiservice";
-import MenuA from '../Menus/MenuA';
+import { Checktoken } from "../../services/apiservice";
+import MenuA from '../../Menus/MenuA';
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";

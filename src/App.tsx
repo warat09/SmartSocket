@@ -9,6 +9,7 @@ import Approve from './view/approve';
 import UserMatch from './view/user_match';
 import Transection from './view/node_transection'
 import Register from './view/user/create_use';
+import Test from './view/test/index'
 import Layout from './view/layouts/applicationlayout';
 
 const App: React.FC =()=> {
@@ -26,6 +27,8 @@ const App: React.FC =()=> {
             <Route path={"approve"} element={<Approve/>}/>
             <Route path={"usermatch"} element={<UserMatch/>}/>
             <Route path={"transaction"} element={<Transection/>}/>
+            <Route path={"test"} element={<Test/>}/>
+
           </Route>
         </Routes>
       </Router>
