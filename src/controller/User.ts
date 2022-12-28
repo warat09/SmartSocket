@@ -54,8 +54,14 @@ const CheckToken = async (req: Request, res: Response, next: NextFunction) => {
             return res.status(401).json({status:'error',message: "Token expired"});
         }
         else{
+            const CheckUser = await AppDataSource.getRepository(User).find({
+                where: {
+                    id_user: user.id,
+                    status_user:'Active'
+                },
+              });
             console.log("noterr");
-            return res.status(200).json({status:'ok',message: "Token not expired"});
+            return res.status(200).json({status:'ok',data:CheckUser,message: "Token not expired"});
         }
     });
 }
