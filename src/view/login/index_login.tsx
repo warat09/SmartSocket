@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {login} from "../services/apiservice";
+import {login} from "../../services/apiservice";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -29,7 +29,7 @@ function Copyright(props: any) {
       </Typography>
     );
   }
-const Login :React.FC = () =>{
+const HomeLogin :React.FC = () =>{
     const theme = createTheme();
     const navigate = useNavigate();
     const [inputs,setInputs] = useState({
@@ -143,4 +143,4 @@ const Login :React.FC = () =>{
     </ThemeProvider>
     )
 };
-export default Login
+export default HomeLogin

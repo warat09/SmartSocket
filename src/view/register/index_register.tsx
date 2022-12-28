@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { register } from "../../services/apiservice";
 
-const CreateUser: React.FC = () => {
+const HomeRegister: React.FC = () => {
   //user
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -109,4 +109,4 @@ const CreateUser: React.FC = () => {
     </div>
   );
 };
-export default CreateUser;
+export default HomeRegister;

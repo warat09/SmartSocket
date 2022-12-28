@@ -13,7 +13,7 @@ import {
   Container
 } from "@mui/material";
 
-const CreateTransection: React.FC = () => {
+const HomeTransection: React.FC = () => {
   const navigate = useNavigate();
   const [listassets, SetDataassetslist] = useState<Transaction[]>([]);
 
@@ -50,8 +50,8 @@ const formatTime = (milliseconds:number) => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((status)=>{
-        if(status === true){
+      Checktoken(user.token).then((response)=>{
+        if(response.status === "ok"){
           handleGetTransection();
         }else{
           localStorage.clear()
@@ -65,6 +65,7 @@ const formatTime = (milliseconds:number) => {
 
   return (
     <Container>
+      <br />
       <h1>Transaction</h1>
       <hr />
       <div className="assets">
@@ -105,4 +106,4 @@ const formatTime = (milliseconds:number) => {
     </Container>
   );
 };
-export default CreateTransection;
+export default HomeTransection;

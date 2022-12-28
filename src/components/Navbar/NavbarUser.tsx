@@ -88,7 +88,7 @@ function ResponsiveAppBar(props:any) {
         >
           <Container maxWidth="xl">
             <Toolbar disableGutters>
-            <IconButton
+            {/* <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
@@ -96,7 +96,7 @@ function ResponsiveAppBar(props:any) {
             sx={{ mr: 4, display: { sm: "none" } }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
               <PowerTwoToneIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
               <Typography
                 variant="h6"
@@ -117,47 +117,6 @@ function ResponsiveAppBar(props:any) {
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                {/* <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleDrawerToggle}
-                  color="inherit"
-                >
-                  <MenuIcon />
-                </IconButton> */}
-                {/* <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page.href} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">
-                        <Link
-                          to={page.href}
-                          style={{ textDecoration: "none", color: "white" }}
-                        >
-                          {page.text}
-                        </Link>
-                      </Typography>
-                    </MenuItem>
-                  ))}
-                </Menu> */}
               </Box>
               <PowerTwoToneIcon sx={{ display: { xs: "flex", md: "none" }, mr: 1 }} />
               <Typography
@@ -215,31 +174,6 @@ function ResponsiveAppBar(props:any) {
             </Toolbar>
           </Container>
         </AppBar>
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-          aria-label="mailbox folders"
-        >
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Drawer
-            container={container}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true // Better open performance on mobile.
-            }}
-              sx={{
-                display: { xs: "block", sm: "none" },
-                "& .MuiDrawer-paper": {
-                  boxSizing: "border-box",
-                  width: drawerWidth
-                }
-              }}
-          >
-            {drawer}
-          </Drawer>
-        </Box>
     </Box>
   );
   

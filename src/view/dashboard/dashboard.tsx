@@ -1,18 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboard, Checktoken } from "./../services/apiservice";
-import { Dashboards } from "../model/model";
+import { getDashboard, Checktoken } from "../../services/apiservice";
+import { Dashboards } from "../../model/model";
 import {
   Card,
   CardActionArea,
   CardContent,
   Grid,
   Typography,
+  Container
 } from "@mui/material";
 
-const Dashboard: React.FC = () => {
+const HomeDashboard: React.FC = () => {
   const navigate = useNavigate();
   const [ConDashboard, SetDashboard] = useState<Dashboards[]>([]);
+  const [role,setrole] = useState<string>("")
   const ComponentDashboard = async (token: string) => {
     SetDashboard(await getDashboard(token));
     console.log(await getDashboard(token));
@@ -22,8 +24,9 @@ const Dashboard: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((status) => {
-        if (status === true) {
+      Checktoken(user.token).then((response) => {
+        if (response.status === "ok") {
+          setrole(response.data[0].role)
           ComponentDashboard(user.token);
         } else {
           localStorage.clear();
@@ -35,7 +38,7 @@ const Dashboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="container">
+    <Container>
       <br />
       <h1>Dashboard</h1>
       <hr />
@@ -60,7 +63,7 @@ const Dashboard: React.FC = () => {
             ))}
         </Grid>
       </div>
-    </div>
+    </Container>
   );
 };
-export default Dashboard;
+export default HomeDashboard;

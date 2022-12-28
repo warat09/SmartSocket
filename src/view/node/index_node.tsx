@@ -24,9 +24,14 @@ const HomeNode: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((status)=>{
-        if(status === true){
-          handleGetNode();
+      Checktoken(user.token).then((response)=>{
+        if(response.status === "ok"){
+          if(response.data[0].role === "admin"){
+            handleGetNode();
+          }
+          else{
+            navigate('/')
+          }
         }else{
           localStorage.clear()
         }
@@ -39,6 +44,7 @@ const HomeNode: React.FC = () => {
 
   return (
     <Container>
+      <br />
       <h1>NodeMCU</h1>
       <hr />
       <TableContainer component={Paper}>

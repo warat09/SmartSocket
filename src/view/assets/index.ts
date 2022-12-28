@@ -1,1 +1,1 @@
-export { default } from './create_assets'
+export { default } from './index_assets'

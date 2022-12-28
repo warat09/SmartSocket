@@ -19,7 +19,7 @@ import {
   Container
 } from "@mui/material";
 
-const CreateMatch: React.FC = () => {
+const HomeMatch: React.FC = () => {
   const navigate = useNavigate();
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
   const [listassets, setlistassets] = useState<MatchAsset[]>([]);
@@ -84,10 +84,15 @@ const CreateMatch: React.FC = () => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
         const user = JSON.parse(item);
-        Checktoken(user.token).then((status)=>{
-          if(status === true){
-            ComponentMatch(user.token);
-            SetToken(user.token)
+        Checktoken(user.token).then((response)=>{
+          if(response.status === "ok"){  
+            if(response.data[0].role === "admin"){
+              ComponentMatch(user.token);
+              SetToken(user.token)
+            }
+            else{
+              navigate('/')
+            }
           }else{
             localStorage.clear()
           }
@@ -100,6 +105,7 @@ const CreateMatch: React.FC = () => {
 
   return (
     <Container>
+      <br />
       <h1>Matching</h1>
       <hr />
       <Box sx={{ minWidth: 120 }}>
@@ -216,4 +222,4 @@ const CreateMatch: React.FC = () => {
     </Container>
   );
 };
-export default CreateMatch;
+export default HomeMatch;

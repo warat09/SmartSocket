@@ -41,7 +41,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-const CreateApprove: React.FC = () => {
+const HomeApprove: React.FC = () => {
   const navigate = useNavigate();
   const [listapprove, setlistapprove] = useState<Approve[]>([]);
   const [open, setOpen] = React.useState(false);
@@ -122,10 +122,15 @@ const CreateApprove: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((status) => {
-        if (status === true) {
-          ComponentMatch(user.token);
-          SetToken(user.token);
+      Checktoken(user.token).then((response) => {
+        if (response.status === "ok") {
+          if(response.data[0].role === "admin"){
+            ComponentMatch(user.token);
+            SetToken(user.token);
+          }
+          else{
+            navigate('/')
+          }
         } else {
           localStorage.clear();
         }
@@ -137,6 +142,7 @@ const CreateApprove: React.FC = () => {
 
   return (
     <Container>
+      <br />
       <h1>Approve</h1>
       <hr />
       <br></br>
@@ -255,4 +261,4 @@ const CreateApprove: React.FC = () => {
     </Container>
   );
 };
-export default CreateApprove;
+export default HomeApprove;

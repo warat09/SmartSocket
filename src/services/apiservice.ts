@@ -302,12 +302,14 @@ export const Checktoken =async(token:string)=> {
       token: token
     })
     .then((response) => {
-      if(response.status !== 200){
-        list = false;
-      }
-      else{
-        list = true;
-      }
+      console.log(response)
+      // if(response.status !== 200){
+      //   list = false;
+      // }
+      // else{
+      //   list = true;
+      // }
+      list = response.data
     })
     .catch((err) => {
       console.log(err);
