@@ -1,3 +1,4 @@
+import { Helmet } from 'react-helmet-async';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getDashboard, Checktoken } from "../../services/apiservice";
@@ -8,8 +9,20 @@ import {
   CardContent,
   Grid,
   Typography,
-  Container
+  Container,
+  Paper,
+  Box
 } from "@mui/material";
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+const Item = styled(Paper)(({ theme }) => ({
+  ...theme.typography.body2,
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  height: 60,
+  lineHeight: '60px',
+}));
+const darkTheme = createTheme({ palette: { mode: 'dark' } });
+const lightTheme = createTheme({ palette: { mode: 'light' } });
 
 const HomeDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -38,12 +51,44 @@ const HomeDashboard: React.FC = () => {
   }, []);
 
   return (
-    <Container>
-      <br />
-      <h1>Dashboard</h1>
+    <>
+      <Helmet>
+        <title> Dashboard | SmartSocket </title>
+      </Helmet>
+      <Container maxWidth="xl">
+      <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
+          Dashboard
+        </Typography>
+      {/* <Grid container spacing={2}>
+      {[lightTheme, darkTheme].map((theme, index) => (
+        <Grid item xs={6} key={index}>
+          <ThemeProvider theme={theme}>
+            <Box
+              sx={{
+                p: 2,
+                bgcolor: 'red',
+                display: 'grid',
+                gridTemplateColumns: { md: '1fr 1fr' },
+                gap: 2,
+                borderRadius:'10px'
+              }}
+            >
+              {[0, 1, 2, 3, 4, 6, 8, 12, 16, 24].map((elevation) => (
+                <Item key={elevation} elevation={elevation}>
+                  {`elevation=${elevation}`}
+                </Item>
+              ))}
+            </Box>
+          </ThemeProvider>
+        </Grid>
+      ))}
+    </Grid> */}
+      {/* {/* <Paper style={{ borderRadius: "10px" }}>
+      <Typography variant="h6">This is my typography</Typography>
+
+      </Paper> */}
+      {/* <br /> */}
       <hr />
-      <br></br>
-      <div>
         <Grid container spacing={2}>
         {ConDashboard.map((row: any, i: any) => (
             <Grid item xs={4}>
@@ -62,8 +107,9 @@ const HomeDashboard: React.FC = () => {
             </Grid>
             ))}
         </Grid>
-      </div>
-    </Container>
+     </Container>
+    </>
+    
   );
 };
 export default HomeDashboard;

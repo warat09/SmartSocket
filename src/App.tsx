@@ -1,5 +1,4 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import Home from './view/home';
 import Login from './view/login';
 import Node from './view/node';
@@ -11,11 +10,14 @@ import Transection from './view/node_transection'
 import Register from './view/register';
 import Test from './view/test/index'
 import Layout from './view/layouts/applicationlayout';
+import Router from './routes';
 
 const App: React.FC =()=> {
+  
   return (
     <>
-      <Router>
+      <Router/>
+      {/* <Router>
         <Routes>
           <Route path={"login"} element={<Login/>} />
           <Route path={"register"} element={<Register/>} />
@@ -28,10 +30,9 @@ const App: React.FC =()=> {
             <Route path={"usermatch"} element={<UserMatch/>}/>
             <Route path={"transaction"} element={<Transection/>}/>
             <Route path={"test"} element={<Test/>}/>
-
           </Route>
         </Routes>
-      </Router>
+      </Router> */}
     </>
   );
 }

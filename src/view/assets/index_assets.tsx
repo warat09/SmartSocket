@@ -7,11 +7,13 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Button from '@mui/material/Button';
 import {Assets} from '../../model/model'
 import {getAssets,addAssets,Checktoken} from "../../services/apiservice"
 import {
-  Container
+  Container, Hidden
 } from "@mui/material";
+import rows from "./rowData";
 
 const HomeAsset: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +21,14 @@ const HomeAsset: React.FC = () => {
   const [expire_hour, SetExpire_hour] = useState(0);
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
   const [token, settoken] = useState("");
+  const mystyle = {
+    overflowX: 'scroll',
+    marginRight: "auto",
+  marginLeft: "auto",
+  marginTop: "50px",
+  padding: "10px",
+  margin: "10px"
+  };
 
   const handleGetassets=async(token:string)=>{
     SetDataassetslist(await getAssets(token))
@@ -84,16 +94,77 @@ const HomeAsset: React.FC = () => {
               }}
             />
           </div>
-          <div className="button-submit">
+          {/* <div className="button-submit">
             <button onClick={handleSubmit}>ADD</button>
-          </div>
+          </div> */}
+          <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              onClick={handleSubmit}
+            >
+              ADD
+            </Button>
         </form>
       </div>
       <hr />
-      <div className="assets">
+      {/* <div className="tablecontainer"> */}
+      <Paper className="tablecontainer">
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell >Calories</TableCell>
+            <TableCell >Fat (g)</TableCell>
+            <TableCell >Carbs (g)</TableCell>
+            <TableCell >Protein (g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map(({ id, name, calories, fat, carbs, protein }) => (
+            <TableRow key={id}>
+              <TableCell component="th" scope="row">
+                {name}
+              </TableCell>
+              <TableCell >{calories}</TableCell>
+              <TableCell >{fat}</TableCell>
+              <TableCell >{carbs}</TableCell>
+              <TableCell >{protein}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </Paper>
+    {/* <TableContainer sx={{maxWidth:400,overflowX:'auto'}}>
+      <Table sx={{ minWidth: 650 }}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Dessert (100g serving)</TableCell>
+            <TableCell >Calories</TableCell>
+            <TableCell >Fat (g)</TableCell>
+            <TableCell >Carbs (g)</TableCell>
+            <TableCell >Protein (g)</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {rows.map(({ id, name, calories, fat, carbs, protein }) => (
+            <TableRow key={id}>
+              <TableCell component="th" scope="row">
+                {name}
+              </TableCell>
+              <TableCell >{calories}</TableCell>
+              <TableCell >{fat}</TableCell>
+              <TableCell >{carbs}</TableCell>
+              <TableCell >{protein}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      </TableContainer> */}
 
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+        {/* <Paper>
+          <Table  sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
             <TableHead>
               <TableRow>
                 <TableCell>Assets</TableCell>
@@ -125,8 +196,8 @@ const HomeAsset: React.FC = () => {
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
-      </div>
+        </Paper> */}
+      {/* </div> */}
     </Container>
   );
 };

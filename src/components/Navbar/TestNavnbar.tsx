@@ -32,7 +32,6 @@ import HowToRegIcon from '@mui/icons-material/HowToReg';
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PowerTwoToneIcon from '@mui/icons-material/PowerTwoTone';
 
-
 const drawerWidth = 240;
 
 
@@ -106,13 +105,16 @@ const Drawer = styled(MuiDrawer, {
 }));
 
 export default function MiniDrawer(props:any) {
+  const { window } = props;
   const location = useLocation();
   const navigate = useNavigate();
   const path = location.pathname;
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
-  const thedrawer : any = props.drawer
+  const Outlet : any = props.Outlet
   const [name, setname] = React.useState({username:"",name:"",email:""});
+  const [mobileOpen, setMobileOpen] = React.useState(false);
+  const thedrawer : JSX.Element = props.drawer
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -120,6 +122,9 @@ export default function MiniDrawer(props:any) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
   };
   useEffect(() => {
     const item = localStorage.getItem("User");
@@ -137,6 +142,14 @@ export default function MiniDrawer(props:any) {
       navigate("/login");
     }
   }, []);
+  const drawer = (
+    <div>
+      <Toolbar />
+      {thedrawer}
+    </div>
+  );
+  const container =
+  window !== undefined ? () => window().document.body : undefined;
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -159,6 +172,17 @@ export default function MiniDrawer(props:any) {
           >
             <MenuIcon />
           </IconButton>
+          {/* navbar mobile */}
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 4, display: { sm: "none" } }}
+          >
+            <MenuIcon />
+          </IconButton>
+
           <PowerTwoToneIcon sx={{ display: { xs: "flex" }, mr: 1 }} />
           <Typography variant="h6" noWrap component="a" href="/" sx={{
                   mr: 2,
@@ -341,9 +365,35 @@ export default function MiniDrawer(props:any) {
           ))}
         </List> */}
       </Drawer>
+      <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
+        >
+          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true // Better open performance on mobile.
+            }}
+              sx={{
+                display: { xs: "block", sm: "none" },
+                "& .MuiDrawer-paper": {
+                  boxSizing: "border-box",
+                  width: drawerWidth
+                }
+              }}
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+          
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
-        {thedrawer}
+        {Outlet}
       </Box>
     </Box>
   );
