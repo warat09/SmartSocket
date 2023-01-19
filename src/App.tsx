@@ -9,7 +9,7 @@ import UserMatch from './view/user_match';
 import Transection from './view/node_transection'
 import Register from './view/register';
 import Test from './view/test/index'
-import Layout from './view/layouts/applicationlayout';
+import Layout from './layouts/app/applicationlayout';
 import Router from './routes';
 
 const App: React.FC =()=> {

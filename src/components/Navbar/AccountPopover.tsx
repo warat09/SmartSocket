@@ -23,9 +23,9 @@ const MENU_OPTIONS = [
 
 // ----------------------------------------------------------------------
 
-export default function AccountPopover() {
+export default function AccountPopover(props:any) {
   const [open, setOpen] = useState(null);
-
+  const userData : any = props.data;
   const handleOpen = (event:any) => {
     setOpen(event.currentTarget);
   };
@@ -38,6 +38,13 @@ export default function AccountPopover() {
     <>
       <IconButton
         onClick={handleOpen}
+        // sx={{
+        //   zIndex: 1,
+        //   content: "''",
+        //   width: '100%',
+        //   height: '100%',
+        //   borderRadius: '50%',
+        // }}
         // sx={{
         //   p: 0,
         //   ...(open && {
@@ -53,7 +60,7 @@ export default function AccountPopover() {
         //   }),
         // }}
       >
-        <Avatar src={"https://ui-avatars.com/api/?name=" + "WY"} alt="photoURL" />
+        <Avatar src={"https://ui-avatars.com/api/?bold=true&name=" + userData.name+"+"+userData.surname} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -77,10 +84,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {"Warat Yenjaiprasert"}
+            {userData.name} {userData.surname}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {"y-title@hotmail.com"}
+            {userData.email}
           </Typography>
         </Box>
 

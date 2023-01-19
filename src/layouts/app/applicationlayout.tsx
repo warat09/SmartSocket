@@ -6,7 +6,7 @@ import Navbar from '../../components/Navbar/Navbar'
 import TestNavbar from '../../components/Navbar/TestNavnbar'
 import NavbarUser from '../../components/Navbar/NavbarUser'
 import MenuA from '../../Menus/MenuA';
-import ContentHolder from "../../view/layouts/contentholder";
+import ContentHolder from "./contentholder";
 import Nav from '../../components/Navbar/NewNavbar'
 import Sidebar from '../../components/Siderbar/NewSidebar';
 import { styled } from '@mui/material/styles';
@@ -51,6 +51,7 @@ const AppLayout: React.FC =()=> {
   // });
   const [role,setrole] = useState<string>("")
   const [open, setOpen] = useState(false);
+  const [userData,setUserDate] = useState<Object>({})
   // const [menuDrawer,setMenuDrawer] = useState<JSX.Element>(<MenuA />)
   // const drawer = (
   //   <div>
@@ -69,8 +70,13 @@ const AppLayout: React.FC =()=> {
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       Checktoken(user.token).then((response)=>{
+        const dataresponse = response.data[0]
         if (response.status === "ok") {
-          setrole(response.data[0].role)
+          setrole(dataresponse.name)
+          setUserDate({
+            name:dataresponse.name,surname:dataresponse.surname,username:dataresponse.username,
+            email:dataresponse.email,role:dataresponse.role,departure:dataresponse.departure
+          })
         } else {
           localStorage.clear();
         }
@@ -88,11 +94,11 @@ const AppLayout: React.FC =()=> {
     //   navigate("/login");
     // }
   }, []);
-  console.log(role)
+  console.log(userData)
   return (
     <StyledRoot>
-      <Nav onOpenNav={() => setOpen(true)} />
-      <Sidebar openNav={open} onCloseNav={() => setOpen(false)} />
+      <Nav data={userData} onOpenNav={() => setOpen(true)} />
+      <Sidebar data={userData} openNav={open} onCloseNav={() => setOpen(false)} />
       <Main>
         <Outlet />
       </Main>

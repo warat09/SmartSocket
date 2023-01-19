@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
-import Layout from './view/layouts/applicationlayout';
+import Layout from './layouts/app/applicationlayout';
+import NotFoundLayout from './layouts/404/index'
 import Home from './view/home';
 import Login from './view/login';
 import Node from './view/node';
@@ -10,6 +11,7 @@ import Approve from './view/approve';
 import UserMatch from './view/user_match';
 import Transection from './view/node_transection'
 import Register from './view/register';
+import Page404 from './view/Page404/Page404';
 
 const Router: React.FC =()=>  {
     const routes:any = useRoutes([
@@ -34,6 +36,18 @@ const Router: React.FC =()=>  {
           {
             path: 'register',
             element: <Register />,
+          },
+          {
+            element: <NotFoundLayout />,
+            children: [
+              { element: <Navigate to="/app/dashboard" />, index: true },
+              { path: '404', element: <Page404 /> },
+              { path: '*', element: <Navigate to="/404" /> },
+            ],
+          },
+          {
+            path: '*',
+            element: <Navigate to="/404" replace />,
           },
       ]);
     return routes;

@@ -31,32 +31,34 @@ const StyledAccount = styled('div')(({ theme }) => ({
 }));
 
 export default function Nav(props:any) {
-  const [name, setname] = useState("");
-  const [user, setuser] = useState({name:"",surname:""});
-  const openNav : any = props.openNav
-  const onCloseNav : any = props.onCloseNav
+  // const [name, setname] = useState("");
+  // const [user, setuser] = useState({name:"",surname:""});
+  const openNav : any = props.openNav;
+  const onCloseNav : any = props.onCloseNav;
+  const userData : any = props.data;
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
   const isDesktop = useResponsive('up', 'lg','');
 
-  useEffect(() => {
-    const item = localStorage.getItem("User");
-    if (item && item !== "undefined") {
-      const user = JSON.parse(item);
-      Checktoken(user.token).then((response) => {
-        if (response.status === "ok") {
-          console.log(response.data[0].name)
-          setuser({name:response.data[0].name,surname:response.data[0].surname})
-          setname(user.username);
-        } else {
-          localStorage.clear();
-        }
-      });
-    } else {
-      navigate("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const item = localStorage.getItem("User");
+  //   if (item && item !== "undefined") {
+  //     const user = JSON.parse(item);
+  //     Checktoken(user.token).then((response) => {
+  //       if (response.status === "ok") {
+  //         console.log(response.data[0].name)
+  //         setuser({name:response.data[0].name,surname:response.data[0].surname})
+  //         setname(user.username);
+  //       } else {
+  //         localStorage.clear();
+  //       }
+  //     });
+  //   } else {
+  //     navigate("/login");
+  //   }
+  //   console.log("ttttt",userData.name)
+  // }, []);
 
   useEffect(() => {
     if (openNav) {
@@ -73,7 +75,6 @@ export default function Nav(props:any) {
       }}
     >
       <Box sx={{ px: 2.5, py: 3, display: 'inline-flex' }}>
-      <PowerTwoToneIcon sx={{ mr: 1 }} />
               <Typography
                 variant="h5"
                 noWrap
@@ -88,6 +89,7 @@ export default function Nav(props:any) {
                   textDecoration: "none",
                 }}
               >
+                <PowerTwoToneIcon sx={{ mr: 1 , fontSize:28}} />
                 SmartSocket
               </Typography>
         {/* <Logo /> */}
@@ -96,16 +98,16 @@ export default function Nav(props:any) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +user.name+"+"+user.surname} alt="photoURL" />
+            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +userData.name+"+"+userData.surname} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
-              <Typography variant="subtitle2" sx={{ color: 'text.primary' }}>
-                {user.name+" "+user.surname}
+              <Typography variant="subtitle2" sx={{ color: 'text.primary',textAlign:"center" }}>
+                {userData.name+" "+userData.surname}
               </Typography>
 
-              {/* <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                {user.surname}
-              </Typography> */}
+              <Typography variant="body2" sx={{ color: 'text.primary' ,textAlign:"center",mt:1}}>
+                {userData.role}👨🏻‍💻
+              </Typography>
             </Box>
           </StyledAccount>
         </Link>

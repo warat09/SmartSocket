@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -16,7 +17,9 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
-  Container
+  Container,
+  Typography,
+  Divider
 } from "@mui/material";
 
 const HomeMatch: React.FC = () => {
@@ -104,122 +107,128 @@ const HomeMatch: React.FC = () => {
   }, []);
 
   return (
-    <Container>
-      <br />
-      <h1>Matching</h1>
-      <hr />
-      <Box sx={{ minWidth: 120 }}>
-        <FormControl  fullWidth>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Assets</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={inputassets}
-              label="Assets"
-              onChange={handleChangeAssets}
-            >
-              {listassets.map((inputassets) => {
-                return (
-                  <MenuItem
-                    value={inputassets.Assets_id_assets}
-                    key={inputassets.Assets_id_assets}
-                  >
-                    {inputassets.Assets_name_assets}
-                  </MenuItem>
-                );
-              })}
-            </Select>
+    <>
+      <Helmet>
+          <title> Matching | SmartSocket </title>
+      </Helmet>
+      <Container>
+        <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
+          Matching
+        </Typography>
+        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
+        <Box sx={{ minWidth: 120 }}>
+          <FormControl  fullWidth>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Assets</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={inputassets}
+                label="Assets"
+                onChange={handleChangeAssets}
+              >
+                {listassets.map((inputassets) => {
+                  return (
+                    <MenuItem
+                      value={inputassets.Assets_id_assets}
+                      key={inputassets.Assets_id_assets}
+                    >
+                      {inputassets.Assets_name_assets}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <br></br>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">Node</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={inputnode}
+                label="Node"
+                onChange={handleChangeNode}
+              >
+                {listnode.map((inputnode) => {
+                  return (
+                    <MenuItem
+                      value={inputnode.Node_mac_address}
+                      key={inputnode.Node_mac_address}
+                    >
+                      {inputnode.Node_mac_address}
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </FormControl>
+            <form action="">
+              <div className="mb-3">
+                <label htmlFor="name" className="form-label">
+                  Room:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Room"
+                  onChange={(e) => {
+                    SetRoom(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="timelimit" className="form-label">
+                  Floor:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="Floor"
+                  onChange={(e) => {
+                    SetFloor(e.target.value);
+                  }}
+                />
+              </div>
+            </form>
           </FormControl>
-          <br></br>
-          <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Node</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={inputnode}
-              label="Node"
-              onChange={handleChangeNode}
-            >
-              {listnode.map((inputnode) => {
-                return (
-                  <MenuItem
-                    value={inputnode.Node_mac_address}
-                    key={inputnode.Node_mac_address}
-                  >
-                    {inputnode.Node_mac_address}
-                  </MenuItem>
-                );
-              })}
-            </Select>
-          </FormControl>
-          <form action="">
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Room:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Room"
-                onChange={(e) => {
-                  SetRoom(e.target.value);
-                }}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="timelimit" className="form-label">
-                Floor:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Floor"
-                onChange={(e) => {
-                  SetFloor(e.target.value);
-                }}
-              />
-            </div>
-          </form>
-        </FormControl>
-        <button onClick={handleSubmit}>ADD</button>
-        <br />
-        <br />
-      </Box>
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell >assets</TableCell>
-            <TableCell align="right">mac_address&nbsp;</TableCell>
-            <TableCell align="right">room&nbsp;</TableCell>
-            <TableCell align="right">floor&nbsp;</TableCell>
-            <TableCell align="right">remain_time&nbsp;</TableCell>
-            <TableCell align="right">Date&nbsp;</TableCell>
-            <TableCell align="right">Status&nbsp;</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {listmatching.map((row:any) => (
-            <TableRow
-              key={row.Asset_name_assets}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.Asset_name_assets}
-              </TableCell>
-              <TableCell align="right">{row.Match_mac_address}</TableCell>
-              <TableCell align="right">{row.Match_room}</TableCell>
-              <TableCell align="right">{row.Match_floor}</TableCell>
-              <TableCell align="right">{formatTime(row.Match_remain_time)}</TableCell>
-              <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-              <TableCell align="right">{row.Match_status_match}</TableCell>
+          <button onClick={handleSubmit}>ADD</button>
+          <br />
+          <br />
+        </Box>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
+          <TableHead>
+            <TableRow>
+              <TableCell >assets</TableCell>
+              <TableCell align="right">mac_address&nbsp;</TableCell>
+              <TableCell align="right">room&nbsp;</TableCell>
+              <TableCell align="right">floor&nbsp;</TableCell>
+              <TableCell align="right">remain_time&nbsp;</TableCell>
+              <TableCell align="right">Date&nbsp;</TableCell>
+              <TableCell align="right">Status&nbsp;</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    </Container>
+          </TableHead>
+          <TableBody>
+            {listmatching.map((row:any) => (
+              <TableRow
+                key={row.Asset_name_assets}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component="th" scope="row">
+                  {row.Asset_name_assets}
+                </TableCell>
+                <TableCell align="right">{row.Match_mac_address}</TableCell>
+                <TableCell align="right">{row.Match_room}</TableCell>
+                <TableCell align="right">{row.Match_floor}</TableCell>
+                <TableCell align="right">{formatTime(row.Match_remain_time)}</TableCell>
+                <TableCell align="right">{new Date(row.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                <TableCell align="right">{row.Match_status_match}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      </Container>
+    </>
   );
 };
 export default HomeMatch;

@@ -11,7 +11,7 @@ import {
   Typography,
   Container,
   Paper,
-  Box
+  Divider
 } from "@mui/material";
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 const Item = styled(Paper)(({ theme }) => ({
@@ -56,9 +56,9 @@ const HomeDashboard: React.FC = () => {
         <title> Dashboard | SmartSocket </title>
       </Helmet>
       <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
+      <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
           Dashboard
-        </Typography>
+      </Typography>
       {/* <Grid container spacing={2}>
       {[lightTheme, darkTheme].map((theme, index) => (
         <Grid item xs={6} key={index}>
@@ -88,7 +88,7 @@ const HomeDashboard: React.FC = () => {
 
       </Paper> */}
       {/* <br /> */}
-      <hr />
+        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
         <Grid container spacing={2}>
         {ConDashboard.map((row: any, i: any) => (
             <Grid item xs={4}>
