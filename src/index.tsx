@@ -3,6 +3,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
+// import React from 'react'
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

@@ -13,6 +13,8 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import LoadingButton from '@mui/lab/LoadingButton';
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 // import { UsersProps} from "../interfaces/User";
 
@@ -32,6 +34,7 @@ function Copyright(props: any) {
 const HomeLogin :React.FC = () =>{
     const theme = createTheme();
     const navigate = useNavigate();
+    const [load,setLoad] = useState(false)
     const [inputs,setInputs] = useState({
         username:"",
         password:""
@@ -43,35 +46,38 @@ const HomeLogin :React.FC = () =>{
 
     const handleSubmit = async(event:React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        setLoad(true)
         const target = event.target as typeof event.target & {
             username: { value: string };
             password: { value: string };
           };
           const username = target.username.value; // typechecks!
           const password = target.password.value; // typechecks!
-          login("/User/Login",username,password).then((results)=>{
-            const login = JSON.parse(JSON.stringify(results))
-            console.log(login)
-            if(login.status === "ok"){
-                alert(login.message);
-                const userData = {
-                    username:username,
-                    token:login.token
-                  };
-                localStorage.setItem("User", JSON.stringify(userData));
-                navigate('/');
-            }
-            else{
-                alert(login.message);
-            }
-          })
-        // var myHeaders = new Headers();
-        // myHeaders.append("Content-Type","application/json");
+          setTimeout(()=>{
+            login("/User/Login",username,password).then((results)=>{
+              const login = JSON.parse(JSON.stringify(results))
+              console.log(login)
+              if(login.status === "ok"){
+                  // alert(login.message);
+                  const userData = {
+                      username:username,
+                      token:login.token
+                    };
+                  localStorage.setItem("User", JSON.stringify(userData));
+                  navigate('/');
+              }
+              else{
+                  alert(login.message);
+              }
+            })
+          }, 3000);
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type","application/json");
 
-        // var raw = JSON.stringify({
-        //     "username": inputs.username,
-        //     "password": inputs.password
-        // })
+        var raw = JSON.stringify({
+            "username": inputs.username,
+            "password": inputs.password
+        })
     }
     return(
     <ThemeProvider theme={theme}>
@@ -116,14 +122,15 @@ const HomeLogin :React.FC = () =>{
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"
             /> */}
-            <Button
+            <LoadingButton
               type="submit"
               fullWidth
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
+              loading={load}
             >
               Sign In
-            </Button>
+            </LoadingButton>
             <Grid container>
               <Grid item xs>
                 {/* <Link href="#" variant="body2">
