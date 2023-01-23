@@ -1,4 +1,4 @@
-import {Suspense,lazy} from 'react';
+import {Suspense,lazy,useEffect,useState} from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import Layout from './layouts/app/applicationlayout';
 import NotFoundLayout from './layouts/404/index'
@@ -12,6 +12,9 @@ import UserMatch from './view/user_match';
 // import Transection from './view/node_transection'
 import Register from './view/register';
 import Page404 from './view/Page404/Page404';
+import Loading from './components/Loading';
+import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 const Dashboard = lazy( () => {
   return Promise.all([
     import('./view/home'),
@@ -41,7 +44,11 @@ const Router: React.FC =()=>  {
             children: [
               { element: <Navigate to="/app/dashboard" />, index: true },
               { path: 'dashboard', element: 
-              <Suspense fallback={<h1>Loading</h1>}>
+              <Suspense fallback={
+              <Box>
+                <Loading />
+              </Box>
+            }>
                 <Dashboard />
               </Suspense>},
               { path: 'node', element: <Node /> },
@@ -50,7 +57,11 @@ const Router: React.FC =()=>  {
               { path: 'approve', element: <Approve /> },
               { path: 'usermatch', element: <UserMatch /> },
               { path: 'transaction', element:
-               <Suspense fallback={<h1>Loading</h1>}>
+               <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+               }>
                 <Transection />
               </Suspense> },
             ],
