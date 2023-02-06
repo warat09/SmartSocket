@@ -26,16 +26,6 @@ import {
   FormHelperText
 } from "@mui/material";
 import { Controller,useForm, SubmitHandler } from 'react-hook-form';
-
-const myHelper:any = {
-  email: {
-    required: "Email is Required",
-    pattern: "Invalid Email Address"
-  },
-  asset:{
-    required: "Please select asset"
-  }
-};
 const HomeMatch: React.FC = () => {
   const navigate = useNavigate();
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
@@ -50,6 +40,24 @@ const HomeMatch: React.FC = () => {
   const { control, handleSubmit } = useForm({
     reValidateMode: "onBlur"
   });
+  const myHelper:any = {
+    email: {
+      required: "Email is Required",
+      pattern: "Invalid Email Address"
+    },
+    asset:{
+      required: "Please Select Asset"
+    },
+    node:{
+      required: "Please Select Node"
+    },
+    room:{
+      required: "Room is Required"
+    },
+    floor:{
+      required: "Floor is Required"
+    }
+  };
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching(token));
@@ -71,9 +79,18 @@ const HomeMatch: React.FC = () => {
   };
 
   const handleOnSubmit=async(data:any)=>{
-    alert(JSON.stringify(data))
-    // await addMatching(token,inputassets,inputnode,room,floor)
+    await addMatching(token,data.asset,data.node,data.room,data.floor).then(()=>{
+      setlistmatching([ ...listmatching, {
+        Asset_name_assets: data.asset,
+        Match_mac_address: data.node,
+        Match_status_match: "Enable",
+        Match_remain_time: 10000,
+        Match_room: data.room,
+        Match_floor:data.floor,
+      }]);
+    })
   }
+  
 
   const Getnode = async (id:string) => {
     console.log(typeof(id))
@@ -140,7 +157,7 @@ const HomeMatch: React.FC = () => {
         <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
         <Box sx={{ minWidth: 120 }} component="form" onSubmit={handleSubmit(handleOnSubmit)}>
           <Stack spacing={3} mb={3}>
-          <Controller
+          {/* <Controller
               control={control}
               name="email"
               defaultValue=""
@@ -158,7 +175,7 @@ const HomeMatch: React.FC = () => {
                   helperText={error ? myHelper.email[error.type] : ""}
                 />
               )}
-            />
+            /> */}
 
           <Controller
               control={control}
@@ -177,11 +194,20 @@ const HomeMatch: React.FC = () => {
                   // value={inputassets}
                   // onChange={handleChangeAssets} 
                   // onBlur={onBlur}
+
+                  // const handleChangeAssets = (event: SelectChangeEvent) => {
+                    // setInputassets(event.target.value);
+                    // Getnode(event.target.value);
+                  // };
                   {...field}
-                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                  onChange={(e) => {
+                    field.onChange(parseInt(e.target.value))
+                    setInputassets(e.target.value);
+                    Getnode(e.target.value);
+                  }}
                    >
                     <MenuItem
-                      value={0}
+                      value=""
                     >
                       <em>None</em>
                     </MenuItem>
@@ -221,7 +247,7 @@ const HomeMatch: React.FC = () => {
                   error={error !== undefined}
                    >
                     <MenuItem
-                      value={0}
+                      value=""
                     >
                       <em>None</em>
                     </MenuItem>
@@ -236,7 +262,7 @@ const HomeMatch: React.FC = () => {
                   );
                 })}
                    </Select>
-                <FormHelperText>{error ? myHelper.email[error.type] : ""}</FormHelperText>
+                <FormHelperText>{error ? myHelper.node[error.type] : ""}</FormHelperText>
                 </FormControl>
               )}
             />
@@ -257,7 +283,7 @@ const HomeMatch: React.FC = () => {
                 //   SetRoom(e.target.value);
                 // }}
                 error={error !== undefined}
-                helperText={error ? myHelper.email[error.type] : ""}
+                helperText={error ? myHelper.room[error.type] : ""}
               />
                 // <TextField
                 //   {...field}
@@ -290,7 +316,7 @@ const HomeMatch: React.FC = () => {
                   //   SetFloor(e.target.value);
                   // }}
                   error={error !== undefined}
-                  helperText={error ? myHelper.email[error.type] : ""}
+                  helperText={error ? myHelper.floor[error.type] : ""}
                 />
               )}
             />
