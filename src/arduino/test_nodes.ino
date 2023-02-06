@@ -6,7 +6,12 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiUdp.h>
 #include <ArduinoJson.h> //v6
+
+#include <SPI.h>
+#include "MFRC522.h"
 //#define LED D4
+#define RST_PIN  D1
+#define SS_PIN  D2
 
 ESP8266WebServer server(80);
 WiFiUDP ntpUDP;
@@ -14,10 +19,11 @@ NTPClient timeClient(ntpUDP,"pool.ntp.org");
 struct settings {
   char ssid[30];
   char password[30];
+  char addressNFC[30];
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-String IP_DATABASE = "http://192.168.43.250:9090";
+String IP_DATABASE = "http://192.168.1.108:9090";
 unsigned long prevTime = millis();
 int count = 0;
 int timezone= 7*3600;
@@ -51,9 +57,15 @@ int max_v = 0;
 double VmaxD = 0;
 double VeffD = 0;
 double Veff = 0;
+//------setup rfid------//
+MFRC522 mfrc522(SS_PIN, RST_PIN);
+String rfid_in = "";
 
 void setup() {
   Serial.begin(9600);
+  SPI.begin();
+  mfrc522.PCD_Init();
+  
   EEPROM.begin(sizeof(struct settings) );
   EEPROM.get( 0, user_wifi );
    
@@ -108,6 +120,40 @@ void loop() {
 //  const int capacity = JSON_OBJECT_SIZE(2);
 //  StaticJsonDocument<capacity> doc;
     if (WiFi.status() == WL_CONNECTED) {
+      if (mfrc522.PICC_IsNewCardPresent() && mfrc522.PICC_ReadCardSerial()) {
+          rfid_in=rfid_read();
+          Serial.println(">>>> " + rfid_in);
+          http.begin(wifiClient,IP_DATABASE+"/Rfid/AddAddressRfid");
+          http.addHeader("Content-Type", "application/json");
+          int httpCode = http.POST("{\"RfidAddress\":\""+rfid_in+"\"}");
+          if(httpCode == 200){
+            DynamicJsonDocument doc(2048);
+            deserializeJson(doc, http.getStream());
+            const int status = doc["status"];
+            const String message = doc["message"];
+            if(status == 1){
+              if(message.equals("Insert Rfid "+rfid_in+" Success")){
+                 Serial.println("Insert Rfid "+rfid_in+" Success");
+                 strncpy(user_wifi.addressNFC, rfid_in.c_str(), sizeof(user_wifi.addressNFC) );
+                 user_wifi.addressNFC[rfid_in.length()] = '\0';
+                 EEPROM.put(0, user_wifi);
+                 EEPROM.commit();  
+              }
+              else if(message.equals("Have Rfid "+rfid_in)){
+                 Serial.println("Have Rfid "+rfid_in);
+                 Serial.println(user_wifi.ssid);
+                 Serial.println(user_wifi.password);
+                 Serial.println(user_wifi.addressNFC);          
+              }
+            }
+          }
+          else{
+              Serial.print("Error on sending POST: ");
+              Serial.println(httpCode);
+          }
+          http.end();
+          delay(1000);
+       }
       if(currentTime - prevTime > 5000){
         for ( int i = 0; i < 100; i++ ) {
           sensorValue1 = analogRead(A0);
@@ -179,7 +225,7 @@ void loop() {
 //              Serial.println(response);
 //            }
             else{
-              Serial.print("Error on sending POST: ");
+              Serial.println("Error on sending POST");
 //              Serial.println(httpCode);
             }
             http.end();
@@ -309,4 +355,15 @@ String updateWebpage(uint8_t LEDstatus){
   ptr +="</body>\n";
   ptr +="</html>\n";
   return ptr;
+}
+
+String rfid_read() {
+  String content = "";
+  for (byte i = 0; i < mfrc522.uid.size; i++)
+  {
+    content.concat(String(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " "));
+    content.concat(String(mfrc522.uid.uidByte[i], HEX));
+  }
+  content.toUpperCase();
+  return content.substring(1);
 }
