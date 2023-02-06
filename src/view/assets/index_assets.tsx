@@ -30,10 +30,10 @@ import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 
 const TABLE_HEAD = [
-  { id: 'assets', label: 'Assets', alignRight: false },
-  { id: 'expired', label: 'Expired', alignRight: false },
-  { id: 'date', label: 'Date', alignRight: false },
-  { id: 'status', label: 'Status', alignRight: false },
+  { id: 'name_assets', label: 'Assets', alignRight: false },
+  { id: 'expire_hour', label: 'Expired', alignRight: false },
+  { id: 'date_assets', label: 'Date', alignRight: false },
+  { id: 'status_assets', label: 'Status', alignRight: false },
   { id: 'maintenance', label: 'Maintenance', alignRight: false },
   { id: '' },
 ];
@@ -88,7 +88,7 @@ const HomeAsset: React.FC = () => {
 
   const [selected, setSelected]:any = useState([]);
 
-  const [orderBy, setOrderBy] = useState('assets');
+  const [orderBy, setOrderBy] = useState('name_assets');
 
   const [filterName, setFilterName] = useState('');
 
@@ -151,10 +151,10 @@ const HomeAsset: React.FC = () => {
     setFilterName(event.target.value);
   };
 
-  // const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
-  //   e.preventDefault();
-  //   await addAssets(token,name_assets,expire_hour)
-  // }
+  const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault();
+    await addAssets(token,nameassets,expirehour)
+  }
 
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listassets.length) : 0;
 
@@ -201,7 +201,7 @@ const HomeAsset: React.FC = () => {
           Asset
         </Typography>
         <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/> */}
-        {/* <div className="information">
+        <div className="information">
           <form action="">
             <div className="mb-3">
               <label htmlFor="name" className="form-label">
@@ -240,7 +240,7 @@ const HomeAsset: React.FC = () => {
               </Button>
           </form>
         </div>
-        <hr /> */}
+        <hr />
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>

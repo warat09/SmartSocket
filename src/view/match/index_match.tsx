@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
@@ -19,20 +19,37 @@ import {
   SelectChangeEvent,
   Container,
   Typography,
-  Divider
+  Divider,
+  TextField,
+  Stack,
+  Button,
+  FormHelperText
 } from "@mui/material";
+import { Controller,useForm, SubmitHandler } from 'react-hook-form';
 
+const myHelper:any = {
+  email: {
+    required: "Email is Required",
+    pattern: "Invalid Email Address"
+  },
+  asset:{
+    required: "Please select asset"
+  }
+};
 const HomeMatch: React.FC = () => {
   const navigate = useNavigate();
   const [listnode, setlistnode] = useState<NodeSelection[]>([]);
   const [listassets, setlistassets] = useState<MatchAsset[]>([]);
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
-
-  const [inputassets, setInputassets] = useState<string>("");
+  const inputLabel = useRef(null);
+  const [inputassets, setInputassets] = useState<string>("0");
   const [inputnode, setInputnode] = useState<string>("");
   const [room, SetRoom] = useState("");
   const [floor, SetFloor] = useState("");
   const [token, SetToken] = useState("")
+  const { control, handleSubmit } = useForm({
+    reValidateMode: "onBlur"
+  });
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching(token));
@@ -40,21 +57,26 @@ const HomeMatch: React.FC = () => {
     setlistassets(await getMatchAssets(token));
   }
 
-  const handleChangeAssets = (event: SelectChangeEvent) => {
-    setInputassets(event.target.value);
-    Getnode(event.target.value);
-  };
+  // const handleChangeAssets = (event: SelectChangeEvent) => {
+  //   setInputassets(event.target.value);
+  //   Getnode(event.target.value);
+  // };
 
   const handleChangeNode = (event: SelectChangeEvent) => {
     setInputnode(event.target.value);
     console.log(inputnode);
   };
+  const test = async(data: any) => {
+    console.log(data);
+  };
 
-  const handleSubmit=async()=>{
-    await addMatching(token,inputassets,inputnode,room,floor)
+  const handleOnSubmit=async(data:any)=>{
+    alert(JSON.stringify(data))
+    // await addMatching(token,inputassets,inputnode,room,floor)
   }
 
-  const Getnode = async (id:any) => {
+  const Getnode = async (id:string) => {
+    console.log(typeof(id))
     setlistnode(await SelectMatchNode(id));
   };
 
@@ -116,17 +138,179 @@ const HomeMatch: React.FC = () => {
           Matching
         </Typography>
         <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
-        <Box sx={{ minWidth: 120 }}>
-          <FormControl  fullWidth>
-            <FormControl fullWidth>
+        <Box sx={{ minWidth: 120 }} component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+          <Stack spacing={3} mb={3}>
+          <Controller
+              control={control}
+              name="email"
+              defaultValue=""
+              rules={{
+                required: true,
+                pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  type="email"
+                  fullWidth
+                  label="Email With Validation"
+                  error={error !== undefined}
+                  helperText={error ? myHelper.email[error.type] : ""}
+                />
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="asset"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel id="demo-simple-select-label">Assets</InputLabel>
+                  <Select 
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  label="Assets"
+                  // value={inputassets}
+                  // onChange={handleChangeAssets} 
+                  // onBlur={onBlur}
+                  {...field}
+                  onChange={(e) => field.onChange(parseInt(e.target.value))}
+                   >
+                    <MenuItem
+                      value={0}
+                    >
+                      <em>None</em>
+                    </MenuItem>
+                {listassets.map((inputassets) => {
+                  return (
+                    <MenuItem
+                      value={inputassets.Assets_id_assets}
+                      key={inputassets.Assets_id_assets}
+                    >
+                      {inputassets.Assets_name_assets}
+                    </MenuItem>
+                  );
+                })}
+                   </Select>
+                <FormHelperText>{error ? myHelper.asset[error.type] : ""}</FormHelperText>
+                </FormControl>
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="node"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel id="demo-simple-select-label">Node</InputLabel>
+                  <Select 
+                  {...field}
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  // value={inputnode}
+                  label="Node"
+                  // onChange={handleChangeNode} 
+                  error={error !== undefined}
+                   >
+                    <MenuItem
+                      value={0}
+                    >
+                      <em>None</em>
+                    </MenuItem>
+                {listnode.map((inputnode) => {
+                  return (
+                    <MenuItem
+                      value={inputnode.Node_mac_address}
+                      key={inputnode.Node_mac_address}
+                    >
+                      {inputnode.Node_mac_address}
+                    </MenuItem>
+                  );
+                })}
+                   </Select>
+                <FormHelperText>{error ? myHelper.email[error.type] : ""}</FormHelperText>
+                </FormControl>
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="room"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                {...field}
+                label="Room"
+                type="text"
+                // onChange={(e) => {
+                //   SetRoom(e.target.value);
+                // }}
+                error={error !== undefined}
+                helperText={error ? myHelper.email[error.type] : ""}
+              />
+                // <TextField
+                //   {...field}
+                //   type="text"
+                //   fullWidth
+                //   label="Room"
+                //   // onChange={(e) => {
+                //   //   SetRoom(e.target.value);
+                //   // }}
+                //   error={error !== undefined}
+                //   helperText={error ? myHelper.email[error.type] : ""}
+                // />
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="floor"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  type="text"
+                  fullWidth
+                  label="Floor"
+                  // onChange={(e) => {
+                  //   SetFloor(e.target.value);
+                  // }}
+                  error={error !== undefined}
+                  helperText={error ? myHelper.email[error.type] : ""}
+                />
+              )}
+            />
+                  
+          {/* <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Assets</InputLabel>
               <Select
+                name="assets"
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
                 value={inputassets}
                 label="Assets"
                 onChange={handleChangeAssets}
+                // {...makeErrorProps(errorState, "firstName")}
               >
+                  <MenuItem
+                      value={0}
+                    >
+                      <em>None</em>
+                    </MenuItem>
                 {listassets.map((inputassets) => {
                   return (
                     <MenuItem
@@ -138,9 +322,8 @@ const HomeMatch: React.FC = () => {
                   );
                 })}
               </Select>
-            </FormControl>
-            <br></br>
-            <FormControl fullWidth>
+            </FormControl> */}
+          {/* <FormControl fullWidth>
               <InputLabel id="demo-simple-select-label">Node</InputLabel>
               <Select
                 labelId="demo-simple-select-label"
@@ -160,39 +343,28 @@ const HomeMatch: React.FC = () => {
                   );
                 })}
               </Select>
-            </FormControl>
-            <form action="">
-              <div className="mb-3">
-                <label htmlFor="name" className="form-label">
-                  Room:
-                </label>
-                <input
+            </FormControl> */}
+              {/* <TextField
+                  name="room"
+                  label="Room"
                   type="text"
                   className="form-control"
-                  placeholder="Room"
                   onChange={(e) => {
                     SetRoom(e.target.value);
                   }}
-                />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="timelimit" className="form-label">
-                  Floor:
-                </label>
-                <input
+                /> */}
+              {/* <TextField
+                  name="floor"
+                  label="Floor"
                   type="text"
-                  className="form-control"
-                  placeholder="Floor"
                   onChange={(e) => {
                     SetFloor(e.target.value);
                   }}
-                />
-              </div>
-            </form>
-          </FormControl>
-          <button onClick={handleSubmit}>ADD</button>
-          <br />
-          <br />
+                />  */}
+                <Button variant="contained" type="submit">
+                      Add Matching
+                </Button>
+          </Stack>        
         </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
