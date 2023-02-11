@@ -23,9 +23,10 @@ export default function LinearBuffer() {
 
   return (
     <Box sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems:'center'
+      display:"flex",
+      justifyContent:"center",
+      alignItems:"center",
+      minHeight:"75vh"
       }}>
         <LinearProgress sx={{width:'20%',height: 5,borderRadius: 5}} variant="determinate" value={progress} color="inherit"/>
     </Box>

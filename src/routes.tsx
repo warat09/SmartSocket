@@ -14,6 +14,7 @@ import Register from './view/register';
 import Page404 from './view/Page404/Page404';
 import Loading from './components/Loading';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 const Dashboard = lazy( () => {
   return Promise.all([
@@ -45,9 +46,7 @@ const Router: React.FC =()=>  {
               { element: <Navigate to="/app/dashboard" />, index: true },
               { path: 'dashboard', element: 
               <Suspense fallback={
-              <Box>
-                <Loading />
-              </Box>
+                <Loading/>
             }>
                 <Dashboard />
               </Suspense>},
