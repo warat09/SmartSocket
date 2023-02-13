@@ -9,32 +9,32 @@ const navConfig = [
   {
     title: 'Dashboard',
     path: '/app/dashboard',
-    // icon: icon('ic_analytics'),
+    icon:'fluent-mdl2:b-i-dashboard',
   },
   {
     title: 'Node',
     path: '/app/node',
-    // icon: icon('ic_user'),
+    icon: 'mdi:plug-socket-au',
   },
   {
     title: 'Asset',
     path: '/app/asset',
-    // icon: icon('ic_cart'),
+    icon: 'ri:plug-2-line',
   },
   {
     title: 'Match',
     path: '/app/match',
-    // icon: icon('ic_cart'),
+    icon: 'fluent:plug-connected-add-20-regular',
   },
   {
     title: 'Approve',
     path: '/app/approve',
-    // icon: icon('ic_blog'),
+    icon: 'mdi:user-search-outline',
   },
   {
     title: 'Transaction',
     path: '/app/transaction',
-    // icon: icon('ic_lock'),
+    icon: 'icon-park-outline:transaction-order',
   },
   {
     title: 'Not found',

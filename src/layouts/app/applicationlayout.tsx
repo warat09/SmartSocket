@@ -3,11 +3,10 @@ import { Outlet } from 'react-router-dom';
 // import Sidebar from '../../components/Siderbar/Sidebar';
 import TestSidebar from '../../components/Siderbar/TestSidebar'
 import Navbar from '../../components/Navbar/Navbar'
-import TestNavbar from '../../components/Navbar/TestNavnbar'
 import NavbarUser from '../../components/Navbar/NavbarUser'
 import MenuA from '../../Menus/MenuA';
 import ContentHolder from "./contentholder";
-import Nav from '../../components/Navbar/NewNavbar'
+import Nav from '../../components/Navbar/Navbar'
 import Sidebar from '../../components/Siderbar/NewSidebar';
 import { styled } from '@mui/material/styles';
 import {

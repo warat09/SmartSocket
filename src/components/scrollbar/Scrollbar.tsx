@@ -6,7 +6,7 @@ import { StyledRootScrollbar, StyledScrollbar } from './styles';
 
 // ----------------------------------------------------------------------
 
-function Scrollbar( props:any) {
+function Scrollbar(props:any) {
   const children:any = props.children
   const sx:any = props.sx
   const userAgent = typeof navigator === 'undefined' ? 'SSR' : navigator.userAgent;

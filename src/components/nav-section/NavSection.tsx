@@ -1,4 +1,3 @@
-import PropTypes from 'prop-types';
 import { NavLink as RouterLink } from 'react-router-dom';
 // @mui
 import { Box, List, ListItemText } from '@mui/material';
@@ -8,6 +7,9 @@ import { Box, List, ListItemText } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // import { ListItemIcon, ListItemButton } from '@mui/material';
 import ListItemButton, { ListItemButtonProps } from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import Iconify from '../iconify/Iconify';
+
 
 
 // ----------------------------------------------------------------------
@@ -45,6 +47,15 @@ function NavItem(props:any) {
   color: theme.palette.text.secondary,
   borderRadius: theme.shape.borderRadius,
   }));
+  const StyledNavItemIcon = styled(ListItemIcon)({
+    width: 22,
+    height: 22,
+    color: 'inherit',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '25px'
+  });
   return (
     <StyledListItemButtonProps
       component={RouterLink}
@@ -57,6 +68,9 @@ function NavItem(props:any) {
         },
       }}
     >
+      <StyledNavItemIcon>
+        <Iconify icon={icon}/>
+      </StyledNavItemIcon>
       <ListItemText disableTypography primary={title} />
 
 

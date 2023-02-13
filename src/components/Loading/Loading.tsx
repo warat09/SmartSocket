@@ -28,7 +28,7 @@ export default function LinearBuffer() {
       alignItems:"center",
       minHeight:"75vh"
       }}>
-        <LinearProgress sx={{width:'20%',height: 5,borderRadius: 5}} variant="determinate" value={progress} color="inherit"/>
+        <LinearProgress sx={{width:'60vh',height: 5,borderRadius: 5}} variant="determinate" value={progress} color="inherit"/>
     </Box>
   );
 }
