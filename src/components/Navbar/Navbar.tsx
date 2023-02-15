@@ -53,7 +53,7 @@ export default function Header(props:any) {
             display: { lg: 'none' },
           }}
         >
-          <Iconify icon={"eva:menu-2-fill"}/>
+          <Iconify icon={"eva:menu-2-fill"}  style={{color:'white'}}/>
         </IconButton>
 
         {/* <Searchbar /> */}

@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import {Assets} from '../../model/model'
-import {getAssets,addAssets,Checktoken} from "../../services/apiservice"
+import {getAssets,Checktoken} from "../../services/apiservice"
+import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
   Container,
@@ -71,10 +72,6 @@ function applySortFilter(array:any, comparator:any, query:any) {
 
 const HomeAsset: React.FC = () => {
   const navigate = useNavigate();
-
-  const [nameassets, SetNameassets] = useState("");
-
-  const [expirehour, SetExpire_hour] = useState(0);
 
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
 
@@ -151,14 +148,10 @@ const HomeAsset: React.FC = () => {
     setFilterName(event.target.value);
   };
 
-  const handleSubmit=async(e: React.MouseEvent<HTMLButtonElement>)=>{
-    e.preventDefault();
-    await addAssets(token,nameassets,expirehour)
-  }
-
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listassets.length) : 0;
 
   const filteredUsers = applySortFilter(listassets, getComparator(order, orderBy), filterName);
+  
   const isNotFound = !filteredUsers.length && !!filterName;
 
   useEffect(() => {
@@ -186,61 +179,19 @@ const HomeAsset: React.FC = () => {
   return (
     <>
       <Helmet>
-          <title> Asset | SmartSocket </title>
+          <title> Asset: List | SmartSocket </title>
       </Helmet>
       <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
           <Typography variant="h4" gutterBottom>
-            Asset
+            Asset List
           </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>}>
+          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/asset/new')}>
             New Asset
           </Button>
         </Stack>
-        {/* <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
-          Asset
-        </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/> */}
-        <div className="information">
-          <form action="">
-            <div className="mb-3">
-              <label htmlFor="name" className="form-label">
-                Name Assets:
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                placeholder="Name Assets"
-                onChange={(e)=>{
-                  SetNameassets(e.target.value)
-                }}
-              />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="timelimit" className="form-label">
-                expiration time
-              </label>
-              <input
-                type="number"
-                className="form-control"
-                placeholder="expiration time"
-                onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-                  SetExpire_hour(e.target.valueAsNumber)
-                }}
-              />
-            </div>
-            <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                onClick={handleSubmit}
-              >
-                ADD
-              </Button>
-          </form>
-        </div>
         <hr />
+        <br/>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -283,7 +234,7 @@ const HomeAsset: React.FC = () => {
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Box component={Icon} icon={"eva:more-vertical-fill"}/>
+                            <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -354,14 +305,12 @@ const HomeAsset: React.FC = () => {
         }}
       >
         <MenuItem>
-          {/* <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} /> */}
-          <Box component={Icon} icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
+          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
         </MenuItem>
 
         <MenuItem sx={{ color: 'error.main' }}>
-          <Box component={Icon} icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
-          {/* <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} /> */}
+          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
           Delete
         </MenuItem>
       </Popover>

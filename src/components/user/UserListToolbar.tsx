@@ -58,7 +58,7 @@ export default function UserListToolbar(props:any) {
         <StyledSearch
           value={filterName}
           onChange={onFilterName}
-          placeholder="Search user..."
+          placeholder="Search ..."
           startAdornment={
             <InputAdornment position="start">
               <Box component={Icon} icon={"eva:search-fill"} sx={{ color: 'text.disabled', width: 20, height: 20 }}/>
@@ -67,7 +67,15 @@ export default function UserListToolbar(props:any) {
         />
       )}
 
-      {numSelected > 0 ? (
+      {numSelected > 0 &&
+        <Tooltip title="Delete">
+          <IconButton>
+            <Box component={Icon} icon={"eva:trash-2-fill"}/>
+          </IconButton>
+        </Tooltip>
+      }
+
+      {/* {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
             <Box component={Icon} icon={"eva:trash-2-fill"}/>
@@ -79,7 +87,7 @@ export default function UserListToolbar(props:any) {
             <Box component={Icon} icon={"ic:round-filter-list"}/>
           </IconButton>
         </Tooltip>
-      )}
+      )} */}
     </StyledRoot>
   );
 }

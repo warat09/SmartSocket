@@ -16,6 +16,11 @@ export interface Assets {
     date_assets?: Date;
     //   children?: React.ReactNode;
   }
+  export interface RfidAssets {
+    Rfid_rfid_address?: string;
+    Rfid_date_rfid?: Date;
+    Rfid_status_rfid?: string;
+  }
   export interface MatchAsset{
     Assets_name_assets?:string;
     Assets_id_assets?:string;

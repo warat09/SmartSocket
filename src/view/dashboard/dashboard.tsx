@@ -59,35 +59,6 @@ const HomeDashboard: React.FC = () => {
       <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
           Dashboard
       </Typography>
-      {/* <Grid container spacing={2}>
-      {[lightTheme, darkTheme].map((theme, index) => (
-        <Grid item xs={6} key={index}>
-          <ThemeProvider theme={theme}>
-            <Box
-              sx={{
-                p: 2,
-                bgcolor: 'red',
-                display: 'grid',
-                gridTemplateColumns: { md: '1fr 1fr' },
-                gap: 2,
-                borderRadius:'10px'
-              }}
-            >
-              {[0, 1, 2, 3, 4, 6, 8, 12, 16, 24].map((elevation) => (
-                <Item key={elevation} elevation={elevation}>
-                  {`elevation=${elevation}`}
-                </Item>
-              ))}
-            </Box>
-          </ThemeProvider>
-        </Grid>
-      ))}
-    </Grid> */}
-      {/* {/* <Paper style={{ borderRadius: "10px" }}>
-      <Typography variant="h6">This is my typography</Typography>
-
-      </Paper> */}
-      {/* <br /> */}
         <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
         <Grid container spacing={2}>
         {ConDashboard.map((row: any, i: any) => (

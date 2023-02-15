@@ -5,8 +5,13 @@ import NotFoundLayout from './layouts/404/index'
 // import Home from './view/home';
 import Login from './view/login';
 import Node from './view/node';
+
 import Asset from './view/assets';
+import NewAsset from './view/assets/new';
+
 import Matching from './view/match';
+import NewMatch from './view/match/new';
+
 import Approve from './view/approve';
 import UserMatch from './view/user_match';
 // import Transection from './view/node_transection'
@@ -16,6 +21,7 @@ import Loading from './components/Loading';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
+import { List } from '@mui/icons-material';
 const Dashboard = lazy( () => {
   return Promise.all([
     import('./view/home'),
@@ -51,8 +57,16 @@ const Router: React.FC =()=>  {
                 <Dashboard />
               </Suspense>},
               { path: 'node', element: <Node /> },
-              { path: 'asset', element: <Asset /> },
-              { path: 'match', element: <Matching /> },
+              { path: 'asset',children: [
+                { element: <Navigate to="/app/asset/list" />, index: true },
+                {path: 'list',element: <Asset />},
+                {path: 'new',element: <NewAsset />}
+              ]},
+              { path: 'match',children: [
+                { element: <Navigate to="/app/match/list" />, index: true },
+                {path: 'list',element: <Matching />},
+                {path: 'new',element: <NewMatch />}
+              ]},
               { path: 'approve', element: <Approve /> },
               { path: 'usermatch', element: <UserMatch /> },
               { path: 'transaction', element:
