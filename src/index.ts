@@ -41,7 +41,7 @@ AppDataSource.initialize().then(async () => {
       router.use('/Node', Node);
       router.use('/User',User);
       router.use('/Rfid',Rfid);
-      router.use('/Asset',auth, Asset)
+      router.use('/Asset', Asset)
       router.use('/Match',auth, Match)
       router.use('/Transaction',Transaction)
       router.use('/Usermatch',auth,Usermatch)
