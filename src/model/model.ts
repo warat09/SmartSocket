@@ -76,6 +76,7 @@ export interface Assets {
     Match_id_match?: number;
   }
   export interface Transaction{
+    Transaction_id_txn?: number;
     Asset_name_assets?: string;
     Match_mac_address?: string;
     Transaction_status_transaction?: string;

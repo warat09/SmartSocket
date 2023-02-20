@@ -71,6 +71,7 @@ function applySortFilter(array:any, comparator:any, query:any) {
 }
 
 const HomeAsset: React.FC = () => {
+  
   const navigate = useNavigate();
 
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
@@ -189,7 +190,7 @@ const HomeAsset: React.FC = () => {
           <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/asset/new')}>
             New Asset
           </Button>
-        </Stack>
+      </Stack>
         <hr />
         <br/>
         <Card>

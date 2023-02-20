@@ -4,18 +4,19 @@ import Layout from './layouts/app/applicationlayout';
 import NotFoundLayout from './layouts/404/index'
 // import Home from './view/home';
 import Login from './view/login';
+
 import Node from './view/node';
 
-import Asset from './view/assets';
-import NewAsset from './view/assets/new';
+import {ListUser , NewUser} from './view/user';
 
-import Matching from './view/match';
-import NewMatch from './view/match/new';
+import { ListAsset , NewAsset} from './view/assets';
+
+import { ListMatch , NewMatch } from './view/match';
 
 import Approve from './view/approve';
+
 import UserMatch from './view/user_match';
 // import Transection from './view/node_transection'
-import Register from './view/register';
 import Page404 from './view/Page404/Page404';
 import Loading from './components/Loading';
 import Box from '@mui/material/Box';
@@ -57,35 +58,70 @@ const Router: React.FC =()=>  {
                 <Dashboard />
               </Suspense>},
               { path: 'node', element: <Node /> },
+              {
+                path: 'user',
+                children:[
+                  { element: <Navigate to='/app/user/list'/>, index: true},
+                  {path: 'list',element:
+                  <Suspense fallback={
+                    <Box sx={{ width: '100%' }}>
+                      <Loading />
+                    </Box>
+                    }>
+                    <ListUser />
+                  </Suspense>
+                  },
+                  {path: 'new',element:
+                  <Suspense fallback={
+                    <Box sx={{ width: '100%' }}>
+                      <Loading />
+                    </Box>
+                    }>
+                    <NewUser />
+                  </Suspense>
+                  }
+                ]
+              },
               { path: 'asset',children: [
                 { element: <Navigate to="/app/asset/list" />, index: true },
-                {path: 'list',element: <Asset />},
+                {path: 'list',element: <ListAsset />},
                 {path: 'new',element: <NewAsset />}
               ]},
               { path: 'match',children: [
                 { element: <Navigate to="/app/match/list" />, index: true },
-                {path: 'list',element: <Matching />},
+                {path: 'list',element: <ListMatch />},
                 {path: 'new',element: <NewMatch />}
               ]},
-              { path: 'approve', element: <Approve /> },
-              { path: 'usermatch', element: <UserMatch /> },
-              { path: 'transaction', element:
-               <Suspense fallback={
-                <Box sx={{ width: '100%' }}>
-                  <Loading />
-                </Box>
-               }>
-                <Transection />
-              </Suspense> },
+              { path: 'approve',children: [
+                { element: <Navigate to="/app/approve/list" />, index: true },
+                {path: 'list',element: <Approve />}
+              ]},
+              // { path: 'transaction', element:
+              //  <Suspense fallback={
+              //   <Box sx={{ width: '100%' }}>
+              //     <Loading />
+              //   </Box>
+              //  }>
+              //   <Transection />
+              // </Suspense> },
+              { path: 'transaction' ,children:[
+                { element: <Navigate to='/app/transaction/list'/>, index: true},
+                {path: 'list',element:
+                <Suspense fallback={
+                  <Box sx={{ width: '100%' }}>
+                    <Loading />
+                  </Box>
+                  }>
+                  <Transection />
+                </Suspense>
+              }
+              ]}
             ],
           },
+          { path: 'usermatch', element: <UserMatch /> },
           {
             path: 'login',
             element: <Login />,
-          },
-          {
-            path: 'register',
-            element: <Register />,
           },
           {
             element: <NotFoundLayout />,

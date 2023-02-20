@@ -12,6 +12,11 @@ const navConfig = [
     icon:'fluent-mdl2:b-i-dashboard',
   },
   {
+    title:'User',
+    path: '/app/user',
+    icon:'mdi:user-circle'
+  },
+  {
     title: 'Node',
     path: '/app/node',
     icon: 'mdi:plug-socket-au',
