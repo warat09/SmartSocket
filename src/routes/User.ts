@@ -8,5 +8,4 @@ router.post('/Login',controller.LoginUser)
 router.post('/CheckToken',controller.CheckToken);
 router.get('/AllUser', controller.GetAllUser);
 
-
 export = router;
