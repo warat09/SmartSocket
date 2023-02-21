@@ -62,22 +62,6 @@ const TABLE_HEAD = [
   { id: '' },
 ];
 
-{/* <TableCell align="left">{Asset_name_assets}</TableCell>
-
-<TableCell align="left">{UserMatch_room}</TableCell>
-
-<TableCell align="left">{UserMatch_floor}</TableCell>
-
-<TableCell align="left">{UserMatch_description}</TableCell>
-
-<TableCell align="left">{UserMatch_datetime}</TableCell>
-
-<TableCell align="left">{User_name}</TableCell>
-
-<TableCell align="left">{User_surname}</TableCell>
-
-<TableCell align="left">{User_username}</TableCell> */}
-
 // ----------------------------------------------------------------------
 
 function descendingComparator(a:any, b:any, orderBy:any) {
@@ -117,15 +101,20 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 const HomeApprove: React.FC = () => {
+  
   const navigate = useNavigate();
+
   const [listapprove, setlistapprove] = useState<Approve[]>([]);
+
   const [openDialog, setOpenDialog] = React.useState(false);
+
   const [dialog, setdialog] = React.useState({
     header: "",
     body: "",
     id: 0,
     status: 0,
   });
+
   const [openAlert, setOpenAlert] = React.useState(false);
 
   const [token, SetToken] = useState("");

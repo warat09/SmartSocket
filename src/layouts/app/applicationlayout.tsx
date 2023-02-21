@@ -43,27 +43,13 @@ const Main = styled('div')(({ theme }) => ({
   },
 }));
 const AppLayout: React.FC =()=> {
-  // const StyledRoot = styled('div')({
-  //   display: 'flex',
-  //   minHeight: '100%',
-  //   overflow: 'hidden',
-  // });
-  const [role,setrole] = useState<string>("")
-  const [open, setOpen] = useState(false);
-  const [userData,setUserDate] = useState<Object>({})
-  // const [menuDrawer,setMenuDrawer] = useState<JSX.Element>(<MenuA />)
-  // const drawer = (
-  //   <div>
-  //     <Toolbar />
-  //     {menuDrawer}
-  //   </div>
-  // )
 
-  // const outlet = (
-  //   <div>
-  //     <Outlet />
-  //   </div>
-  // )
+  const [role,setrole] = useState<string>("")
+  
+  const [open, setOpen] = useState(false);
+
+  const [userData,setUserDate] = useState<Object>({})
+
   useEffect(() => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
@@ -92,6 +78,7 @@ const AppLayout: React.FC =()=> {
     // else {
     //   navigate("/login");
     // }
+    console.log("test userrrrrrrrrrrrrr")
   }, []);
   console.log(userData)
   return (
