@@ -13,6 +13,7 @@ import { ListAsset , NewAsset} from './view/assets';
 
 import { ListMatch , NewMatch } from './view/match';
 
+
 import Approve from './view/approve';
 
 import UserMatch from './view/user_match';
@@ -25,7 +26,7 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { List } from '@mui/icons-material';
 const Dashboard = lazy( () => {
   return Promise.all([
-    import('./view/home'),
+    import('./view/dashboard/dashboard'),
     new Promise(resolve => setTimeout(resolve,3000))
   ]).then(
     (([moduleExports]) => moduleExports)

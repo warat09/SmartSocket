@@ -54,7 +54,7 @@ const HomeLogin :React.FC = () =>{
           const username = target.username.value; // typechecks!
           const password = target.password.value; // typechecks!
           setTimeout(()=>{
-            login("/User/Login",username,password).then((results)=>{
+            login("/Login",username,password).then((results)=>{
               const login = JSON.parse(JSON.stringify(results))
               console.log(login)
               if(login.status === "ok"){

@@ -41,7 +41,7 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 
 export default function Header(props:any) {
     const onOpenNav : any = props.onOpenNav
-    const userData : any = props.data;
+    // const userData : any = props.data;
   return (
     <StyledRoot>
       <StyledToolbar>
@@ -69,7 +69,8 @@ export default function Header(props:any) {
         >
           {/* <LanguagePopover /> */}
           {/* <NotificationsPopover /> */}
-          <AccountPopover data={userData} />
+          {/* <AccountPopover data={userData} /> */}
+          <AccountPopover /> 
         </Stack>
       </StyledToolbar>
     </StyledRoot>

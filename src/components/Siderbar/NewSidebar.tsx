@@ -35,7 +35,7 @@ export default function Nav(props:any) {
   // const [user, setuser] = useState({name:"",surname:""});
   const openNav : any = props.openNav;
   const onCloseNav : any = props.onCloseNav;
-  const userData : any = props.data;
+  // const userData : any = props.data;
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
@@ -47,9 +47,9 @@ export default function Nav(props:any) {
   //     const user = JSON.parse(item);
   //     Checktoken(user.token).then((response) => {
   //       if (response.status === "ok") {
-  //         console.log(response.data[0].name)
-  //         setuser({name:response.data[0].name,surname:response.data[0].surname})
-  //         setname(user.username);
+  //         console.log("sidddddddddddd",response.data[0])
+  //         // setuser({name:response.data[0].name,surname:response.data[0].surname})
+  //         // setname(user.username);
   //       } else {
   //         localStorage.clear();
   //       }
@@ -98,15 +98,15 @@ export default function Nav(props:any) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +userData.name+"+"+userData.surname} alt="photoURL" />
+            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +"Warat"+" "+"Yenajaiprasert"} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary',textAlign:"center" }}>
-                {userData.name+" "+userData.surname}
+                {"Warat "+"Yenajaiprasert"}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.primary' ,textAlign:"center",mt:1}}>
-                {userData.role}👨🏻‍💻
+                {"admin"}👨🏻‍💻
               </Typography>
             </Box>
           </StyledAccount>

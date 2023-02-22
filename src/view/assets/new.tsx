@@ -63,19 +63,7 @@ const NewAsset: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response)=>{
-        if(response.status === "ok"){
-          if(response.data[0].role === "admin"){
-            handleGetRfid(user.token)
-            settoken(user.token)
-          }
-          else{
-            navigate('/')
-          }
-        }else{
-          localStorage.clear()
-        }
-      })
+      handleGetRfid(user.token)
     }
     else{
       navigate('/login')
@@ -87,7 +75,7 @@ const NewAsset: React.FC = () => {
           <title> Asset: New | SmartSocket </title>
       </Helmet>
       <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
+        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
           <Typography variant="h4" gutterBottom>
             Create a new asset
           </Typography>

@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import {Assets} from '../../model/model'
-import {getAssets,Checktoken} from "../../services/apiservice"
+import {getAssets} from "../../services/apiservice"
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -94,7 +94,6 @@ const HomeAsset: React.FC = () => {
 
   const handleGetassets=async(token:string)=>{
     SetDataassetslist(await getAssets(token))
-    console.log(await getAssets(token))
   }
 
   const handleOpenMenu = (event:any) => {
@@ -159,19 +158,7 @@ const HomeAsset: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response)=>{
-        if(response.status === "ok"){
-          if(response.data[0].role === "admin"){
-            handleGetassets(user.token);
-            settoken(user.token)
-          }
-          else{
-            navigate('/')
-          }
-        }else{
-          localStorage.clear()
-        }
-      })
+      handleGetassets(user.token);
     }
     else{
       navigate('/login')
@@ -209,7 +196,6 @@ const HomeAsset: React.FC = () => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    console.log(row)
                     const { id_assets, name_assets, expire_hour, date_assets, status_assets, maintenance }:any = row;
                     const selectedUser = selected.indexOf(name_assets) !== -1;
 

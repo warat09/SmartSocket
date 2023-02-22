@@ -13,7 +13,7 @@ import {
   Box,
   Toolbar
 } from "@mui/material";
-import { Checktoken } from "../../services/apiservice";
+// import { Checktoken } from "../../services/apiservice";
 
 
 export interface ComponentLayoutApp {
@@ -50,41 +50,30 @@ const AppLayout: React.FC =()=> {
 
   const [userData,setUserDate] = useState<Object>({})
 
-  useEffect(() => {
-    const item = localStorage.getItem("User");
-    if (item && item !== "undefined") {
-      const user = JSON.parse(item);
-      Checktoken(user.token).then((response)=>{
-        const dataresponse = response.data[0]
-        if (response.status === "ok") {
-          setrole(dataresponse.name)
-          setUserDate({
-            name:dataresponse.name,surname:dataresponse.surname,username:dataresponse.username,
-            email:dataresponse.email,role:dataresponse.role,departure:dataresponse.departure
-          })
-        } else {
-          localStorage.clear();
-        }
-      })
-      // .then((status) => {
-      //   console.log(status)
-      //   if (status === true) {
-      //     console.log(user)
-      //   } else {
-      //     localStorage.clear();
-      //   }
-      // });
-    } 
-    // else {
-    //   navigate("/login");
-    // }
-    console.log("test userrrrrrrrrrrrrr")
-  }, []);
-  console.log(userData)
+  // useEffect(() => {
+  //   const item = localStorage.getItem("User");
+  //   if (item && item !== "undefined") {
+  //     const user = JSON.parse(item);
+  //     Checktoken(user.token).then((response)=>{
+  //       const dataresponse = response.data[0]
+  //       if (response.status === "ok") {
+  //         setUserDate({
+  //           fullname:dataresponse.fullname,username:dataresponse.username,
+  //           email:dataresponse.email,role:dataresponse.role,departure:dataresponse.departure
+  //         })
+  //       } else {
+  //         localStorage.clear();
+  //       }
+  //     })
+  //   } 
+  // }, []);
+
   return (
     <StyledRoot>
-      <Nav data={userData} onOpenNav={() => setOpen(true)} />
-      <Sidebar data={userData} openNav={open} onCloseNav={() => setOpen(false)} />
+      <Nav onOpenNav={() => setOpen(true)} />
+      <Sidebar openNav={open} onCloseNav={() => setOpen(false)} />
+      {/* <Nav data={userData} onOpenNav={() => setOpen(true)} />
+      <Sidebar data={userData} openNav={open} onCloseNav={() => setOpen(false)} /> */}
       <Main>
         <Outlet />
       </Main>

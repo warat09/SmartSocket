@@ -25,18 +25,7 @@ const HomeNode: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response)=>{
-        if(response.status === "ok"){
-          if(response.data[0].role === "admin"){
-            handleGetNode();
-          }
-          else{
-            navigate('/')
-          }
-        }else{
-          localStorage.clear()
-        }
-      })
+      handleGetNode();
     }
     else{
       navigate('/login')

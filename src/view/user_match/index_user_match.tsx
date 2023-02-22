@@ -72,19 +72,8 @@ const CreateUserMatch: React.FC = () => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
         const user = JSON.parse(item);
-        Checktoken(user.token).then((response)=>{
-          if(response.status === "ok"){
-            if(response.data[0].role === "admin"){
-              ComponentUserMatch(user.token);
-              setToken(user.token);
-            }
-            else{
-              navigate('/')
-            }
-          }else{
-            localStorage.clear()
-          }
-        })
+        ComponentUserMatch(user.token);
+        setToken(user.token);
       }
       else{
         navigate('/login')

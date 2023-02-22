@@ -12,11 +12,7 @@ import Paper from "@mui/material/Paper";
 import { Approve } from "../../model/model";
 import Iconify from "../../components/iconify/Iconify";
 import {
-  getMatchAssets,
-  SelectMatchNode,
-  getMatching,
   getApprove,
-  Checktoken,
   ApproveUserMatch,
 } from "../../services/apiservice";
 import {
@@ -259,19 +255,7 @@ const HomeApprove: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response) => {
-        if (response.status === "ok") {
-          if(response.data[0].role === "admin"){
-            ComponentMatch(user.token);
-            SetToken(user.token);
-          }
-          else{
-            navigate('/')
-          }
-        } else {
-          localStorage.clear();
-        }
-      });
+      ComponentMatch(user.token);
     } else {
       navigate("/login");
     }

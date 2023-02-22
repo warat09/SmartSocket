@@ -7,6 +7,16 @@ export interface Dashboards {
     node?: number
     user?: number
 }
+
+export interface User {
+  id_user?:number
+  fullname?:string
+  email?:string
+  departure?:string
+  role?:string
+  status_user?:string
+}
+
 export interface Assets {
     id_assets?: number;
     name_assets?: string;

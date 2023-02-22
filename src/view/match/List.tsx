@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import { Matching } from "../../model/model";
-import {getMatching,Checktoken} from "../../services/apiservice";
+import { getMatching } from "../../services/apiservice";
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -74,8 +74,6 @@ const HomeMatch: React.FC = () => {
   const navigate = useNavigate();
 
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
-
-  const [token, SetToken] = useState("")
 
   const [open, setOpen] = useState(null);
 
@@ -179,22 +177,11 @@ const HomeMatch: React.FC = () => {
   }
 
   useEffect(() => {
+    console.log('1')
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
-        const user = JSON.parse(item);
-        Checktoken(user.token).then((response)=>{
-          if(response.status === "ok"){  
-            if(response.data[0].role === "admin"){
-              ComponentMatch(user.token);
-              SetToken(user.token)
-            }
-            else{
-              navigate('/')
-            }
-          }else{
-            localStorage.clear()
-          }
-        })
+          const user = JSON.parse(item);
+          ComponentMatch(user.token);
       }
       else{
         navigate('/login')

@@ -15,24 +15,28 @@ import { Container,
   TablePagination,
   Paper,
   Checkbox,
-  IconButton
+  IconButton,
+  Avatar
 } from "@mui/material";
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
+import { getUsers } from "../../services/apiservice";
+import { User } from "../../model/model";
+import { Box } from "@mui/system";
 
-const TABLE_HEAD = [
-  { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
-  { id: 'UserMatch_room', label: 'Room', alignRight: false },
-  { id: 'UserMatch_floor', label: 'Floor', alignRight: false },
-  { id: 'UserMatch_description', label: 'Description', alignRight: false },
-  { id: 'UserMatch_datetime', label: 'DateTime', alignRight: false },
-  { id: 'User_name', label: 'Name', alignRight: false },
-  { id: 'User_surname', label: 'Surname', alignRight: false },
-  { id: 'User_username', label: 'UserName', alignRight: false },
-  { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
-  { id: 'User_action', label: 'Action', alignRight: false },
-  { id: '' },
+interface LocalStorage {
+  username: string;
+  token: string;
+}
+
+const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
+  { id: 'fullname', label: 'Name', alignRight: false },
+  { id: 'email', label: 'Email', alignRight: false },
+  { id: 'departure', label: 'Departure', alignRight: false },
+  { id: 'role', label: 'Role', alignRight: false },
+  { id: 'status_user', label: 'Status_user', alignRight: false },
+  { id: '', label: '', alignRight: false  },
 ];
 
 function descendingComparator(a:any, b:any, orderBy:any) {
@@ -59,7 +63,7 @@ function applySortFilter(array:any, comparator:any, query:any) {
     return a[1] - b[1];
   });
   if (query) {
-    return filter(array, (_user:any) => _user.Asset_name_assets.toLowerCase().indexOf(query.toLowerCase()) !== -1);
+    return filter(array, (_user:any) => _user.fullname.toLowerCase().indexOf(query.toLowerCase()) !== -1);
   }
   return stabilizedThis.map((el:any) => el[0]);
 }
@@ -68,7 +72,7 @@ const ListUser: React.FC = () => {
 
   const navigate = useNavigate();
 
-  const [listuser,setlistUser] = useState<[]>([])
+  const [listuser,setlistUser] = useState<User[]>([])
 
   const [open, setOpen] = useState(null);
 
@@ -83,6 +87,10 @@ const ListUser: React.FC = () => {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const ComponentUser = async(token:string) => {
+    setlistUser(await getUsers(token))
+  }
 
   const handleOpenMenu = (event:any) => {
     setOpen(event.currentTarget);
@@ -100,7 +108,7 @@ const ListUser: React.FC = () => {
 
   const handleSelectAllClick = (event:any) => {
     if (event.target.checked) {
-      const newSelecteds:any = listuser.map((n:any) => n.Asset_name_assets);
+      const newSelecteds:any = listuser.map((n:any) => n.id_user);
       setSelected(newSelecteds);
       return;
     }
@@ -142,6 +150,17 @@ const ListUser: React.FC = () => {
   
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  useEffect(() => {
+    const item = localStorage.getItem("User");
+      if (item && item !== "undefined") {
+        const user:LocalStorage = JSON.parse(item);
+        ComponentUser(user.token);
+      }
+      else{
+        navigate('/login')
+      }
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -173,25 +192,28 @@ const ListUser: React.FC = () => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    console.log(row)
-                    const { id_assets, name_assets, expire_hour, date_assets, status_assets, maintenance }:any = row;
-                    const selectedUser = selected.indexOf(name_assets) !== -1;
+                    const { id_user,fullname,email,departure,role,status_user }:any = row;
+                    const selectedUser = selected.indexOf(id_user) !== -1;
 
                     return (
-                      <TableRow hover key={id_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={id_user} tabIndex={-1} role="checkbox" selected={selectedUser}>
                         <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name_assets)} />
+                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id_user)} />
                         </TableCell>
 
-                        <TableCell align="left">{name_assets}</TableCell>
+                        <TableCell align="left">
+                          <Box sx={{display: 'flex',alignItems: 'center'}}>
+                            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name="+fullname} alt="photoURL" sx={{mr:2}}/>{fullname}
+                          </Box>
+                        </TableCell>
 
-                        <TableCell align="left">{expire_hour}</TableCell>
+                        <TableCell align="left">{email}</TableCell>
 
-                        <TableCell align="left">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="left">{departure}</TableCell>
 
-                        <TableCell align="left">{status_assets}</TableCell>
+                        <TableCell align="left">{role}</TableCell>
 
-                        <TableCell align="left">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell>
+                        <TableCell align="left">{status_user}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

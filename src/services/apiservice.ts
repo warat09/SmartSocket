@@ -60,6 +60,21 @@ export const checktoken = async(path:string,username:string,password:string) => 
   return message
 }
 
+export const getUsers = async (token:string):Promise<any>=> {
+  const url = "http://localhost:9090/User/AllUser";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
+  let list:any
+  await axios
+    .get(url,config)
+    .then((response) => {
+      list = response.data;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+    return list
+}
+
 export const getAssets = async (token:string):Promise<any>=> {
   const url = "http://localhost:9090/Asset/AllAsset";
   const config = { headers: { Authorization: `Bearer ${token}` } }
@@ -249,7 +264,6 @@ export const getApprove = async (token:any) => {
 export const ApproveUserMatch = async (id:number,token:string,status_Approve:any) => {
   const url = "http://localhost:9090/UserMatch/Approve/";
   const config = { headers: { Authorization: `Bearer ${token}` } }
-  console.log("token:",config)
   // const data={UserMatch_id_user_match: id,UserMatch_status_user_match:"Approve"}
   const data={UserMatch_status_user_match:status_Approve}
   await axios.patch(url+(id),data,config).catch(error => console.log(error))
@@ -287,11 +301,12 @@ export const SelectMatchNode = async (id:any) => {
     return list
 };
 
-export const getTransection =async()=> {
+export const getTransection =async(token:string)=> {
   const url = "http://localhost:9090/Transaction/AllTransaction";
+  const config = { headers: { Authorization: `Bearer ${token}` } }
   let list:any
   await axios
-    .get(url)
+    .get(url,config)
     .then((response) => {
       list = response.data;
     })
@@ -307,7 +322,6 @@ export const getDashboard=async(token:string)=>{
   await axios
     .get(url,config)
     .then((response) => {
-      const results = response.data;
       list = response.data;
     })
     .catch((err) => {
@@ -323,7 +337,6 @@ export const Checktoken =async(token:string)=> {
       token: token
     })
     .then((response) => {
-      console.log(response)
       // if(response.status !== 200){
       //   list = false;
       // }

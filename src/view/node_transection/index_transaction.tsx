@@ -110,8 +110,8 @@ const HomeTransection: React.FC = () => {
   return time;
 }
 
-  const handleGetTransection=async()=>{
-    SetDataassetslist(await getTransection());
+  const handleGetTransection=async(token:string)=>{
+    SetDataassetslist(await getTransection(token));
   }
 
   const handleOpenMenu = (event:any) => {
@@ -176,13 +176,7 @@ const HomeTransection: React.FC = () => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response)=>{
-        if(response.status === "ok"){
-          handleGetTransection();
-        }else{
-          localStorage.clear()
-        }
-      })
+      handleGetTransection(user.token);
     }
     else{
       navigate('/login')

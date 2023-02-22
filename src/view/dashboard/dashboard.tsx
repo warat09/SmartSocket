@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getDashboard, Checktoken } from "../../services/apiservice";
+import { getDashboard } from "../../services/apiservice";
 import { Dashboards } from "../../model/model";
 import {
   Card,
@@ -30,21 +30,13 @@ const HomeDashboard: React.FC = () => {
   const [role,setrole] = useState<string>("")
   const ComponentDashboard = async (token: string) => {
     SetDashboard(await getDashboard(token));
-    console.log(await getDashboard(token));
   };
 
   useEffect(() => {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response) => {
-        if (response.status === "ok") {
-          setrole(response.data[0].role)
-          ComponentDashboard(user.token);
-        } else {
-          localStorage.clear();
-        }
-      });
+      ComponentDashboard(user.token);
     } else {
       navigate("/login");
     }
