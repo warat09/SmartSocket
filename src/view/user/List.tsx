@@ -16,7 +16,9 @@ import { Container,
   Paper,
   Checkbox,
   IconButton,
-  Avatar
+  Avatar,
+  Popover,
+  MenuItem
 } from "@mui/material";
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
@@ -82,7 +84,7 @@ const ListUser: React.FC = () => {
 
   const [selected, setSelected]:any = useState([]);
 
-  const [orderBy, setOrderBy] = useState('Asset_name_assets');
+  const [orderBy, setOrderBy] = useState('fullname');
 
   const [filterName, setFilterName] = useState('');
 
@@ -167,6 +169,7 @@ const ListUser: React.FC = () => {
           <title> User: List | SmartSocket </title>
       </Helmet>
       <Container>
+        
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
           <Typography variant="h4" gutterBottom>
             User List
@@ -268,6 +271,34 @@ const ListUser: React.FC = () => {
           />
         </Card>
       </Container>
+      <Popover
+        open={Boolean(open)}
+        anchorEl={open}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+        PaperProps={{
+          sx: {
+            p: 1,
+            width: 140,
+            '& .MuiMenuItem-root': {
+              px: 1,
+              typography: 'body2',
+              borderRadius: 0.75,
+            },
+          },
+        }}
+      >
+        <MenuItem>
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+          Edit
+        </MenuItem>
+
+        <MenuItem sx={{ color: 'error.main' }}>
+          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+          Delete
+        </MenuItem>
+      </Popover>
     </>
   );
 };

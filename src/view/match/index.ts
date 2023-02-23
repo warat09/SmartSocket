@@ -1,2 +1,2 @@
-export { default as ListMatch } from './List'
-export { default as NewMatch } from './New'
+export { default as ListMatch } from './ListMatch'
+export { default as NewMatch } from './NewMatch'

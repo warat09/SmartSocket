@@ -83,7 +83,7 @@ const HomeMatch: React.FC = () => {
 
   const [selected, setSelected]:any = useState([]);
 
-  const [orderBy, setOrderBy] = useState('name_assets');
+  const [orderBy, setOrderBy] = useState('Asset_name_assets');
 
   const [filterName, setFilterName] = useState('');
 

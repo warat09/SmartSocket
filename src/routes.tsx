@@ -46,6 +46,9 @@ const Transection = lazy( () => {
 
 
 const Router: React.FC =()=>  {
+  useEffect(()=>{
+    console.log("CHECKTOKEN")
+  })
     const routes:any = useRoutes([
         {
             path: '/app',

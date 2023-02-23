@@ -1,2 +1,2 @@
-export { default as ListAsset } from './List'
-export { default as NewAsset } from './New'
+export { default as ListAsset } from './ListAssets'
+export { default as NewAsset } from './NewAssets'
