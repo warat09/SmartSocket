@@ -25,6 +25,7 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
         }
         array.push(attribute)
     })
+    console.log(array)
     
     return res.status(200).json(array)
 }

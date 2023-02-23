@@ -2,6 +2,7 @@ import express, { Application, Request, Response } from 'express';
 import http from 'http';
 import config from './config/config';
 import { AppDataSource } from "../src/data-source"
+import Login from './routes/Login';
 import Node from './routes/Node';
 import User from './routes/User';
 import Transaction from './routes/Transaction';
@@ -10,7 +11,6 @@ import Asset from './routes/Asset';
 import Match from './routes/Match';
 import Dashboard from './routes/Dashboard';
 import Rfid from './routes/Rfid';
-import Test from './routes/Test'
 
 import {auth} from './middleware/auth'
 var bodyParser = require('body-parser')
@@ -37,16 +37,15 @@ AppDataSource.initialize().then(async () => {
         }
         next();
       });
-
+      router.use('/Login',Login)
       router.use('/Node', Node);
-      router.use('/User',User);
+      router.use('/User',auth,User);
       router.use('/Rfid',Rfid);
       router.use('/Asset', Asset)
       router.use('/Match',auth, Match)
-      router.use('/Transaction',Transaction)
+      router.use('/Transaction',auth,Transaction)
       router.use('/Usermatch',auth,Usermatch)
       router.use('/Dashboard',auth,Dashboard)
-
     http
     .createServer(router)
     .listen(config.server.port,() =>

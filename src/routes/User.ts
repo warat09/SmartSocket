@@ -4,7 +4,6 @@ import controller from '../controller/User';
 const router = express.Router();
 
 router.post('/Register', controller.AddUser);
-router.post('/Login',controller.LoginUser)
 router.post('/CheckToken',controller.CheckToken);
 router.get('/AllUser', controller.GetAllUser);
 
