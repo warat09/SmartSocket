@@ -21,8 +21,12 @@ const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
             if (result) {
                 const token = jwt.sign(
                     { 
-                        id:CheckUser[0].id_user,
-                        username: username
+                        name:CheckUser[0].name,
+                        surname:CheckUser[0].surname,
+                        username: CheckUser[0].username,
+                        email: CheckUser[0].email,
+                        role:CheckUser[0].role,
+                        departure:CheckUser[0].departure
                     },
                     config.token,
                     { expiresIn: "30d" }

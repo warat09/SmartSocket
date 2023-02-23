@@ -1,21 +1,31 @@
 import { NextFunction, Request, Response } from 'express';
 import  config from "../config/config";
 import jwt from "jsonwebtoken";
-
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+interface UserResponse extends Request {
+    userData?: object;
+  }
+export const auth = async (req: UserResponse, res: Response, next: NextFunction) => {
     try {
         const token = req.headers['authorization'];
         const bearer = token.split(' ');
         const bearertoken = bearer[1]
         if(typeof bearertoken !== 'undefined'){
-            jwt.verify(bearertoken, config.token,async (err: any, user: any)=>{
+            jwt.verify(bearertoken, config.token,async (err: any, decoded: any)=>{
                 if (err) {
                     console.log("err");     
                     return res.status(401).json({status:'error',message: "Token expired"});
                 }
                 else{
-                    req["user"] = user;
-                    return next()
+                    if(err){
+                        return res.sendStatus(403) //invalid token
+                    }
+                    // req.roles = decoded.role
+                    // req.role = 'tenant-X'
+
+                    req.userData = { name: decoded.name, surname: decoded.surname, email: decoded.email, role:decoded.role, departure:decoded.departure};
+
+                    // req["user"] = user;
+                    next()
                 }
             });
         }
