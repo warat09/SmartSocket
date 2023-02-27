@@ -52,7 +52,6 @@ const TABLE_HEAD = [
   { id: 'UserMatch_datetime', label: 'DateTime', alignRight: false },
   { id: 'User_name', label: 'Name', alignRight: false },
   { id: 'User_surname', label: 'Surname', alignRight: false },
-  { id: 'User_username', label: 'UserName', alignRight: false },
   { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
   { id: 'User_action', label: 'Action', alignRight: false },
   { id: '' },
@@ -304,7 +303,7 @@ const HomeApprove: React.FC = () => {
 
                         <TableCell align="left">{UserMatch_floor}</TableCell>
 
-                        <TableCell align="left">{UserMatch_description}</TableCell>
+                        <TableCell align="center">{UserMatch_description ? UserMatch_description : '-'}</TableCell>
 
                         <TableCell align="left">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
@@ -312,11 +311,10 @@ const HomeApprove: React.FC = () => {
 
                         <TableCell align="left">{User_surname}</TableCell>
 
-                        <TableCell align="left">{User_username}</TableCell>
-
                         <TableCell align="left">{UserMatch_status_user_match}</TableCell>
                 
                         <TableCell align="left">
+                          <Box sx={{display:'flex'}}>
                           <Button
                             variant="contained"
                             size="small"
@@ -346,6 +344,7 @@ const HomeApprove: React.FC = () => {
                           >
                             Reject
                           </Button>
+                          </Box>
                          </TableCell>
 
                         {/* <TableCell align="left">
