@@ -93,7 +93,7 @@ const HomeAsset: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleGetassets=async(token:string)=>{
-    SetDataassetslist(await getAssets(token))
+    SetDataassetslist(await getAssets("/Asset/AllAsset",token))
   }
 
   const handleOpenMenu = (event:any) => {

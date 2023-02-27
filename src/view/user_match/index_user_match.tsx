@@ -31,8 +31,8 @@ const CreateUserMatch: React.FC = () => {
   const [description, Setdescription] = useState("");
 
   const ComponentUserMatch= async (token:string) => {
-    setlistmatching(await getRequestRent(token));
-    setlistassets(await getRentMatch(token));
+    setlistmatching(await getRequestRent("/Usermatch/GetRequestRent",token));
+    setlistassets(await getRentMatch("/Match/SelectRentMatch",token));
   }
 
   const handleChangeAssets = (event: SelectChangeEvent) => {
@@ -40,7 +40,7 @@ const CreateUserMatch: React.FC = () => {
   };
 
   const handleSubmit=async()=>{
-    await addUserMatching(token,inputassets,room,floor,description)
+    await addUserMatching("/Usermatch/AddUsermatch",token,inputassets,room,floor,description)
   }
 
   const formatTime = (milliseconds:number) => {

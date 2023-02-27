@@ -9,21 +9,21 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const [role,setrole] = useState<string>("")
 
-  useEffect(() => {
-    const item = localStorage.getItem("User");
-    if (item && item !== "undefined") {
-      const user = JSON.parse(item);
-      Checktoken(user.token).then((response) => {
-        if (response.status === "ok") {
-          setrole(response.data[0].role)
-        } else {
-          localStorage.clear();
-        }
-      });
-    } else {
-      navigate("/login");
-    }
-  }, []);
+  // useEffect(() => {
+  //   const item = localStorage.getItem("User");
+  //   if (item && item !== "undefined") {
+  //     const user = JSON.parse(item);
+  //     Checktoken(user.token).then((response) => {
+  //       if (response.status === "ok") {
+  //         setrole(response.data[0].role)
+  //       } else {
+  //         localStorage.clear();
+  //       }
+  //     });
+  //   } else {
+  //     navigate("/login");
+  //   }
+  // }, []);
 
   return (
     <>

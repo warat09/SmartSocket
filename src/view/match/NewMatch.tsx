@@ -51,17 +51,16 @@ const NewMatch: React.FC = () => {
   };
 
   const ComponentMatch= async (token:string) => {
-    setlistassets(await getMatchAssets(token));
+    setlistassets(await getMatchAssets("/Asset/SelectMatchAsset",token));
   }
 
   const Getnode = async (id:string) => {
     console.log(typeof(id))
-    setlistnode(await SelectMatchNode(id));
+    setlistnode(await SelectMatchNode("/Node/SelectNode",id));
   };
 
   const handleOnSubmit=async(data:any)=>{
-    await addMatching(token,data.asset,data.node,data.room,data.floor)
-    navigate('/app/match/list')
+    await addMatching("/Match/MatchingAssets",token,data.asset,data.node,data.room,data.floor)
   }
 
   useEffect(() => {

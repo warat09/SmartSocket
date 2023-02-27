@@ -57,7 +57,7 @@ function ResponsiveAppBar(props:any) {
     const item = localStorage.getItem("User");
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
-      Checktoken(user.token).then((response) => {
+      Checktoken("/User/CheckToken",user.token).then((response) => {
         if (response.status === "ok") {
           setname(user.username);
         } else {

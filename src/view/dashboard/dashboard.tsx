@@ -29,7 +29,7 @@ const HomeDashboard: React.FC = () => {
   const [ConDashboard, SetDashboard] = useState<Dashboards[]>([]);
   const [role,setrole] = useState<string>("")
   const ComponentDashboard = async (token: string) => {
-    SetDashboard(await getDashboard(token));
+    SetDashboard(await getDashboard("/Dashboard/AllDashboard",token));
   };
 
   useEffect(() => {

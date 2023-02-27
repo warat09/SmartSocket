@@ -91,7 +91,7 @@ const ListUser: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const ComponentUser = async(token:string) => {
-    setlistUser(await getUsers(token))
+    setlistUser(await getUsers("/User/AllUser",token))
   }
 
   const handleOpenMenu = (event:any) => {

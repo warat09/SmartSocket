@@ -42,13 +42,15 @@ const Main = styled('div')(({ theme }) => ({
     paddingRight: theme.spacing(2),
   },
 }));
-const AppLayout: React.FC =()=> {
+function AppLayout(props:any) {
+  const userData: any = props.UserData
 
   const [role,setrole] = useState<string>("")
   
   const [open, setOpen] = useState(false);
 
-  const [userData,setUserDate] = useState<Object>({})
+  // const [userData,setUserDate] = useState<Object>({})
+  
 
   // useEffect(() => {
   //   const item = localStorage.getItem("User");
@@ -70,10 +72,8 @@ const AppLayout: React.FC =()=> {
 
   return (
     <StyledRoot>
-      <Nav onOpenNav={() => setOpen(true)} />
-      <Sidebar openNav={open} onCloseNav={() => setOpen(false)} />
-      {/* <Nav data={userData} onOpenNav={() => setOpen(true)} />
-      <Sidebar data={userData} openNav={open} onCloseNav={() => setOpen(false)} /> */}
+      <Nav UserData={userData} onOpenNav={() => setOpen(true)} />
+      <Sidebar UserData={userData} openNav={open} onCloseNav={() => setOpen(false)} />
       <Main>
         <Outlet />
       </Main>

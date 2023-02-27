@@ -33,6 +33,7 @@ const StyledAccount = styled('div')(({ theme }) => ({
 export default function Nav(props:any) {
   // const [name, setname] = useState("");
   // const [user, setuser] = useState({name:"",surname:""});
+  const userData : any = props.UserData;
   const openNav : any = props.openNav;
   const onCloseNav : any = props.onCloseNav;
   // const userData : any = props.data;
@@ -98,15 +99,15 @@ export default function Nav(props:any) {
       <Box sx={{ mb: 5, mx: 2.5 }}>
         <Link underline="none">
           <StyledAccount>
-            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +"Warat"+" "+"Yenajaiprasert"} alt="photoURL" />
+            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name=" +userData.name+" "+userData.surname} alt="photoURL" />
 
             <Box sx={{ ml: 2 }}>
               <Typography variant="subtitle2" sx={{ color: 'text.primary',textAlign:"center" }}>
-                {"Warat "+"Yenajaiprasert"}
+                {userData.name+" "+userData.surname}
               </Typography>
 
               <Typography variant="body2" sx={{ color: 'text.primary' ,textAlign:"center",mt:1}}>
-                {"admin"}👨🏻‍💻
+                {userData.departure}👨🏻‍💻
               </Typography>
             </Box>
           </StyledAccount>

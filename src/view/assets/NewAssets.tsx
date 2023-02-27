@@ -43,12 +43,11 @@ const NewAsset: React.FC = () => {
   };
 
   const handleGetRfid=async(token:string)=>{
-    SetRfidAssets(await getRfidAssets())
+    SetRfidAssets(await getRfidAssets("/Rfid/SelectRfidAsset"))
   }
 
   const handleOnSubmit=async(data:any)=>{
-    await addAssets(data.nameassets,data.rfid,data.expirehour)
-    navigate('/app/asset/list')
+    await addAssets("/Asset/AddAsset",token,data.nameassets,data.rfid,data.expirehour)
   }
 
  
@@ -64,6 +63,7 @@ const NewAsset: React.FC = () => {
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       handleGetRfid(user.token)
+      settoken(user.token)
     }
     else{
       navigate('/login')

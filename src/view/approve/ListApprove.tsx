@@ -130,7 +130,7 @@ const HomeApprove: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const ComponentMatch = async (token: string) => {
-    setlistapprove(await getApprove(token));
+    setlistapprove(await getApprove("/UserMatch/GetApprove",token));
   };
 
   const handleClickOpen = (id: number, status: number, asset: string) => {
@@ -181,14 +181,14 @@ const HomeApprove: React.FC = () => {
       console.log(listapprove);
       console.log("approve");
       const status_Approve="Approve"
-      await ApproveUserMatch(id, token, status_Approve)
+      await ApproveUserMatch("/UserMatch/Approve/",token,id, status_Approve)
      
     } else {
       // handleClickOpen(status,asset)
       handleCloseDialog();
       handleClickDialog()
       const status_Approve="Reject"
-      await ApproveUserMatch(id, token, status_Approve)
+      await ApproveUserMatch("/UserMatch/Approve/",token,id, status_Approve)
       console.log("reject");
     }
   };

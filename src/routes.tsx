@@ -2,6 +2,7 @@ import {Suspense,lazy,useEffect,useState} from 'react';
 import { Navigate, useRoutes } from 'react-router-dom';
 import Layout from './layouts/app/applicationlayout';
 import NotFoundLayout from './layouts/404/index'
+import { Checktoken } from './services/apiservice';
 // import Home from './view/home';
 import Login from './view/login';
 
@@ -12,7 +13,6 @@ import {ListUser , NewUser} from './view/user';
 import { ListAsset , NewAsset} from './view/assets';
 
 import { ListMatch , NewMatch } from './view/match';
-
 
 import Approve from './view/approve';
 
@@ -32,27 +32,25 @@ const Dashboard = lazy( () => {
     (([moduleExports]) => moduleExports)
   )
 });
-const Transection = lazy( () => {
-  return Promise.all([
-    import('./view/node_transection'),
-    new Promise(resolve => setTimeout(resolve,3000))
-  ]).then(
-    (([moduleExports]) => moduleExports)
-  )
-});
+// const Transection = lazy( () => {
+//   return Promise.all([
+//     import('./view/node_transection'),
+//     new Promise(resolve => setTimeout(resolve,3000))
+//   ]).then(
+//     (([moduleExports]) => moduleExports)
+//   )
+// });
 
 
-// const Transection  = lazy(() => import('./view/node_transection'));
+const Transection  = lazy(() => import('./view/node_transection'));
 
 
-const Router: React.FC =()=>  {
-  useEffect(()=>{
-    console.log("CHECKTOKEN")
-  })
+function Router(props:any){
+    const userData:any = props.UserData;
     const routes:any = useRoutes([
         {
             path: '/app',
-            element: <Layout />,
+            element: <Layout UserData={userData} />,
             children: [
               { element: <Navigate to="/app/dashboard" />, index: true },
               { path: 'dashboard', element: 

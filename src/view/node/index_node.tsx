@@ -19,7 +19,7 @@ const HomeNode: React.FC = () => {
   const [listnode, SetlistNode] = useState<Node[]>([]);
 
   const handleGetNode= async() => {
-    SetlistNode(await getNode())
+    SetlistNode(await getNode("/Node/AllMACAddress"))
   }
   useEffect(() => {
     const item = localStorage.getItem("User");

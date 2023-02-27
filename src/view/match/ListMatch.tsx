@@ -148,7 +148,7 @@ const HomeMatch: React.FC = () => {
   const isNotFound = !filteredUsers.length && !!filterName;
 
   const ComponentMatch= async (token:string) => {
-    setlistmatching(await getMatching(token));
+    setlistmatching(await getMatching("/Match/AllMatching",token));
   }
 
   const formatTime = (milliseconds:number) => {

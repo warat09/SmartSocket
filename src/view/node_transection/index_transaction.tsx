@@ -20,7 +20,7 @@ import {
   MenuItem
 } from "@mui/material";
 import {Transaction} from '../../model/model';
-import {getTransection,Checktoken} from "../../services/apiservice"
+import {getTransaction,Checktoken} from "../../services/apiservice"
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
@@ -111,7 +111,7 @@ const HomeTransection: React.FC = () => {
 }
 
   const handleGetTransection=async(token:string)=>{
-    SetDataassetslist(await getTransection(token));
+    SetDataassetslist(await getTransaction("/Transaction/AllTransaction",token));
   }
 
   const handleOpenMenu = (event:any) => {
