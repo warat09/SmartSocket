@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import  config from "../config/config";
 import jwt from "jsonwebtoken";
-interface UserResponse extends Request {
-    userData?: object;
-  }
-export const auth = async (req: UserResponse, res: Response, next: NextFunction) => {
+
+export const auth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = req.headers['authorization'];
         const bearer = token.split(' ');
@@ -22,8 +20,8 @@ export const auth = async (req: UserResponse, res: Response, next: NextFunction)
                     // req.roles = decoded.role
                     // req.role = 'tenant-X'
 
-                    req.userData = { name: decoded.name, surname: decoded.surname, email: decoded.email, role:decoded.role, departure:decoded.departure};
-
+                    // req.userData = { name: decoded.name, surname: decoded.surname, email: decoded.email, role:decoded.role, departure:decoded.departure};
+                    req["userData"] = { name: decoded.name, surname: decoded.surname, email: decoded.email, role:decoded.role, departure:decoded.departure }
                     // req["user"] = user;
                     next()
                 }

@@ -4,38 +4,59 @@ import { User_match } from '../entity/Usermatch';
 import {Match} from '../entity/Match'
 import {Assets} from '../entity/Asset'
 import { User } from '../entity/User';
-import  config from "../config/config";
-import jwt from "jsonwebtoken";
 
 const AddUsermatch = async (req: Request, res: Response, next: NextFunction) => {
-    let {token,id_match,room,floor,description} = req.body;
-    const usermatch = new User_match()
-    jwt.verify(token, config.token,async (err: any, user: any)=>{
-        if (err) {
-            console.log("err");     
-            return res.status(401).json({status:'error',message: "Token expired"});
-        }
-        else{
-            usermatch.id_user = user.id;
-            usermatch.id_match = id_match;
-            usermatch.room = room;
-            usermatch.floor = floor;
-            usermatch.description = description;
-            usermatch.status_user_match = "Wait for Approve";
-            usermatch.datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
-            const AddUsermatch = AppDataSource.getRepository(User_match).create(usermatch)
-            const results = await AppDataSource.getRepository(User_match).save(AddUsermatch)
-            return res.status(200).json({status:1,data:results,message: "Insert Success"});
-        }
+    let {id_match,room,floor,description} = req.body;
+    let {name, surname, email, role, departure} = req["userData"];
+    const Userdata = await AppDataSource.getRepository(User).find({
+        where: {
+            name: name,
+            surname: surname,
+            email:email,
+            role:role,
+            departure:departure
+        },
     });
+    if(Object.values(Userdata).length > 0){
+        let id_user:any = Userdata[0].id_user;
+        const usermatch = new User_match()
+        usermatch.id_user = id_user;
+        usermatch.id_match = id_match;
+        usermatch.room = room;
+        usermatch.floor = floor;
+        usermatch.description = description;
+        usermatch.status_user_match = "Wait for Approve";
+        usermatch.datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
+        const AddUsermatch = AppDataSource.getRepository(User_match).create(usermatch)
+        const results = await AppDataSource.getRepository(User_match).save(AddUsermatch)
+        return res.status(200).json({status:1,data:results,message: "Insert Success"});
+    }
+    else{
+        return res.status(404).json({status:0,message: "This User Not Found"});
+    }
 }
 const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
-    const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    let {name, surname, email, role, departure} = req["userData"];
+    const Userdata = await AppDataSource.getRepository(User).find({
+        where: {
+            name: name,
+            surname: surname,
+            email:email,
+            role:role,
+            departure:departure
+        },
+    });
+    if(Object.values(Userdata).length > 0){
+        const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
-            .where(`UserMatch.id_user = :id_user`, {id_user: req["user"].id}).getRawMany();   
-            console.log(RequestRent)  
+            .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
+            .getRawMany();   
             return res.status(200).json(RequestRent);
+    }
+    else{
+        return res.status(404).json({status:0,message: "This User Not Found"});
+    }
 }
 const GetApprove =async(req:Request, res:Response, next:NextFunction)=>{
     const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')

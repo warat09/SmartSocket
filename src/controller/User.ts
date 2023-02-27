@@ -1,16 +1,10 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { User } from '../entity/User';
-import  config from "../config/config";
-import jwt from "jsonwebtoken";
 import bycript from 'bcrypt'
 
-interface UserResponse extends Request {
-    userData?: object;
-}
-
-const CheckToken = async (req: UserResponse, res: Response, next: NextFunction) => {
-    return res.status(200).json({status:'ok',data:req.userData});
+const CheckToken = async (req: Request, res: Response, next: NextFunction) => {
+    return res.status(200).json({status:'ok',data:req["userData"]});
     // console.log(token)
     // jwt.verify(token, config.token,async (err: any, user: any)=>{
     //     if (err) {

@@ -1,9 +1,10 @@
 import express from 'express';
 import controller from '../controller/Usermatch';
+import {verifyRoles} from '../middleware/verifyRoles'
 
 const router = express.Router();
 
-router.post('/AddUsermatch', controller.AddUsermatch);
+router.post('/AddUsermatch',verifyRoles("admin","user"),controller.AddUsermatch);
 router.get('/GetRequestRent', controller.GetRequestRent);
 router.get('/GetApprove', controller.GetApprove);
 router.get('/AllUsermatch', controller.GetAllUsermatch);
