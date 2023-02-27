@@ -22,6 +22,7 @@ const NewUser: React.FC = () => {
 
     const navigate = useNavigate();
     //user
+    const [token,setToken] = useState<string>("")
     const { control, handleSubmit } = useForm({
         reValidateMode: "onBlur"
       });
@@ -51,13 +52,23 @@ const NewUser: React.FC = () => {
         }
       };
       const handleOnSubmit=async(data:any)=>{
-        await register(data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
-        navigate('/app/user/list')
+        await register("/User/Register",token,data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
+        // navigate('/app/user/list')
       }
   
     // const handleSubmit=async()=>{
     //   console.log(await register(name,surname,username,password,email,role,departure))
     // }
+    useEffect(() => {
+      const item = localStorage.getItem("User");
+      if (item && item !== "undefined") {
+        const user = JSON.parse(item);
+        setToken(user.token)
+      }
+      else{
+        navigate('/login')
+      }
+    },[]);
     return(
      <>
         <Helmet>

@@ -3,36 +3,36 @@ import { Checktoken } from './services/apiservice';
 // import Router from './routes';
 import Loading from './components/Loading';
 import { Helmet } from 'react-helmet-async';
-// const Router = lazy( () => {
-//   return Promise.all([
-//     import('./routes'),
-//     new Promise(resolve => setTimeout(resolve,3000))
-//   ]).then(
-//     (([moduleExports]) => moduleExports)
-//   )
-// });
-const Router = lazy(() => import("./routes"));
+const Router = lazy( () => {
+  return Promise.all([
+    import('./routes'),
+    new Promise(resolve => setTimeout(resolve,2000))
+  ]).then(
+    (([moduleExports]) => moduleExports)
+  )
+});
+// const Router = lazy(() => import("./routes"));
 
 const App: React.FC =()=> {
-  const [userData,setUserData] = useState<Object>({})
-  useEffect(() => {
-    const item = localStorage.getItem("User");
-    if (item && item !== "undefined") {
-      const user = JSON.parse(item);
-      Checktoken("/User/CheckToken",user.token).then((response) => {
-        if (response.status === "ok") {
-          setUserData(response.data)
-          console.log(response.data)
-        } 
-        // else {
-        //   localStorage.clear();
-        // }
-      });
-    } 
-    // else {
-    //   navigate("/login");
-    // }
-  }, []);
+  // const [userData,setUserData] = useState<Object>({})
+  // useEffect(() => {
+  //   const item = localStorage.getItem("User");
+  //   if (item && item !== "undefined") {
+  //     const user = JSON.parse(item);
+  //     Checktoken("/User/CheckToken",user.token).then((response) => {
+  //       if (response.status === "ok") {
+  //         setUserData(response.data)
+  //         console.log(response.data)
+  //       } 
+  //       // else {
+  //       //   localStorage.clear();
+  //       // }
+  //     });
+  //   } 
+  //   // else {
+  //   //   navigate("/login");
+  //   // }
+  // }, []);
   return (
     
     <>
@@ -40,7 +40,7 @@ const App: React.FC =()=> {
         <style>{"body { background-color: #F5F5F5; }"}</style>
       </Helmet>
       <Suspense fallback={<Loading/>}>
-        <Router UserData={userData}/>
+        <Router />
       </Suspense>
     </>
   );

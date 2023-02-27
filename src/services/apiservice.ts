@@ -3,19 +3,38 @@ import axios from 'axios';
 const api = "http://localhost:9090";
 export const login = async(path:string,username:string,password:string) => {
   let message;
-  await axios.post(api+path, {
-    username: username,
-    password: password
-  }).then(async(response)=>{
-      message = response.data
-  }).catch(error=> {
-    if (axios.isAxiosError(error) && error.response) {
-        message = error.response.data;
+  try{
+    const attibute_login = { username, password };
+    const response = await axios.post(api+path,attibute_login);
+    const userData = {
+      token:response.data.token
+    };
+    localStorage.setItem("User", JSON.stringify(userData));
+    window.history.pushState({},"Success","/app/dashboard");
+    window.location.reload();
+  }
+  catch(err){
+    if (axios.isAxiosError(err) && err.response) {
+      message = err.response.data;
     } else{
-        message = String(error);
+      message = String(err);
     }
-  });
+  }
   return message
+  // let message;
+  // await axios.post(api+path, {
+  //   username: username,
+  //   password: password
+  // }).then(async(response)=>{
+  //     message = response.data
+  // }).catch(error=> {
+  //   if (axios.isAxiosError(error) && error.response) {
+  //       message = error.response.data;
+  //   } else{
+  //       message = String(error);
+  //   }
+  // });
+  // return message
 }
 
 export const checktoken = async(path:string,username:string,password:string) => {
@@ -69,28 +88,47 @@ export const getUsers = async(path:string,token:string) => {
   }
 }
 
-export const register = async(name:string,surname:string,username:string,password:string,email:string,role:string,departure:string) => {
-  const url = "http://localhost:9090/User/Register";
-  let message;
-  await axios.post(url, {
-    name:name,
-    surname:surname,
-    username:username,
-    password:password,
-    email:email,
-    role:role,
-    departure:departure,
-    status:"active"
-  }).then(async(response)=>{
-      message = response.data
-  }).catch(error=> {
-    if (axios.isAxiosError(error) && error.response) {
-        message = error.response.data;
-    } else{
-        message = String(error);
-    }
-  });
-  return message
+export const register = async(path:string,token:string,name:string,surname:string,username:string,password:string,email:string,role:string,departure:string) => {
+  // console.log(name,surname,username,password,email,role,departure)
+  try{
+    const attibute_register = { name, surname, username, password, email, role, departure ,status:"active"};
+    const response = await axios.post(api+path,attibute_register,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    window.history.pushState({},"Success","/app/user/list");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+      localStorage.clear();
+      window.history.pushState({},"Error","/login");
+      window.location.reload();
+      return null;
+  }
+  // const url = "http://localhost:9090/User/Register";
+  // let message;
+  // await axios.post(url, {
+  //   name:name,
+  //   surname:surname,
+  //   username:username,
+  //   password:password,
+  //   email:email,
+  //   role:role,
+  //   departure:departure,
+  //   status:"active"
+  // })
+  // .then(async(response)=>{
+  //     message = response.data
+  // }).catch(error=> {
+  //   if (axios.isAxiosError(error) && error.response) {
+  //       message = error.response.data;
+  //   } else{
+  //       message = String(error);
+  //   }
+  // });
+  // return message
 }
 //Assets
 export const getAssets = async (path:string,token:string):Promise<any>=> {
@@ -118,7 +156,7 @@ export const addAssets = async(path:string,token:string,name_assets:string,rfid_
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Error","/app/asset/list");
+    window.history.pushState({},"Success","/app/asset/list");
     window.location.reload();
     return response.data;
   }
@@ -264,7 +302,7 @@ export const addUserMatching=async (path:string,token:string,id_match:string,roo
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/usermatch/list");
+    window.history.pushState({},"Success","/usermatch");
     window.location.reload();
     return response.data;
   }

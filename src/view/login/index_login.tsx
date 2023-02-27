@@ -53,24 +53,29 @@ const HomeLogin :React.FC = () =>{
           };
           const username = target.username.value; // typechecks!
           const password = target.password.value; // typechecks!
-          setTimeout(()=>{
-            login("/Login",username,password).then((results)=>{
-              const login = JSON.parse(JSON.stringify(results))
-              console.log(login)
-              if(login.status === "ok"){
-                  // alert(login.message);
-                  const userData = {
-                      username:username,
-                      token:login.token
-                    };
-                  localStorage.setItem("User", JSON.stringify(userData));
-                  navigate('/');
-              }
-              else{
-                  alert(login.message);
-              }
-            })
-          }, 3000);
+          setTimeout(async()=>{
+            const LoginStatus = await login("/Login",username,password);
+            if(LoginStatus.status === "error"){
+              alert(LoginStatus.message);
+            }
+            // login("/Login",username,password).then((results)=>{
+            //   const login = JSON.parse(JSON.stringify(results))
+            //   console.log(login)
+            //   if(login.status === "ok"){
+            //       // alert(login.message);
+            //       const userData = {
+            //           username:username,
+            //           token:login.token
+            //         };
+            //       localStorage.setItem("User", JSON.stringify(userData));
+            //       navigate('/');
+            //   }
+            //   else{
+            //       alert(login.message);
+            //   }
+            // })
+          }
+          , 3000);
         var myHeaders = new Headers();
         myHeaders.append("Content-Type","application/json");
 

@@ -45,8 +45,21 @@ const Dashboard = lazy( () => {
 const Transection  = lazy(() => import('./view/node_transection'));
 
 
-function Router(props:any){
-    const userData:any = props.UserData;
+const Router: React.FC =()=> {
+  const [userData,setUserData] = useState<any>({})
+  useEffect(() => {
+    const item = localStorage.getItem("User");
+    if (item && item !== "undefined") {
+      const user = JSON.parse(item);
+      Checktoken("/User/CheckToken",user.token).then((response) => {
+        if (response.status === "ok") {
+          console.log(response.data)
+          setUserData(response.data)
+        } 
+      });
+    } 
+  }, []);
+
     const routes:any = useRoutes([
         {
             path: '/app',
@@ -98,14 +111,6 @@ function Router(props:any){
                 { element: <Navigate to="/app/approve/list" />, index: true },
                 {path: 'list',element: <Approve />}
               ]},
-              // { path: 'transaction', element:
-              //  <Suspense fallback={
-              //   <Box sx={{ width: '100%' }}>
-              //     <Loading />
-              //   </Box>
-              //  }>
-              //   <Transection />
-              // </Suspense> },
               { path: 'transaction' ,children:[
                 { element: <Navigate to='/app/transaction/list'/>, index: true},
                 {path: 'list',element:

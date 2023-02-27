@@ -50,8 +50,7 @@ const TABLE_HEAD = [
   { id: 'UserMatch_floor', label: 'Floor', alignRight: false },
   { id: 'UserMatch_description', label: 'Description', alignRight: false },
   { id: 'UserMatch_datetime', label: 'DateTime', alignRight: false },
-  { id: 'User_name', label: 'Name', alignRight: false },
-  { id: 'User_surname', label: 'Surname', alignRight: false },
+  { id: 'User_Name', label: 'Name', alignRight: false },
   { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
   { id: 'User_action', label: 'Action', alignRight: false },
   { id: '' },
@@ -307,9 +306,7 @@ const HomeApprove: React.FC = () => {
 
                         <TableCell align="left">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{User_name}</TableCell>
-
-                        <TableCell align="left">{User_surname}</TableCell>
+                        <TableCell align="left">{User_name+" "+User_surname}</TableCell>
 
                         <TableCell align="left">{UserMatch_status_user_match}</TableCell>
                 
