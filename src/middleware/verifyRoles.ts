@@ -13,7 +13,6 @@ export const verifyRoles = (...allowedRoles:any) =>{
             if(key === "role"){
                 var result =rolesArray.includes(value) ;
             }
-            // console.log(`${key}: ${value}`);
         }
         if(!result) return res.sendStatus(401)
         // const result = req["role"].map(role=> rolesArray.includes(role)).find(val=>val ===true);
