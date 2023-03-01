@@ -5,22 +5,6 @@ import bycript from 'bcrypt'
 
 const CheckToken = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({status:'ok',data:req["userData"]});
-    // console.log(token)
-    // jwt.verify(token, config.token,async (err: any, user: any)=>{
-    //     if (err) {
-    //         console.log("err");     
-    //         return res.status(401).json({status:'error',message: "Token expired"});
-    //     }
-    //     else{
-    //         const CheckUser = await AppDataSource.getRepository(User).find({
-    //             where: {
-    //                 id_user: user.id,
-    //                 status_user:'Active'
-    //             },
-    //           });
-    //         return res.status(200).json({status:'ok',data:CheckUser,message: "Token not expired"});
-    //     }
-    // });
 }
 const AddUser = async (req: Request, res: Response, next: NextFunction) => {
     let {name,surname,username,password,email,role,departure,status} = req.body;
