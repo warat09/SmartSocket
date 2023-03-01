@@ -17,11 +17,13 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Drawer from "@mui/material/Drawer";
 import PowerTwoToneIcon from '@mui/icons-material/PowerTwoTone';
+import AccountPopover from "./AccountPopover";
 // import Link from '@mui/material/Link';
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 const drawerWidth = 200;
 
 function ResponsiveAppBar(props:any) {
+  const userData = props.UserData
   const { window } = props;
   const navigate = useNavigate();
   const [name, setname] = React.useState("");
@@ -137,40 +139,8 @@ function ResponsiveAppBar(props:any) {
               >
                 SmartSocket
               </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}/>
-
-              <Box sx={{ flexGrow: 0 }}>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar
-                      alt="Remy Sharp"
-                      src={"https://ui-avatars.com/api/?name=" + name}
-                    />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  sx={{ mt: "45px" }}
-                  id="menu-appbar"
-                  anchorEl={anchorElUser}
-                  anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                  }}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                >
-                  {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                      <Typography textAlign="center">{setting}</Typography>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
+              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}/>  
+              <AccountPopover data={userData}/>
             </Toolbar>
           </Container>
         </AppBar>

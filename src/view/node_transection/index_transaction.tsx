@@ -233,10 +233,6 @@ const HomeTransection: React.FC = () => {
 
                         <TableCell align="left">{Transaction_off_date}</TableCell>
 
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
@@ -255,7 +251,7 @@ const HomeTransection: React.FC = () => {
                 {isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
@@ -289,41 +285,6 @@ const HomeTransection: React.FC = () => {
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
         </Card>
-        {/* <Box>
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Assets</TableCell>
-                  <TableCell align="right">mac_address</TableCell>
-                  <TableCell align="right">status_transaction&nbsp;</TableCell>
-                  <TableCell align="right">time_used&nbsp;</TableCell>
-                  <TableCell align="right">time_update&nbsp;</TableCell>
-                  <TableCell align="right">on_date&nbsp;</TableCell>
-                  <TableCell align="right">off_date&nbsp;</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {listassets.map((row:any,i:any) => (
-                  <TableRow
-                    key={row.Asset_name_assets}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.Asset_name_assets}
-                    </TableCell>
-                    <TableCell align="right">{row.Match_mac_address}</TableCell>
-                    <TableCell align="right">{row.Transaction_status_transaction}</TableCell>
-                    <TableCell align="right">{formatTime(row.Transaction_time_used)}</TableCell>
-                    <TableCell align="right">{new Date(row.Transaction_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-                    <TableCell align="right">{row.Transaction_on_date}</TableCell>
-                    <TableCell align="right">{row.Transaction_off_date}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box> */}
       </Container>
 
       <Popover

@@ -2,7 +2,6 @@ import axios from 'axios';
 
 const api = "http://localhost:9090";
 export const login = async(path:string,username:string,password:string) => {
-  let message;
   try{
     const attibute_login = { username, password };
     const response = await axios.post(api+path,attibute_login);
@@ -10,17 +9,16 @@ export const login = async(path:string,username:string,password:string) => {
       token:response.data.token
     };
     localStorage.setItem("User", JSON.stringify(userData));
-    window.history.pushState({},"Success","/app/dashboard");
-    window.location.reload();
+    return response.data;
+    // window.history.pushState({},"Success","/app/dashboard");
+    // window.location.reload();
   }
   catch(err){
-    if (axios.isAxiosError(err) && err.response) {
-      message = err.response.data;
-    } else{
-      message = String(err);
-    }
+    localStorage.clear();
+    window.history.pushState({},"Error","/login");
+    window.location.reload();
+    return null;
   }
-  return message
   // let message;
   // await axios.post(api+path, {
   //   username: username,
@@ -97,7 +95,7 @@ export const register = async(path:string,token:string,name:string,surname:strin
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/user/list");
+    window.history.pushState({},"Success","/app/admin/user/list");
     window.location.reload();
     return response.data;
   }
@@ -156,7 +154,7 @@ export const addAssets = async(path:string,token:string,name_assets:string,rfid_
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/asset/list");
+    window.history.pushState({},"Success","/app/admin/asset/list");
     window.location.reload();
     return response.data;
   }
@@ -264,7 +262,7 @@ export const addMatching=async (path:string,token:string,id_assets:string,mac_ad
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/match/list");
+    window.history.pushState({},"Success","/app/admin/match/list");
     window.location.reload();
     return response.data;
   }
@@ -302,7 +300,7 @@ export const addUserMatching=async (path:string,token:string,id_match:string,roo
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/usermatch");
+    window.history.pushState({},"Success","/app/personnel/borrow");
     window.location.reload();
     return response.data;
   }

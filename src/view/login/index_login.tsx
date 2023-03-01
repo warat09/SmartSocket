@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {login} from "../../services/apiservice";
+import {login,Checktoken} from "../../services/apiservice";
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -55,9 +55,22 @@ const HomeLogin :React.FC = () =>{
           const password = target.password.value; // typechecks!
           setTimeout(async()=>{
             const LoginStatus = await login("/Login",username,password);
-            if(LoginStatus.status === "error"){
-              alert(LoginStatus.message);
+            console.log(LoginStatus)
+            if(LoginStatus.message === "Login Success"){
+              const GetUser = await Checktoken("/User/CheckToken",LoginStatus.token);
+              if(GetUser.status === "ok"){
+                if(GetUser.data.role === "admin"){
+                  navigate("/app/admin/dashboard")
+                }
+                else{
+                  navigate("/app/personnel/borrow")
+                }
+              }
+
             }
+            // if(LoginStatus.status === "error"){
+            //   alert(LoginStatus.message);
+            // }
             // login("/Login",username,password).then((results)=>{
             //   const login = JSON.parse(JSON.stringify(results))
             //   console.log(login)

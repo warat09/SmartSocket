@@ -8,37 +8,37 @@ import SvgColor from '../svg-color';
 const navConfig = [
   {
     title: 'Dashboard',
-    path: '/app/dashboard',
+    path: '/app/admin/dashboard',
     icon:'fluent-mdl2:b-i-dashboard',
   },
   {
     title:'User',
-    path: '/app/user',
+    path: '/app/admin/user/list',
     icon:'mdi:user-circle'
   },
   {
-    title: 'Node',
-    path: '/app/node',
+    title: 'Socket',
+    path: '/app/admin/socket',
     icon: 'mdi:plug-socket-au',
   },
   {
     title: 'Asset',
-    path: '/app/asset',
+    path: '/app/admin/asset/list',
     icon: 'ri:plug-2-line',
   },
   {
     title: 'Match',
-    path: '/app/match',
+    path: '/app/admin/match/list',
     icon: 'fluent:plug-connected-add-20-regular',
   },
   {
     title: 'Approve',
-    path: '/app/approve',
+    path: '/app/admin/approve/list',
     icon: 'mdi:user-search-outline',
   },
   {
     title: 'Transaction',
-    path: '/app/transaction',
+    path: '/app/admin/transaction/list',
     icon: 'icon-park-outline:transaction-order',
   },
   {

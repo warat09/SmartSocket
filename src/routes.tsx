@@ -1,9 +1,9 @@
 import {Suspense,lazy,useEffect,useState} from 'react';
-import { Navigate, useRoutes } from 'react-router-dom';
-import Layout from './layouts/app/applicationlayout';
+import { Navigate, useRoutes, Route, Routes } from 'react-router-dom';
+import LayoutAdmin from './layouts/app/adminlayout';
+import LayoutUser from './layouts/app/userlayout';
 import NotFoundLayout from './layouts/404/index'
-import { Checktoken } from './services/apiservice';
-// import Home from './view/home';
+import Home from './view/home';
 import Login from './view/login';
 
 import Node from './view/node';
@@ -41,42 +41,77 @@ const Dashboard = lazy( () => {
 //   )
 // });
 
-
 const Transection  = lazy(() => import('./view/node_transection'));
 
 
 const Router: React.FC =()=> {
-  const [userData,setUserData] = useState<any>({})
-  useEffect(() => {
-    const item = localStorage.getItem("User");
-    if (item && item !== "undefined") {
-      const user = JSON.parse(item);
-      Checktoken("/User/CheckToken",user.token).then((response) => {
-        if (response.status === "ok") {
-          console.log(response.data)
-          setUserData(response.data)
-        } 
-      });
-    } 
-  }, []);
+  // return(
+  //   <Routes>
+  //     <Route index path={"/"} element={<Home/>}/>
+  //     <Route path={"login"} element={<Login/>} />
+  //       {/* <Route index element={<Navigate to="/login"/>}/>
+        
+  //     </Route> */}
+      
+  //     {/* <Route path={"/app"} element={<CreateAccount />} /> */}
+  //     <Route path={"/app/personnel"} element={<LayoutUser/>}>
+  //       <Route index element={<Navigate to="/app/personnel/borrow" />}/>
+  //       <Route path={"borrow"} element={<UserMatch/>} />
+  //     </Route>
 
+  //     <Route path={"/app/admin"} element={<LayoutAdmin/>}>
+  //       {/* <Route index element={<Navigate to="/app/admin/dashboard" />}/> */}
+  //       <Route index path={"dashboard"} element={<Dashboard/>} />
+  //       <Route path={"socket"} element={<Node/>} />
+  //       <Route path={"user"}>
+  //         <Route index element={<Navigate to="/app/admin/user/list" />}/>
+  //         <Route path={"list"} element={<ListUser/>}/>
+  //         <Route path={"new"} element={<NewUser/>}/>
+  //       </Route>
+  //       <Route path={"asset"}>
+  //         <Route index element={<Navigate to="/app/admin/asset/list" />}/>
+  //         <Route path={"list"} element={<ListAsset/>}/>
+  //         <Route path={"new"} element={<NewAsset/>}/>
+  //       </Route>
+  //       <Route path={"match"}>
+  //         <Route index element={<Navigate to="/app/admin/match/list" />}/>
+  //         <Route path={"list"} element={<ListMatch/>}/>
+  //         <Route path={"new"} element={<NewMatch/>}/>
+  //       </Route>
+  //       <Route path={"approve"} element={<Approve/>}/>
+  //       <Route path={"transaction"} element={<Transection/>}/>
+  //     </Route>
+  //     <Route element={<NotFoundLayout/>}>
+  //       <Route index element={<Navigate to="/app" />}/>
+  //       <Route path={"404"} element={<Page404/>} />
+  //       <Route path={"*"} element={ <Navigate to="/404" />} />
+  //     </Route>
+  //     <Route path="*" element={<Navigate to="/404" replace/>} />
+  //   </Routes>
+  // );
+  
     const routes:any = useRoutes([
         {
-            path: '/app',
-            element: <Layout UserData={userData} />,
+            path: '/',
+            element: <Home/>,
+            index:true
+        },
+        {
+            path: '/app/admin',
+            element: <LayoutAdmin />,
             children: [
-              { element: <Navigate to="/app/dashboard" />, index: true },
+              { element: <Navigate to="/app/admin/dashboard" />, index: true },
               { path: 'dashboard', element: 
               <Suspense fallback={
                 <Loading/>
             }>
                 <Dashboard />
               </Suspense>},
-              { path: 'node', element: <Node /> },
+              { path: 'socket', element: <Node /> },
               {
                 path: 'user',
                 children:[
-                  { element: <Navigate to='/app/user/list'/>, index: true},
+                  { element: <Navigate to='/app/admin/user/list'/>, index: true},
                   {path: 'list',element:
                   <Suspense fallback={
                     <Box sx={{ width: '100%' }}>
@@ -98,21 +133,21 @@ const Router: React.FC =()=> {
                 ]
               },
               { path: 'asset',children: [
-                { element: <Navigate to="/app/asset/list" />, index: true },
+                { element: <Navigate to="/app/admin/asset/list" />, index: true },
                 {path: 'list',element: <ListAsset />},
                 {path: 'new',element: <NewAsset />}
               ]},
               { path: 'match',children: [
-                { element: <Navigate to="/app/match/list" />, index: true },
+                { element: <Navigate to="/app/admin/match/list" />, index: true },
                 {path: 'list',element: <ListMatch />},
                 {path: 'new',element: <NewMatch />}
               ]},
               { path: 'approve',children: [
-                { element: <Navigate to="/app/approve/list" />, index: true },
+                { element: <Navigate to="/app/admin/approve/list" />, index: true },
                 {path: 'list',element: <Approve />}
               ]},
               { path: 'transaction' ,children:[
-                { element: <Navigate to='/app/transaction/list'/>, index: true},
+                { element: <Navigate to='/app/admin/transaction/list'/>, index: true},
                 {path: 'list',element:
                 <Suspense fallback={
                   <Box sx={{ width: '100%' }}>
@@ -125,7 +160,16 @@ const Router: React.FC =()=> {
               ]}
             ],
           },
-          { path: 'usermatch', element: <UserMatch /> },
+          { path: '/app/personnel', 
+            element: <LayoutUser /> ,
+            children: [
+              { element: <Navigate to="/app/personnel/borrow" />, index: true },
+              { path: 'borrow', element: 
+              <Suspense fallback={<Loading/>}>
+                <UserMatch />
+              </Suspense>},
+            ]
+          },
           {
             path: 'login',
             element: <Login />,

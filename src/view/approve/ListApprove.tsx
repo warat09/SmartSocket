@@ -52,8 +52,7 @@ const TABLE_HEAD = [
   { id: 'UserMatch_datetime', label: 'DateTime', alignRight: false },
   { id: 'User_Name', label: 'Name', alignRight: false },
   { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
-  { id: 'User_action', label: 'Action', alignRight: false },
-  { id: '' },
+  { id: 'User_action', label: 'Action', alignRight: false }
 ];
 
 // ----------------------------------------------------------------------
@@ -347,12 +346,6 @@ const HomeApprove: React.FC = () => {
                         {/* <TableCell align="left">
                           <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
                         </TableCell> */}
-
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={"eva:more-vertical-fill"}/>
-                          </IconButton>
-                        </TableCell>
                       </TableRow>
                     );
                   })}
@@ -366,7 +359,7 @@ const HomeApprove: React.FC = () => {
                 {isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

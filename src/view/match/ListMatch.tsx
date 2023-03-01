@@ -166,10 +166,24 @@ const HomeMatch: React.FC = () => {
     // if (days > 0) {
     //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
     // } else 
+    console.log(hours,minutes,seconds)
     if (hours > 0) {
-      time = `${totalHours} Hours ${minutes}Minutes ${seconds} Seconds`;
+      if(seconds === 0){
+        time = `${totalHours} Hours ${minutes} Minutes`;
+      }
+      if(minutes === 0 && seconds === 0){
+        time = `${totalHours} Hours`;
+      }
+      else{
+        time = `${totalHours} Hours ${minutes} Minutes ${seconds} Seconds`;
+      }
     } else if (minutes > 0) {
-      time = `${minutes} Minutes ${seconds} Seconds`;
+      if(seconds === 0){
+        time = `${minutes} Minutes`;
+      }
+      else{
+        time = `${minutes} Minutes ${seconds} Seconds`;
+      }
     } else if (seconds > 0) {
       time = `${seconds} Seconds`;
     }
@@ -177,7 +191,6 @@ const HomeMatch: React.FC = () => {
   }
 
   useEffect(() => {
-    console.log('1')
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
           const user = JSON.parse(item);
@@ -198,7 +211,7 @@ const HomeMatch: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             Match List
           </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/match/new')}>
+          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/match/new')}>
             New Matching
           </Button>
         </Stack>
@@ -265,7 +278,7 @@ const HomeMatch: React.FC = () => {
                 {isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={9} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

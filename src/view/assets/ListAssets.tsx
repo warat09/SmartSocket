@@ -174,7 +174,7 @@ const HomeAsset: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             Asset List
           </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/asset/new')}>
+          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/asset/new')}>
             New Asset
           </Button>
       </Stack>
@@ -237,7 +237,7 @@ const HomeAsset: React.FC = () => {
                 {isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',

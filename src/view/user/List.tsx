@@ -174,7 +174,7 @@ const ListUser: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             User List
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/user/new')}>
+          <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/user/new')}>
             New User
           </Button>
         </Stack>
@@ -236,7 +236,7 @@ const ListUser: React.FC = () => {
                 {isNotFound && (
                   <TableBody>
                     <TableRow>
-                      <TableCell align="center" colSpan={6} sx={{ py: 3 }}>
+                      <TableCell align="center" colSpan={7} sx={{ py: 3 }}>
                         <Paper
                           sx={{
                             textAlign: 'center',
