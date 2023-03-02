@@ -3,6 +3,8 @@ import { Checktoken } from './services/apiservice';
 // import Router from './routes';
 import Loading from './components/Loading';
 import { Helmet } from 'react-helmet-async';
+import ThemeProvider from './theme';
+
 const Router = lazy( () => {
   return Promise.all([
     import('./routes'),
@@ -35,14 +37,14 @@ const App: React.FC =()=> {
   // }, []);
   return (
     
-    <>
+    <ThemeProvider>
       <Helmet>
         <style>{"body { background-color: #F5F5F5; }"}</style>
       </Helmet>
       <Suspense fallback={<Loading/>}>
         <Router />
       </Suspense>
-    </>
+    </ThemeProvider>
   );
 }
 

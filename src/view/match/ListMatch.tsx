@@ -256,10 +256,6 @@ const HomeMatch: React.FC = () => {
 
                         <TableCell align="left">{Match_status_match}</TableCell>
 
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
                             <Iconify icon={"eva:more-vertical-fill"}/>

@@ -11,9 +11,12 @@ import {
   Typography,
   Container,
   Paper,
-  Divider
+  Divider,
+  Box
 } from "@mui/material";
 import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
+import CardDashboard from '../../components/user/carddashboard';
+
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
   textAlign: 'center',
@@ -47,30 +50,54 @@ const HomeDashboard: React.FC = () => {
       <Helmet>
         <title> Dashboard | SmartSocket </title>
       </Helmet>
-      <Container maxWidth="xl">
-      <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
-          Dashboard
-      </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
-        <Grid container spacing={2}>
-        {ConDashboard.map((row: any, i: any) => (
-            <Grid item xs={4}>
-              <Card>
-                <CardActionArea>
-                  <CardContent>
-                    <Typography gutterBottom variant="h5" component="div">
-                      {row.topic}
-                    </Typography>
-                    <Typography variant="h4" color="text.secondary">
-                      {row.amount}
-                    </Typography>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-            ))}
-        </Grid>
-     </Container>
+      <Box
+       component="main"
+       sx={{
+         flexGrow: 1,
+         py: 8,
+         pl:3
+       }}
+      >
+        <Container maxWidth="xl">
+        {/* <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
+            Dashboard
+        </Typography> */}
+          {/* <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/> */}
+          <Grid container spacing={3}>
+     
+            {/* {ConDashboard.map((row: any, i: any) => (
+              <Grid
+              xs={12}
+              sm={6}
+              lg={3}
+            >
+              <CardDashboard 
+                difference={12}
+                positive
+                sx={{ height: '100%' }}
+                value={row.amount}
+                />
+          </Grid>
+              ))} */}
+          {ConDashboard.map((row: any, i: any) => (
+              <Grid item xs={4}>
+                <Card>
+                  <CardActionArea>
+                    <CardContent>
+                      <Typography gutterBottom variant="h5" component="div">
+                        {row.topic}
+                      </Typography>
+                      <Typography variant="h4" color="text.secondary">
+                        {row.amount}
+                      </Typography>
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+              ))}
+          </Grid>
+      </Container>
+    </Box>
     </>
     
   );
