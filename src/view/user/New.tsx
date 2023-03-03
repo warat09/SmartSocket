@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,forwardRef } from "react";
 import { Helmet } from 'react-helmet-async';
 import { register } from "../../services/apiservice";
 import { useNavigate } from "react-router-dom";
@@ -19,23 +19,47 @@ import {
     CardContent,
     Unstable_Grid2 as Grid,
     CardActions,
-    Divider
+    Divider,
+    Input
   } from "@mui/material";
-import { Controller,useForm } from 'react-hook-form';
+  import { IMaskInput } from 'react-imask';
+  import { Controller,useForm } from 'react-hook-form';
 
+  interface CustomProps {
+    onChange: (event: { target: { name: string; value: string } }) => void;
+    name: string;
+  }
 
+  const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+    function TextMaskCustom(props, ref:any) {
+      const { onChange, ...other } = props;
+      return (
+        <IMaskInput
+          {...other}
+          mask="0-0000-00000-00-0"
+          definitions={{
+            '#': /[1-9]/,
+          }}
+          inputRef={ref}
+          onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+          overwrite
+        />
+      );
+    },
+  );
 const NewUser: React.FC = () => {
 
     const navigate = useNavigate();
     //user
     const [token,setToken] = useState<string>("")
+    const [password,setPassword] = useState<string>("")
     const { control, handleSubmit } = useForm({
         reValidateMode: "onBlur"
       });
 
     const myHelper:any = {
         username:{
-          required: "User Name is Required"
+          required: "Username is Required"
         },
         password:{
           required: "Password is Required"
@@ -50,6 +74,10 @@ const NewUser: React.FC = () => {
           required: "Email is Required",
           pattern: "Invalid Email Address"
         },
+        card:{
+          required: "Id Card is Required",
+          pattern: "Invalid Id Card"
+        },
         role:{
           required: "Role is Required"
         },
@@ -59,10 +87,9 @@ const NewUser: React.FC = () => {
       };
       const handleOnSubmit=async(data:any)=>{
         console.log(data)
-        await register("/User/Register",token,data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
+        // await register("/User/Register",token,data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
         // navigate('/app/user/list')
-      }
-  
+      }  
     // const handleSubmit=async()=>{
     //   console.log(await register(name,surname,username,password,email,role,departure))
     // }
@@ -76,6 +103,7 @@ const NewUser: React.FC = () => {
         navigate('/login')
       }
     },[]);
+    console.log(password)
     return(
      <>
         <Helmet>
@@ -88,62 +116,14 @@ const NewUser: React.FC = () => {
             </Typography>
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
           <Card>
-            <CardHeader
+            {/* <CardHeader
               subheader="The information can be edited"
               title="Profile"
-            />
-            <CardContent sx={{pt:2}}>
+            /> */}
+            <CardContent sx={{pt:4}}>
               <Box sx={{ m: -1.5 }}>
                 <Grid container spacing={2} pl={2} pr={2}>
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                     <Controller
-                      control={control}
-                      name="username"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                        {...field}
-                        label="UserName"
-                        fullWidth
-                        type="text"
-                        error={error !== undefined}
-                        helperText={error ? myHelper.username[error.type] : ""}
-                      />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="password"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="password"
-                          fullWidth
-                          label="Password"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.password[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
+                <Grid
                     xs={12}
                     md={6}
                   >
@@ -195,6 +175,30 @@ const NewUser: React.FC = () => {
                     xs={12}
                     md={6}
                   >
+                     <Controller
+                      control={control}
+                      name="username"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                        {...field}
+                        label="Username"
+                        fullWidth
+                        type="text"
+                        error={error !== undefined}
+                        helperText={error ? myHelper.username[error.type] : ""}
+                      />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
                     <Controller
                       control={control}
                       name="email"
@@ -211,6 +215,61 @@ const NewUser: React.FC = () => {
                           label="Email"
                           error={error !== undefined}
                           helperText={error ? myHelper.email[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="id_card"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        pattern: /([0-9]{1})-([0-9]{4})-([0-9]{5})-([0-9]{2})-([0-9]{1})/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        
+                        <TextField
+                        {...field}
+                          type="text"
+                          fullWidth
+                          label="ID Card"
+                          InputProps={{
+                            inputComponent: TextMaskCustom as any
+                          }}
+                          error={error !== undefined}
+                          helperText={error ? myHelper.card[error.type] : ""}
+                      />
+
+                                                
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="password"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="Password"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.password[error.type] : ""}
                         />
                       )}
                     />
