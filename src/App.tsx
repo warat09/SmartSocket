@@ -39,7 +39,7 @@ const App: React.FC =()=> {
     
     <ThemeProvider>
       <Helmet>
-        <style>{"body { background-color: #F5F5F5; }"}</style>
+        <style>{"body { background-color: #F5F6F8; }"}</style>
       </Helmet>
       <Suspense fallback={<Loading/>}>
         <Router />

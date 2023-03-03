@@ -13,7 +13,13 @@ import {
     TextField,
     Stack,
     Button,
-    FormHelperText
+    FormHelperText,
+    Card,
+    CardHeader,
+    CardContent,
+    Unstable_Grid2 as Grid,
+    CardActions,
+    Divider
   } from "@mui/material";
 import { Controller,useForm } from 'react-hook-form';
 
@@ -52,6 +58,7 @@ const NewUser: React.FC = () => {
         }
       };
       const handleOnSubmit=async(data:any)=>{
+        console.log(data)
         await register("/User/Register",token,data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
         // navigate('/app/user/list')
       }
@@ -75,280 +82,200 @@ const NewUser: React.FC = () => {
           <title> User: New | SmartSocket </title>
         </Helmet>
         <Container>
-         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
-            <Typography variant="h4" gutterBottom>
+        <Stack spacing={3}>
+            <Typography variant="h3" gutterBottom>
                 Create a new user
             </Typography>
-         </Stack>
-         <Box sx={{ minWidth: 120 }} component="form" onSubmit={handleSubmit(handleOnSubmit)}>
-          <Stack spacing={3} mb={3}>
-          <Controller
-              control={control}
-              name="username"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                {...field}
-                label="UserName"
-                type="text"
-                error={error !== undefined}
-                helperText={error ? myHelper.username[error.type] : ""}
-              />
-              )}
+          <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+          <Card>
+            <CardHeader
+              subheader="The information can be edited"
+              title="Profile"
             />
+            <CardContent sx={{pt:2}}>
+              <Box sx={{ m: -1.5 }}>
+                <Grid container spacing={2} pl={2} pr={2}>
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                     <Controller
+                      control={control}
+                      name="username"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                        {...field}
+                        label="UserName"
+                        fullWidth
+                        type="text"
+                        error={error !== undefined}
+                        helperText={error ? myHelper.username[error.type] : ""}
+                      />
+                      )}
+                    />
+                  </Grid>
 
-          {/* <Controller
-              control={control}
-              name="rfid"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <FormControl error={error !== undefined} fullWidth>
-                <InputLabel id="demo-simple-select-label">Rfid</InputLabel>
-                  <Select 
-                  {...field}
-                  fullWidth
-                  labelId="demo-simple-select-label"
-                  label="Rfid"
-                  error={error !== undefined}
-                   >
-                    <MenuItem
-                      value=""
-                    >
-                      <em>None</em>
-                    </MenuItem>
-                {RfidAssets.map((inputnode) => {
-                  return (
-                    <MenuItem
-                      value={inputnode.Rfid_rfid_address}
-                      key={inputnode.Rfid_rfid_address}
-                    >
-                      {inputnode.Rfid_rfid_address}
-                    </MenuItem>
-                  );
-                })}
-                   </Select>
-                <FormHelperText>{error ? myHelper.rfid[error.type] : ""}</FormHelperText>
-                </FormControl>
-              )}
-            /> */}
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="password"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="Password"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.password[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
 
-            <Controller
-              control={control}
-              name="password"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="password"
-                  fullWidth
-                  label="Password"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.password[error.type] : ""}
-                />
-              )}
-            />
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="name"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Name"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.name[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
 
-            <Controller
-              control={control}
-              name="name"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  fullWidth
-                  label="Name"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.name[error.type] : ""}
-                />
-              )}
-            />
-            
-            <Controller
-              control={control}
-              name="surname"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  fullWidth
-                  label="Surname"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.surname[error.type] : ""}
-                />
-              )}
-            />
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                     <Controller
+                      control={control}
+                      name="surname"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Surname"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.surname[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
 
-            <Controller
-              control={control}
-              name="email"
-              defaultValue=""
-              rules={{
-                required: true,
-                pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  fullWidth
-                  label="Email"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.email[error.type] : ""}
-                />
-              )}
-            />
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="email"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Email"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.email[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
 
-            <Controller
-              control={control}
-              name="role"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  fullWidth
-                  label="Role"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.role[error.type] : ""}
-                />
-              )}
-            />
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="role"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Role"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.role[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
 
-            <Controller
-              control={control}
-              name="departure"
-              defaultValue=""
-              rules={{
-                required: true
-              }}
-              render={({ field, fieldState: { error } }) => (
-                <TextField
-                  {...field}
-                  type="text"
-                  fullWidth
-                  label="Departure"
-                  error={error !== undefined}
-                  helperText={error ? myHelper.departure[error.type] : ""}
-                />
-              )}
-            />                        
-                <Button variant="contained" type="submit">
-                      Add Matching
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="departure"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Departure"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.departure[error.type] : ""}
+                        />
+                      )}
+                    />  
+                  </Grid>
+                </Grid>   
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Create a new user
                 </Button>
-          </Stack>        
-        </Box>
+             </CardActions>
+            </Card>
+            </Box>
+          </Stack>
         </Container>
-        
-            {/* <div className="container">
-            <h1>Create</h1>
-            <hr/>
-            <div className="information">
-                <form action="">
-                <label>username</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setUsername(e.target.value);
-                    }}
-                ></input>
-
-                <label>password</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setPassword(e.target.value);
-                    }}
-                ></input>
-
-                <label>name</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setName(e.target.value);
-                    }}
-                ></input>
-
-                <label>surname</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setSurname(e.target.value);
-                    }}
-                ></input>
-
-                <label>email</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setEmail(e.target.value);
-                    }}
-                ></input>
-
-                <label>telephone</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setPhone(e.target.value);
-                    }}
-                ></input>
-
-                <label>role</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setRole(e.target.value);
-                    }}
-                ></input>
-
-                <label>departure</label>
-                <input
-                    type="text"
-                    className="form-control"
-                    placeholder="Enter name"
-                    onChange={(e) => {
-                    setDeparture(e.target.value);
-                    }}
-                ></input>
-                <div className="button-submit">
-                    <button onClick={handleSubmit}>ADD Assets</button>
-                </div>
-                </form>
-            </div>
-            </div> */}
     </>
     );
 }
