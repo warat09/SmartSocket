@@ -8,7 +8,7 @@ export class User_match {
     @PrimaryGeneratedColumn('increment')
     id_user_match : number
 
-    @ManyToOne(() => User, (User) => User.id_user)
+    @ManyToOne(() => User, (User) => User.id_user,{onDelete:'CASCADE'})
     @JoinColumn({ name: 'id_user' })
     id_user: User
     

@@ -43,10 +43,12 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             surname: surname,
             email:email,
             role:role,
-            departure:departure
+            departure:departure,
+            status_user:"Active"
         },
     });
     if(Object.values(Userdata).length > 0){
+        console.log(Object.values(Userdata).length)
         const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')

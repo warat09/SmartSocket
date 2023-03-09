@@ -6,10 +6,10 @@ import jwt from "jsonwebtoken";
 import bycript from 'bcrypt'
 
 const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
-    let {username,password} = req.body;
+    let {email,password} = req.body;
     const CheckUser = await AppDataSource.getRepository(User).find({
         where: {
-            username: username,
+            email: email,
             status_user:'Active'
         },
       });
@@ -23,7 +23,6 @@ const LoginUser = async (req: Request, res: Response, next: NextFunction) => {
                     { 
                         name:CheckUser[0].name,
                         surname:CheckUser[0].surname,
-                        username: CheckUser[0].username,
                         email: CheckUser[0].email,
                         role:CheckUser[0].role,
                         departure:CheckUser[0].departure

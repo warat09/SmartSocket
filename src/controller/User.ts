@@ -7,7 +7,7 @@ const CheckToken = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({status:'ok',data:req["userData"]});
 }
 const AddUser = async (req: Request, res: Response, next: NextFunction) => {
-    let {name,surname,username,password,email,role,departure,status} = req.body;
+    let {name,surname,password,email,role,departure,id_card} = req.body;
     bycript.hash(password,10,async(error:any,hashpassword:string)=>{
         if(error){
             res.status(500).json({status:'error',message: "Getting error during the connection"})
@@ -17,15 +17,15 @@ const AddUser = async (req: Request, res: Response, next: NextFunction) => {
             const user = new User();
             user.name = name;
             user.surname = surname;
-            user.username = username;
             user.password = hashpassword;
             user.email = email;
+            user.id_card = id_card;
             user.role = role;
             user.departure = departure;
             user.status_user = 'Active';
             const CheckUser = await AppDataSource.getRepository(User).find({
                 where: [
-                    { username: username },
+                    { id_card: id_card },
                     { email: email }
                 ]
               });
@@ -40,16 +40,39 @@ const AddUser = async (req: Request, res: Response, next: NextFunction) => {
         }
     })
 }
+const UpdateStatusUser = async(req:Request,  res: Response, next: NextFunction) => {
+    const id = Number(req.params.id)
+    const CheckUser = await AppDataSource.getRepository(User).find({
+        where: {
+            id_user: id,
+            status_user:'Active'
+        },
+      });
+    if(Object.values(CheckUser).length !== 0){
+        await AppDataSource
+            .createQueryBuilder()
+            .update(User)
+            .set({
+                status_user : "Deactive"
+            })
+            .where("id_user = :id", { id: id }).execute()
+            return res.status(200).json({status:1,message: "Delete Success"});
+    }
+}
 const GetAllUser = async(req:Request,  res: Response, next: NextFunction) => {
-    const AllUser = await AppDataSource.getRepository(User).find()
+    const AllUser = await AppDataSource.getRepository(User).find({
+        where:[
+            {status_user : "Active"}
+        ]
+    })
     const FilterUser = []
     for(let i = 0; i < AllUser.length;i++){
         const UserData = AllUser[i]
         const attribute = {
             id_user:UserData.id_user,
             fullname:UserData.name+" "+UserData.surname,
-            username:UserData.username,
             email:UserData.email,
+            id_card:UserData.id_card,
             role:UserData.role,
             departure:UserData.departure,
             status_user:UserData.status_user
@@ -59,5 +82,14 @@ const GetAllUser = async(req:Request,  res: Response, next: NextFunction) => {
     return res.status(200).json(FilterUser)
 }
 
+const GetAllUserbyId = async(req:Request,  res: Response, next: NextFunction) => {
+    const id:number = Number(req.params.id)
+    const AllUser = await AppDataSource.getRepository(User).find({
+        where: [
+            { id_user: id }
+        ]
+    })
+    return res.status(200).json(AllUser);
+}
 
-export default {AddUser,GetAllUser,CheckToken};
+export default {AddUser,GetAllUser,GetAllUserbyId,UpdateStatusUser,CheckToken};
