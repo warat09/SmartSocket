@@ -36,7 +36,7 @@ const HomeLogin :React.FC = () =>{
     const navigate = useNavigate();
     const [load,setLoad] = useState(false)
     const [inputs,setInputs] = useState({
-        username:"",
+        email:"",
         password:""
     });
     const handleChange = (event:ChangeEvent<HTMLInputElement>) => {
@@ -48,13 +48,13 @@ const HomeLogin :React.FC = () =>{
         event.preventDefault();
         setLoad(true)
         const target = event.target as typeof event.target & {
-            username: { value: string };
+            email: { value: string };
             password: { value: string };
           };
-          const username = target.username.value; // typechecks!
+          const email = target.email.value; // typechecks!
           const password = target.password.value; // typechecks!
           setTimeout(async()=>{
-            const LoginStatus = await login("/Login",username,password);
+            const LoginStatus = await login("/Login",email,password);
             console.log(LoginStatus)
             if(LoginStatus.message === "Login Success"){
               const GetUser = await Checktoken("/User/CheckToken",LoginStatus.token);
@@ -93,7 +93,7 @@ const HomeLogin :React.FC = () =>{
         myHeaders.append("Content-Type","application/json");
 
         var raw = JSON.stringify({
-            "username": inputs.username,
+            "email": inputs.email,
             "password": inputs.password
         })
     }
@@ -120,10 +120,10 @@ const HomeLogin :React.FC = () =>{
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
-              autoComplete="username"
+              id="email"
+              label="Email"
+              name="email"
+              autoComplete="email"
               autoFocus
             />
             <TextField

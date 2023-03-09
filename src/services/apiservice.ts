@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 const api = "http://localhost:9090";
-export const login = async(path:string,username:string,password:string) => {
+export const login = async(path:string,email:string,password:string) => {
   try{
-    const attibute_login = { username, password };
+    const attibute_login = { email, password };
     const response = await axios.post(api+path,attibute_login);
     const userData = {
       token:response.data.token
@@ -86,10 +86,10 @@ export const getUsers = async(path:string,token:string) => {
   }
 }
 
-export const register = async(path:string,token:string,name:string,surname:string,username:string,password:string,email:string,role:string,departure:string) => {
+export const register = async(path:string,token:string,name:string,surname:string,id_card:string,password:string,email:string,role:string,departure:string) => {
   // console.log(name,surname,username,password,email,role,departure)
   try{
-    const attibute_register = { name, surname, username, password, email, role, departure ,status:"active"};
+    const attibute_register = { name, surname, id_card, password, email, role, departure };
     const response = await axios.post(api+path,attibute_register,{
       headers:{
         Authorization: `Bearer ${token}`
@@ -127,6 +127,23 @@ export const register = async(path:string,token:string,name:string,surname:strin
   //   }
   // });
   // return message
+}
+export const updateUserStatus = async(path:string,token:string)=>{
+  try{
+    console.log(token)
+    const response = await axios.patch(api+path,{},{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data;
+  }
+  catch(err){
+      // localStorage.clear();
+      // window.history.pushState({},"Error","/login");
+      // window.location.reload();
+      return null;
+  }
 }
 //Assets
 export const getAssets = async (path:string,token:string):Promise<any>=> {

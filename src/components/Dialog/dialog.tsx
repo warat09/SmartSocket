@@ -7,48 +7,37 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 export default function AlertDialog(props:any) {
-  const [open, setOpen] = React.useState(false);
 
-  const agree = () => {
-    setOpen(false);
-    return 1
-  }
+  const {body,header} = props.alert
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const [openDialog, setOpenDialog] = React.useState(true);
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   return (
-    <div>
-      <Button variant={props.variant} color={props.color} onClick={handleClickOpen}>
-        {props.btn}
-      </Button>
       <Dialog
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            Let Google help apps determine location. This means sending anonymous
-            location data to Google, even when no apps are running.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Disagree</Button>
-          <Button onClick={agree} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </div>
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button
+              // onClick={() => Checkapprove(dialog.id, dialog.status)}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
   );
 }

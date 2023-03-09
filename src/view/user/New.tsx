@@ -53,7 +53,7 @@ const NewUser: React.FC = () => {
     //user
     const [token,setToken] = useState<string>("")
     const [password,setPassword] = useState<string>("")
-    const { control, handleSubmit } = useForm({
+    const { control, handleSubmit, watch } = useForm({
         reValidateMode: "onBlur"
       });
 
@@ -63,6 +63,10 @@ const NewUser: React.FC = () => {
         },
         password:{
           required: "Password is Required"
+        },
+        confirmpassword:{
+          required: "ConfirmPassword is Required",
+          validate: "Password Not Match"
         },
         name:{
           required: "Name is Required"
@@ -87,8 +91,8 @@ const NewUser: React.FC = () => {
       };
       const handleOnSubmit=async(data:any)=>{
         console.log(data)
-        // await register("/User/Register",token,data.name,data.surname,data.username,data.password,data.email,data.role,data.departure)
-        // navigate('/app/user/list')
+        await register("/User/Register",token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
+        navigate('/app/admin/user/list')
       }  
     // const handleSubmit=async()=>{
     //   console.log(await register(name,surname,username,password,email,role,departure))
@@ -103,7 +107,6 @@ const NewUser: React.FC = () => {
         navigate('/login')
       }
     },[]);
-    console.log(password)
     return(
      <>
         <Helmet>
@@ -175,30 +178,6 @@ const NewUser: React.FC = () => {
                     xs={12}
                     md={6}
                   >
-                     <Controller
-                      control={control}
-                      name="username"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                        {...field}
-                        label="Username"
-                        fullWidth
-                        type="text"
-                        error={error !== undefined}
-                        helperText={error ? myHelper.username[error.type] : ""}
-                      />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
                     <Controller
                       control={control}
                       name="email"
@@ -257,30 +236,6 @@ const NewUser: React.FC = () => {
                   >
                     <Controller
                       control={control}
-                      name="password"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="password"
-                          fullWidth
-                          label="Password"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.password[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
                       name="role"
                       defaultValue=""
                       rules={{
@@ -321,6 +276,58 @@ const NewUser: React.FC = () => {
                         />
                       )}
                     />  
+                  </Grid>
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="password"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="Password"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.password[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="con-password"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        validate: (val: string) => {
+                          if (watch('password') != val) {
+                            return false;
+                          }
+                        }
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="ConfirmPassword"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.confirmpassword[error.type] : ""}
+                        />
+                      )}
+                    />
                   </Grid>
                 </Grid>   
               </Box> 

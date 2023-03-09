@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
-import { Container,
+import { 
+  Container,
+  Box,
   Stack,
   Typography,
   Button,
@@ -18,14 +20,21 @@ import { Container,
   IconButton,
   Avatar,
   Popover,
-  MenuItem
+  MenuItem,
+  //dialog
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
-import { getUsers } from "../../services/apiservice";
+import { getUsers,updateUserStatus } from "../../services/apiservice";
 import { User } from "../../model/model";
-import { Box } from "@mui/system";
 
 interface LocalStorage {
   username: string;
@@ -35,6 +44,7 @@ interface LocalStorage {
 const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
   { id: 'fullname', label: 'Name', alignRight: false },
   { id: 'email', label: 'Email', alignRight: false },
+  { id: 'id_card', label: 'ID card', alignRight: false },
   { id: 'departure', label: 'Departure', alignRight: false },
   { id: 'role', label: 'Role', alignRight: false },
   { id: 'status_user', label: 'Status_user', alignRight: false },
@@ -74,6 +84,8 @@ const ListUser: React.FC = () => {
 
   const navigate = useNavigate();
 
+  const [Token,setToken] = useState<string>("")
+
   const [listuser,setlistUser] = useState<User[]>([])
 
   const [open, setOpen] = useState(null);
@@ -90,11 +102,28 @@ const ListUser: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [UserId,setId] = useState('')
+
+  const [dialog, setdialog] = React.useState({
+    header: "",
+    body: "",
+    id: 0,
+    status: 0,
+  });
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [messagealert, setMessagealert] = useState("");
+
+
   const ComponentUser = async(token:string) => {
     setlistUser(await getUsers("/User/AllUser",token))
   }
 
-  const handleOpenMenu = (event:any) => {
+  const handleOpenMenu = (event:any,id:any) => {
+    setId(id)
     setOpen(event.currentTarget);
   };
 
@@ -146,17 +175,70 @@ const ListUser: React.FC = () => {
     setFilterName(event.target.value);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listuser.length) : 0;
 
   const filteredUsers = applySortFilter(listuser, getComparator(order, orderBy), filterName);
   
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const handlemenu = async(menu:number) => {
+    setOpenDialog(true)
+    setOpen(null)
+    if(menu === 1){
+      setdialog({
+        header: "Approve",
+        body: `Do you want Delete User?`,
+        id: 0,
+        status: 0,
+      });
+    }
+    else{
+      setdialog({
+        header: "Delete",
+        body: `Are you sure want to delete?`,
+        id: 0,
+        status: 0,
+      });
+    }
+    console.log(menu)
+    console.log(UserId);
+  };
+
+  const Agree = async() => {
+    const UpdateUser = await updateUserStatus(`/User/AllUser/${UserId}`,Token);
+    if(UpdateUser.status === 1){
+      const filterDeleteUser = filteredUsers.filter((object:any) => {
+        return object.id_user !== UserId;
+      });
+      setlistUser(filterDeleteUser)
+      setMessagealert(UpdateUser.message)
+      handleCloseDialog() 
+      setOpenAlert(true);
+    }
+      setOpenDialog(false)
+  }
+
   useEffect(() => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
         const user:LocalStorage = JSON.parse(item);
         ComponentUser(user.token);
+        setToken(user.token);
       }
       else{
         navigate('/login')
@@ -194,8 +276,8 @@ const ListUser: React.FC = () => {
                   onSelectAllClick={handleSelectAllClick}
                 />
                 <TableBody>
-                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    const { id_user,fullname,email,departure,role,status_user }:any = row;
+                  {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any,index:any) => {
+                    const { id_user,id_card,fullname,email,departure,role,status_user }:any = row;
                     const selectedUser = selected.indexOf(id_user) !== -1;
 
                     return (
@@ -212,6 +294,8 @@ const ListUser: React.FC = () => {
 
                         <TableCell align="left">{email}</TableCell>
 
+                        <TableCell align="left">{id_card}</TableCell>
+
                         <TableCell align="left">{departure}</TableCell>
 
                         <TableCell align="left">{role}</TableCell>
@@ -219,11 +303,11 @@ const ListUser: React.FC = () => {
                         <TableCell align="left">{status_user}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_user)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
-                      </TableRow>
+                      </TableRow> 
                     );
                   })}
                   {emptyRows > 0 && (
@@ -271,34 +355,80 @@ const ListUser: React.FC = () => {
           />
         </Card>
       </Container>
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
-            },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-          Edit
-        </MenuItem>
+                        <Popover
+                          open={Boolean(open)}
+                          anchorEl={open}
+                          onClose={handleCloseMenu}
+                          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+                          PaperProps={{
+                            sx: {
+                              p: 1,
+                              width: 140,
+                              '& .MuiMenuItem-root': {
+                                px: 1,
+                                typography: 'body2',
+                                borderRadius: 0.75,
+                              },
+                            },
+                          }}
+                        >
+                          <MenuItem onClick={()=>handlemenu(1)}>
+                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+                            Edit
+                          </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
+                          <MenuItem sx={{ color: 'error.main' }} onClick={()=>handlemenu(0)}>
+                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+                            Delete
+                          </MenuItem>
+                        </Popover>
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "500px",  // Set your width here
+              },
+            },
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">{dialog.header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialog.body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button
+              onClick={Agree}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            variant="filled"
+            severity="success"
+            sx={{ width: "100%" }}
+          >
+            {messagealert}!
+          </Alert>
+        </Snackbar>
+      
     </>
   );
 };

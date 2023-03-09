@@ -108,7 +108,7 @@ const HomeApprove: React.FC = () => {
     status: 0,
   });
 
-  const [openAlert, setOpenAlert] = React.useState(false);
+  const [openAlert, setOpenAlert] = useState(false);
 
   const [token, SetToken] = useState("");
   
@@ -461,7 +461,6 @@ const HomeApprove: React.FC = () => {
             This is a success message!
           </Alert>
         </Snackbar>
-        
     </>
   );
 };
