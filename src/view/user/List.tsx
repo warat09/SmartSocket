@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, forwardRef } from "react";
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from "react-router-dom";
 import { filter } from 'lodash';
@@ -28,18 +28,53 @@ import {
   DialogContentText,
   DialogTitle,
   Snackbar,
-  Alert
+  Alert,
+
+  FormControl,
+  InputLabel,
+  Select,
+  TextField,
+  FormHelperText,
+  CardHeader,
+  CardContent,
+  Unstable_Grid2 as Grid,
+  CardActions,
+  Divider,
+  Input
 } from "@mui/material";
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
-import { getUsers,updateUserStatus } from "../../services/apiservice";
+import { getUsers,updateUserStatus,register } from "../../services/apiservice";
 import { User } from "../../model/model";
+import { IMaskInput } from 'react-imask';
+import { Controller,useForm } from 'react-hook-form';
 
+interface CustomProps {
+  onChange: (event: { target: { name: string; value: string } }) => void;
+  name: string;
+}
 interface LocalStorage {
   username: string;
   token: string;
 }
+const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
+  function TextMaskCustom(props, ref:any) {
+    const { onChange, ...other } = props;
+    return (
+      <IMaskInput
+        {...other}
+        mask="0-0000-00000-00-0"
+        definitions={{
+          '#': /[1-9]/,
+        }}
+        inputRef={ref}
+        onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+        overwrite
+      />
+    );
+  },
+);
 
 const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
   { id: 'fullname', label: 'Name', alignRight: false },
@@ -104,7 +139,11 @@ const ListUser: React.FC = () => {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  const [UserId,setId] = useState('')
+  const [openNewDialog, setOpenNewDialog] = useState(false);
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const [UserId,setId]:any = useState({})
 
   const [dialog, setdialog] = React.useState({
     header: "",
@@ -117,13 +156,69 @@ const ListUser: React.FC = () => {
 
   const [messagealert, setMessagealert] = useState("");
 
+  //-----------------New User--------------------//
+  const { control, handleSubmit, watch, reset } = useForm({
+    reValidateMode: "onBlur"
+  });
+
+const myHelper:any = {
+    username:{
+      required: "Username is Required"
+    },
+    password:{
+      required: "Password is Required"
+    },
+    confirmpassword:{
+      required: "ConfirmPassword is Required",
+      validate: "Password Not Match"
+    },
+    name:{
+      required: "Name is Required"
+    },
+    surname:{
+      required: "Surname is Required"
+    },
+    email:{
+      required: "Email is Required",
+      pattern: "Invalid Email Address"
+    },
+    card:{
+      required: "Id Card is Required",
+      pattern: "Invalid Id Card"
+    },
+    role:{
+      required: "Role is Required"
+    },
+    departure:{
+        required: "Departure is Required"
+    }
+  };
+  const handleOnSubmit=async(data:any)=>{
+    console.log(data)
+    await register("/User/Register",Token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
+    navigate('/app/admin/user/list')
+  }  
+  const handleOnEditSubmit=async(data:any)=>{
+    console.log(data)
+  }  
+  //------------------------------//
 
   const ComponentUser = async(token:string) => {
     setlistUser(await getUsers("/User/AllUser",token))
   }
 
-  const handleOpenMenu = (event:any,id:any) => {
-    setId(id)
+  const handleOpenMenu = (event:any,id:any,id_card:any,fullname:any,email:any,departure:any,role:any,status_user:any) => {
+    console.log(id,id_card,fullname,email,departure,role,status_user)
+    var splitfullname = fullname.split(" ");
+    setId({
+      id:id,
+      name:splitfullname[0],
+      surname:splitfullname[1],
+      email:email,
+      id_card:id_card,
+      departure:departure,
+      role:role
+    })
     setOpen(event.currentTarget);
   };
 
@@ -179,6 +274,14 @@ const ListUser: React.FC = () => {
     setOpenDialog(false);
   };
 
+  const handleCloseNewDialog = () => {
+    setOpenNewDialog(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+  };
+
   const handleCloseAlert = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -197,17 +300,19 @@ const ListUser: React.FC = () => {
   const isNotFound = !filteredUsers.length && !!filterName;
 
   const handlemenu = async(menu:number) => {
-    setOpenDialog(true)
     setOpen(null)
     if(menu === 1){
-      setdialog({
-        header: "Approve",
-        body: `Do you want Delete User?`,
-        id: 0,
-        status: 0,
-      });
+      reset({})
+      setOpenEditDialog(true)
+      // setdialog({
+      //   header: "Approve",
+      //   body: `Do you want Delete User?`,
+      //   id: 0,
+      //   status: 0,
+      // });
     }
     else{
+      setOpenDialog(true)
       setdialog({
         header: "Delete",
         body: `Are you sure want to delete?`,
@@ -215,12 +320,10 @@ const ListUser: React.FC = () => {
         status: 0,
       });
     }
-    console.log(menu)
-    console.log(UserId);
   };
 
   const Agree = async() => {
-    const UpdateUser = await updateUserStatus(`/User/AllUser/${UserId}`,Token);
+    const UpdateUser = await updateUserStatus(`/User/AllUser/${UserId.id}`,Token);
     if(UpdateUser.status === 1){
       const filterDeleteUser = filteredUsers.filter((object:any) => {
         return object.id_user !== UserId;
@@ -256,7 +359,7 @@ const ListUser: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             User List
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/user/new')}>
+          <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
             New User
           </Button>
         </Stack>
@@ -303,7 +406,7 @@ const ListUser: React.FC = () => {
                         <TableCell align="left">{status_user}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_user)}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_user,id_card,fullname,email,departure,role,status_user)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -355,34 +458,34 @@ const ListUser: React.FC = () => {
           />
         </Card>
       </Container>
-                        <Popover
-                          open={Boolean(open)}
-                          anchorEl={open}
-                          onClose={handleCloseMenu}
-                          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                          PaperProps={{
-                            sx: {
-                              p: 1,
-                              width: 140,
-                              '& .MuiMenuItem-root': {
-                                px: 1,
-                                typography: 'body2',
-                                borderRadius: 0.75,
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem onClick={()=>handlemenu(1)}>
-                            <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                            Edit
-                          </MenuItem>
-
-                          <MenuItem sx={{ color: 'error.main' }} onClick={()=>handlemenu(0)}>
-                            <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                            Delete
-                          </MenuItem>
-                        </Popover>
+      <Popover
+          open={Boolean(open)}
+          anchorEl={open}
+          onClose={handleCloseMenu}
+          anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
+          transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+          PaperProps={{
+            sx: {
+              p: 1,
+              width: 140,
+              '& .MuiMenuItem-root': {
+                px: 1,
+                typography: 'body2',
+                borderRadius: 0.75,
+              },
+            },
+          }}
+              
+      >
+        <MenuItem onClick={()=>handlemenu(1)}>
+          <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
+              Edit
+        </MenuItem>
+        <MenuItem sx={{ color: 'error.main' }} onClick={()=>handlemenu(0)}>
+          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
+              Delete
+        </MenuItem>
+      </Popover>                  
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}
@@ -412,6 +515,446 @@ const ListUser: React.FC = () => {
               Agree
             </Button>
           </DialogActions>
+        </Dialog>
+        
+        <Dialog
+          open={openNewDialog}
+          onClose={handleCloseNewDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography variant="h3" gutterBottom>
+                Create a new user
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Stack spacing={3}>
+          <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+                <Grid container spacing={2} pl={2} pr={2}>
+                <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="name"
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Name"
+                          defaultValue=""
+                          error={error !== undefined}
+                          helperText={error ? myHelper.name[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                     <Controller
+                      control={control}
+                      name="surname"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Surname"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.surname[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="email"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Email"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.email[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="id_card"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        pattern: /([0-9]{1})-([0-9]{4})-([0-9]{5})-([0-9]{2})-([0-9]{1})/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        
+                        <TextField
+                        {...field}
+                          type="text"
+                          fullWidth
+                          label="ID Card"
+                          InputProps={{
+                            inputComponent: TextMaskCustom as any
+                          }}
+                          error={error !== undefined}
+                          helperText={error ? myHelper.card[error.type] : ""}
+                      />
+
+                                                
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="role"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Role"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.role[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="departure"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Departure"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.departure[error.type] : ""}
+                        />
+                      )}
+                    />  
+                  </Grid>
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="password"
+                      defaultValue=""
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="Password"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.password[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="con-password"
+                      defaultValue=""
+                      rules={{
+                        required: true,
+                        validate: (val: string) => {
+                          if (watch('password') != val) {
+                            return false;
+                          }
+                        }
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="password"
+                          fullWidth
+                          label="ConfirmPassword"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.confirmpassword[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+                </Grid>   
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Create a new user
+                </Button>
+             </CardActions>
+            </Box>
+          </Stack>
+          </DialogContent>
+        </Dialog>
+        
+        <Dialog
+          open={openEditDialog}
+          onClose={handleCloseEditDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+                Edit User {UserId.name}
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Stack spacing={3}>
+          <Box component="form" onSubmit={handleSubmit(handleOnEditSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+                <Grid container spacing={2} pl={2} pr={2}>
+                <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="editname"
+                      defaultValue={UserId.name}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          defaultValue={UserId.name}
+                          type="text"
+                          fullWidth
+                          label="Name"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.name[error.type] : ""}
+                          {...field}
+                          // onChange={(e) => {
+                          //   field.onChange(parseInt(e.target.value))
+                          //   setId({name:e.target.value})
+                          // }}
+                          
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                     <Controller
+                      control={control}
+                      name="editsurname"
+                      defaultValue={UserId.surname}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Surname"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.surname[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="editemail"
+                      defaultValue={UserId.email}
+                      rules={{
+                        required: true,
+                        pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Email"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.email[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="editid_card"
+                      defaultValue={UserId.id_card}
+                      rules={{
+                        required: true,
+                        pattern: /([0-9]{1})-([0-9]{4})-([0-9]{5})-([0-9]{2})-([0-9]{1})/
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        
+                        <TextField
+                        {...field}
+                          type="text"
+                          fullWidth
+                          label="ID Card"
+                          InputProps={{
+                            inputComponent: TextMaskCustom as any
+                          }}
+                          error={error !== undefined}
+                          helperText={error ? myHelper.card[error.type] : ""}
+                          defaultValue={UserId.id_card}
+                      />                    
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="editrole"
+                      defaultValue={UserId.role}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Role"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.role[error.type] : ""}
+                        />
+                      )}
+                    />
+                  </Grid>
+
+                  <Grid
+                    xs={12}
+                    md={6}
+                  >
+                    <Controller
+                      control={control}
+                      name="editdeparture"
+                      defaultValue={UserId.departure}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          {...field}
+                          type="text"
+                          fullWidth
+                          label="Departure"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.departure[error.type] : ""}
+                          defaultValue={UserId.departure}
+                        />
+                      )}
+                    />  
+                  </Grid>
+                </Grid>   
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Save Changes
+                </Button>
+             </CardActions>
+            </Box>
+          </Stack>
+          </DialogContent>
         </Dialog>
 
         <Snackbar

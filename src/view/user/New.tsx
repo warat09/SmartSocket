@@ -109,9 +109,6 @@ const NewUser: React.FC = () => {
     },[]);
     return(
      <>
-        <Helmet>
-          <title> User: New | SmartSocket </title>
-        </Helmet>
         <Container>
         <Stack spacing={3}>
             <Typography variant="h3" gutterBottom>
@@ -119,10 +116,6 @@ const NewUser: React.FC = () => {
             </Typography>
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
           <Card>
-            {/* <CardHeader
-              subheader="The information can be edited"
-              title="Profile"
-            /> */}
             <CardContent sx={{pt:4}}>
               <Box sx={{ m: -1.5 }}>
                 <Grid container spacing={2} pl={2} pr={2}>
