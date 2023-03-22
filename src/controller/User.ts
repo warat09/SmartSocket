@@ -40,6 +40,42 @@ const AddUser = async (req: Request, res: Response, next: NextFunction) => {
         }
     })
 }
+const UpdateUser = async(req:Request,  res: Response, next: NextFunction) => {
+    const id = Number(req.params.id);
+    const  {name,surname,email,role,departure,id_card} = req.body;
+    const Checkpk = await AppDataSource.getRepository(User).createQueryBuilder('User')
+    .where(`User.id_user != ${id} AND (User.email = :email OR User.id_card = :id_card) AND User.status_user = :status`, {email:email,id_card:id_card,status:"Active"}).getRawMany();
+    console.log(Checkpk)
+    if(Object.values(Checkpk).length === 0){
+        const CheckUser = await AppDataSource.getRepository(User).find({
+            where: {
+                id_user: id,
+                status_user:'Active'
+            },
+        });
+        if(Object.values(CheckUser).length !== 0){
+            await AppDataSource
+                .createQueryBuilder()
+                .update(User)
+                .set({
+                    name : name,
+                    surname : surname,
+                    email : email,
+                    id_card : id_card,
+                    role : role,
+                    departure : departure
+                })
+                .where("id_user = :id", { id: id }).execute()
+                return res.status(200).json({status:1,message: "Update Success"});
+        }
+        else{
+            return res.status(404).json({status:0,message: "User not found"});
+        }
+        
+    }else{
+        return res.status(200).json({status:0,message: "email or id card already exists"});
+    }    
+}
 const UpdateStatusUser = async(req:Request,  res: Response, next: NextFunction) => {
     const id = Number(req.params.id)
     const CheckUser = await AppDataSource.getRepository(User).find({
@@ -92,4 +128,4 @@ const GetAllUserbyId = async(req:Request,  res: Response, next: NextFunction) =>
     return res.status(200).json(AllUser);
 }
 
-export default {AddUser,GetAllUser,GetAllUserbyId,UpdateStatusUser,CheckToken};
+export default {AddUser,GetAllUser,GetAllUserbyId,UpdateUser,UpdateStatusUser,CheckToken};

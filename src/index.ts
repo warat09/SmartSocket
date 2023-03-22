@@ -13,6 +13,8 @@ import Dashboard from './routes/Dashboard';
 import Rfid from './routes/Rfid';
 
 import {auth} from './middleware/auth'
+import nodemailer from 'nodemailer';
+
 var bodyParser = require('body-parser')
 
 
@@ -46,6 +48,43 @@ AppDataSource.initialize().then(async () => {
       router.use('/Transaction',auth,Transaction)
       router.use('/Usermatch',auth,Usermatch)
       router.use('/Dashboard',auth,Dashboard)
+      router.post('/email',async(req:Request,res:Response)=>{
+        const {google} = require('googleapis');
+        const CLIENT_ID =
+      "901872679791-l5ssb10p617vt6mo4q2b3u61dgn4tt2u.apps.googleusercontent.com";
+      const CLIENT_SECRET = "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";
+      const REDIRECT_URI = "https://developers.google.com/oauthplayground";
+      const REFRESH_TOKEN ="1//04zNGhLAs-v8TCgYIARAAGAQSNwF-L9IrFX06Q5U84zMDsJS96vmstZePoN1JU3lsggqqBP5k5XHJyRXCnRARjqlPU32bXoNPMWw";
+      const oAuth2Client = new google.auth.OAuth2(
+        CLIENT_ID,
+        CLIENT_SECRET,
+        REDIRECT_URI,
+        REFRESH_TOKEN
+      );
+      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
+        let {email} = req.body 
+        const accessToken = await oAuth2Client.getAccessToken();
+                const transport = nodemailer.createTransport({
+                  service: "gmail",
+                  auth: {
+                    type: "OAuth2",
+                    user: "SmartSocket@gmail.com",
+                    clientId: CLIENT_ID,
+                    clientSecret: CLIENT_SECRET,
+                    refreshToken: REFRESH_TOKEN,
+                    accessToken: accessToken,
+                  },
+                });
+                const mailOptions = {
+                  from: "beebacorporation <beebacorporation@gmail.com>",
+                  to: email,
+                  subject: "มีการสมัครสมาชิกผ่านอีเมลของคุณ"}
+                  await transport.sendMail(mailOptions).then(
+                    res.json({
+                      message: "Email is sent please check you Email",
+                    })
+                  );
+      })
     http
     .createServer(router)
     .listen(config.server.port,() =>

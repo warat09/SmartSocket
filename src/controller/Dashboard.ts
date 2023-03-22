@@ -11,17 +11,20 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const countnode = await AppDataSource.getRepository(Node).createQueryBuilder('Node').getCount();
     const countmatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match').getCount();
     const countmatchapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Wait for Approve'}).getCount();
+    const countapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Approve'}).getCount();
     const countmatchrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Rent'}).getCount();
     const countmatchnotrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Available'}).getCount();
     // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').getCount();
-    const topic = ["Assets","nodes","matching","Wait for approve","rent","not_rent","people"]
-    const amount = [countasset,countnode,countmatch,countmatchapprove,countmatchrent,countmatchnotrent,countuser]
+    const topic = ["Assets","Sockets","Matching","Wait for approve","Approve","rent","not_rent","people"]
+    const amount = [countasset,countnode,countmatch,countmatchapprove,countapprove,countmatchrent,countmatchnotrent,countuser]
+    const icon = ["ri:plug-2-line","mdi:plug-socket-au","fluent:plug-connected-add-20-regular","","","","","mdi:user-circle"]
     const array = []
     topic.map((v:any,i:any)=>{
         const attribute = {
             topic:v,
-            amount:amount[i]
+            amount:amount[i],
+            icon:icon[i]
         }
         array.push(attribute)
     })

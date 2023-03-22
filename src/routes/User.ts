@@ -9,5 +9,6 @@ router.post('/CheckToken',controller.CheckToken);
 router.get('/AllUser',verifyRoles("admin"),controller.GetAllUser);
 router.get('/AllUser/:id',controller.GetAllUserbyId)
 router.patch('/AllUser/:id',controller.UpdateStatusUser)
+router.put('/AllUser/:id',controller.UpdateUser)
 
 export = router;
