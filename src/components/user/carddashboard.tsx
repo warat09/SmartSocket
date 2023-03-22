@@ -1,7 +1,7 @@
 import { Avatar, Card, CardContent, Stack, SvgIcon, Typography } from '@mui/material';
-
+import Iconify from '../iconify';
 export default function CardDashboard(props:any) {
-    const { difference, positive = false, sx, value } = props;
+    const { difference, positive = false, sx, value, topic, icon } = props;
     return (
         <Card sx={sx}>
         <CardContent>
@@ -9,14 +9,14 @@ export default function CardDashboard(props:any) {
             alignItems="flex-start"
             direction="row"
             justifyContent="space-between"
-            spacing={3}
+            spacing={4}
           >
             <Stack spacing={1}>
               <Typography
                 color="text.secondary"
                 variant="overline"
               >
-                Budget
+                {topic}
               </Typography>
               <Typography variant="h4">
                 {value}
@@ -29,6 +29,7 @@ export default function CardDashboard(props:any) {
                 width: 56
               }}
             >
+              <Iconify icon={icon} sx={{width: 40, height: 40 }}/>
               {/* <SvgIcon>
                 <CurrencyDollarIcon />
               </SvgIcon> */}

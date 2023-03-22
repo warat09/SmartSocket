@@ -128,6 +128,24 @@ export const register = async(path:string,token:string,name:string,surname:strin
   // });
   // return message
 }
+
+export const updateUser = async(path:string,token:string,name:string,surname:string,id_card:string,email:string,role:string,departure:string)=>{
+  try{
+    console.log(token)
+    const response = await axios.put(api+path,{name,surname,id_card,email,role,departure},{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data;
+  }
+  catch(err){
+      // localStorage.clear();
+      // window.history.pushState({},"Error","/login");
+      // window.location.reload();
+      return null;
+  }
+}
 export const updateUserStatus = async(path:string,token:string)=>{
   try{
     console.log(token)

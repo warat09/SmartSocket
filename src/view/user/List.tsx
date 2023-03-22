@@ -45,7 +45,7 @@ import {
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
-import { getUsers,updateUserStatus,register } from "../../services/apiservice";
+import { getUsers,updateUser,updateUserStatus,register } from "../../services/apiservice";
 import { User } from "../../model/model";
 import { IMaskInput } from 'react-imask';
 import { Controller,useForm } from 'react-hook-form';
@@ -154,7 +154,7 @@ const ListUser: React.FC = () => {
 
   const [openAlert, setOpenAlert] = useState(false);
 
-  const [messagealert, setMessagealert] = useState("");
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
 
   //-----------------New User--------------------//
   const { control, handleSubmit, watch, reset } = useForm({
@@ -193,15 +193,6 @@ const myHelper:any = {
         required: "Departure is Required"
     }
   };
-  const handleOnSubmit=async(data:any)=>{
-    console.log(data)
-    await register("/User/Register",Token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
-    navigate('/app/admin/user/list')
-  }  
-  const handleOnEditSubmit=async(data:any)=>{
-    console.log(data)
-  }  
-  //------------------------------//
 
   const ComponentUser = async(token:string) => {
     setlistUser(await getUsers("/User/AllUser",token))
@@ -329,12 +320,37 @@ const myHelper:any = {
         return object.id_user !== UserId;
       });
       setlistUser(filterDeleteUser)
-      setMessagealert(UpdateUser.message)
+      setMessagealert({message:UpdateUser.message,color:"success"})
       handleCloseDialog() 
       setOpenAlert(true);
     }
       setOpenDialog(false)
   }
+
+  const handleOnSubmit=async(data:any)=>{
+    console.log(data)
+    await register("/User/Register",Token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
+    navigate('/app/admin/user/list')
+  }  
+  const handleOnEditSubmit=async(data:any)=>{
+    const UpdateUser = await updateUser(`/User/AllUser/${UserId.id}`,Token,data.editname,data.editsurname, data.editid_card,data.editemail,data.editrole,data.editdeparture);
+    if(UpdateUser.status === 1){
+      let Index = filteredUsers.findIndex((value: { id_user: number; })=>value.id_user === UserId.id);
+      filteredUsers[Index].fullname = data.editname+" "+data.editsurname;
+      filteredUsers[Index].email = data.editemail
+      filteredUsers[Index].id_card = data.editid_card
+      filteredUsers[Index].role = data.editrole
+      filteredUsers[Index].departure = data.editdeparture
+      setOpenEditDialog(false)
+      setMessagealert({message:UpdateUser.message,color:"success"})
+      setOpenAlert(true);
+    }else{
+      setOpenEditDialog(false)
+      setMessagealert({message:UpdateUser.message,color:"error"})
+      setOpenAlert(true);
+    }
+  }  
+  //------------------------------//
 
   useEffect(() => {
     const item = localStorage.getItem("User");
@@ -965,10 +981,10 @@ const myHelper:any = {
           <Alert
             onClose={handleCloseAlert}
             variant="filled"
-            severity="success"
+            severity={messagealert.color}
             sx={{ width: "100%" }}
           >
-            {messagealert}!
+            {messagealert.message}!
           </Alert>
         </Snackbar>
       
