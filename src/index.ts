@@ -4,7 +4,7 @@ import config from './config/config';
 import { AppDataSource } from "../src/data-source"
 import Login from './routes/Login';
 import Node from './routes/Node';
-import User from './routes/User';
+import Users from './routes/User';
 import Transaction from './routes/Transaction';
 import Usermatch from './routes/Usermatch';
 import Asset from './routes/Asset';
@@ -15,10 +15,43 @@ import Rfid from './routes/Rfid';
 import {auth} from './middleware/auth'
 import nodemailer from 'nodemailer';
 
+import { User } from './entity/User';
+import bycript from 'bcrypt'
+
 var bodyParser = require('body-parser')
 
 
 AppDataSource.initialize().then(async () => {
+
+  bycript.hash("admin",10,async(error:any,hashpassword:string)=>{
+    if(error){
+        return;
+    }
+    else{
+        const user = new User();
+        user.name = "admin";
+        user.surname = "admin";
+        user.password = hashpassword;
+        user.email = "ytitle7797@gmail.com";
+        user.id_card = "-";
+        user.role = "admin";
+        user.departure = "-";
+        user.status_user = 'Active';
+        const CheckUser = await AppDataSource.getRepository(User).find({
+          where: [
+              { email: "ytitle7797@gmail.com" }
+          ]
+        });
+      if(Object.values(CheckUser).length === 0){
+          const AddUser = AppDataSource.getRepository(User).create(user)
+          await AppDataSource.getRepository(User).save(AddUser)
+          return
+      }
+      else{
+          return
+      }
+    }
+})
 
     // create express app
     var cors = require('cors')
@@ -41,7 +74,7 @@ AppDataSource.initialize().then(async () => {
       });
       router.use('/Login',Login)
       router.use('/Node', Node);
-      router.use('/User',auth,User);
+      router.use('/User',auth,Users);
       router.use('/Rfid',Rfid);
       router.use('/Asset', Asset)
       router.use('/Match', Match)

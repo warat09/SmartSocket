@@ -12,8 +12,8 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const countmatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match').getCount();
     const countmatchapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Wait for Approve'}).getCount();
     const countapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Approve'}).getCount();
-    const countmatchrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Rent'}).getCount();
-    const countmatchnotrent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Available'}).getCount();
+    const countmatchrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status',{status:'Rent'}).getCount();
+    const countmatchnotrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status',{status:'Available'}).getCount();
     // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').where({status_user	: "Active"}).getCount();
     const topic = ["Assets","Sockets","Matching","Wait for approve","Approve","rent","not_rent","people"]
@@ -28,9 +28,10 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
         }
         array.push(attribute)
     })
-    console.log(array)
-    
-    return res.status(200).json(array)
+    const remaining_time = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
+    const maintenance = await AppDataSource.getRepository(Assets).find()
+    return res.status(200).json({countall:array,remainingtime:remaining_time,maintenance:maintenance})
 }
 
 

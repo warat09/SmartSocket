@@ -80,23 +80,14 @@ const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) =
 }
 
 const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunction) => {
-    const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
-    .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
-    .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
-    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();
-    const array=Object.values(RequestRent)
-    const id=Number(req.params.id)
-    // const id=req.params.id
-    const data=req.body.UserMatch_status_user_match
-    // console.log(typeof(id))
-    // const user_match=new User_match();
-    // user_match.status_user_match=data
-        // const CheckUserMatch = await AppDataSource.getRepository(User_match).findOne({
-        //     where: {
-        //         id_user_match: id,
-        //     },
-        // })
+    // const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    // .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
+    // .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
+    // .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    // .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();
+    // const array=Object.values(RequestRent)
+        const id=Number(req.params.id)
+        const status_approve=req.body.UserMatch_status_user_match
         const CheckUserMatch = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
         .where(`UserMatch.id_user_match = ${id}`).andWhere(`UserMatch.status_user_match = :status`,{status:"Wait for Approve"}).getRawOne();
         if(Object.values(CheckUserMatch).length !== 0){
@@ -107,7 +98,7 @@ const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunctio
             .createQueryBuilder()
             .update(User_match)
             .set({
-                status_user_match: data
+                status_user_match: status_approve
             })
             .where("id_user_match = :id", { id: CheckUserMatch.UserMatch_id_user_match }).execute()
             if(UpdateStatusUserMatch){
@@ -117,26 +108,17 @@ const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunctio
                     },
                 })
                 if(Object.values(CheckIdMatch).length !== 0){
-                    const match=new Match();
-                    match.status_rent = "Rent";
-                    AppDataSource.getRepository(Match).merge(CheckIdMatch, match )
-                    const results = await AppDataSource.getRepository(Match).save(CheckIdMatch)
-                    return res.status(200).json({status:1,data:results,message: "Update Success"});
+                    if(status_approve === "Approve"){
+                        const match=new Match();
+                        match.status_rent = "Rent";
+                        AppDataSource.getRepository(Match).merge(CheckIdMatch, match )
+                        await AppDataSource.getRepository(Match).save(CheckIdMatch)
+                    }
+                    return res.status(200).json({status:1,message:`${status_approve} Success`});
                 }
             }
         }
 
-
-
-    // const test=array.find(r => r.UserMatch_id_user_match===id)
-    // if(test){
-    //     const entity = await AppDataSource.manager.findOne(Entity, id)
-    //     // const results = await AppDataSource.getRepository(User_match).save(CheckMacAddress)
-    //     // return res.status(200).json({status:1,data:results,message: "Update Success"});
-    // }
-    // if(RequestRent.find(r=>r.UserMatch_id_user_match === req.params.id)){
-    //     console.log(true)
-    // }
 }
 
 export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove};
