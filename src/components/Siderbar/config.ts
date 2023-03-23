@@ -9,7 +9,7 @@ const navConfig = [
   {
     title: 'Dashboard',
     path: '/app/admin/dashboard',
-    icon:'fluent-mdl2:b-i-dashboard',
+    icon:'ant-design:dashboard-filled',
   },
   {
     title:'User',
@@ -29,17 +29,17 @@ const navConfig = [
   {
     title: 'Match',
     path: '/app/admin/match/list',
-    icon: 'fluent:plug-connected-add-20-regular',
+    icon: 'ph:plugs-connected-bold',
   },
   {
     title: 'Approve',
     path: '/app/admin/approve/list',
-    icon: 'mdi:user-search-outline',
+    icon: 'basil:user-clock-solid',
   },
   {
     title: 'Transaction',
     path: '/app/admin/transaction/list',
-    icon: 'icon-park-outline:transaction-order',
+    icon: 'icon-park-solid:transaction-order',
   },
   {
     title: 'Not found',
