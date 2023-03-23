@@ -23,7 +23,7 @@ struct settings {
 } user_wifi = {};
 String macaddress = WiFi.macAddress();
 int localip = WiFi.localIP();
-String IP_DATABASE = "http://192.168.1.108:9090";
+String IP_DATABASE = "http://192.168.1.113:9090";
 unsigned long prevTime = millis();
 int count = 0;
 int timezone= 7*3600;
@@ -40,6 +40,7 @@ int year=0;
 String on_date="";
 String off_date="";
 bool LEDstatus = LOW;
+String rfid_in="";
 WiFiClient wifiClient;
 
 String weekDays[7]={"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
@@ -57,9 +58,10 @@ int max_v = 0;
 double VmaxD = 0;
 double VeffD = 0;
 double Veff = 0;
+
 //------setup rfid------//
 MFRC522 mfrc522(SS_PIN, RST_PIN);
-String rfid_in = "";
+
 
 void setup() {
   Serial.begin(9600);
@@ -217,7 +219,7 @@ void loop() {
                Serial.println(used_time);
               http.begin(wifiClient,IP_DATABASE+"/Transaction/SendTransaction");
               http.addHeader("Content-Type", "application/json");//Specify request destination
-              int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
+              int httpCode = http.POST("{\"Address\":\""+macaddress+"\",\"RfidAddress\":\""+rfid_in+"\",\"on_date\":\""+on_date+"\",\"off_date\":\""+off_date+"\",\"time_used\":\""+used_time+"\"}");
             }
             
 //            if(httpCode == 200){

@@ -6,6 +6,7 @@ import { Assets } from '../entity/Asset';
 const AddAddressRfid = async (req: Request, res: Response, next: NextFunction) => {
     let {RfidAddress} = req.body
     // var new_txt = RfidAddress.replace(/ |_/g, ':');
+    console.log("RfidAddress",RfidAddress)
     let Date_rfid = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
     const rfid = new Rfid()
     rfid.rfid_address = RfidAddress

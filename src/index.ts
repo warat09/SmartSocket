@@ -44,8 +44,8 @@ AppDataSource.initialize().then(async () => {
       router.use('/User',auth,User);
       router.use('/Rfid',Rfid);
       router.use('/Asset', Asset)
-      router.use('/Match',auth, Match)
-      router.use('/Transaction',auth,Transaction)
+      router.use('/Match', Match)
+      router.use('/Transaction',Transaction)
       router.use('/Usermatch',auth,Usermatch)
       router.use('/Dashboard',auth,Dashboard)
       router.post('/email',async(req:Request,res:Response)=>{
