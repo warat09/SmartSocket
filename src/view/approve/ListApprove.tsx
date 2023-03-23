@@ -170,24 +170,27 @@ const HomeApprove: React.FC = () => {
 
   const Checkapprove = async (id: number, status: number) => {
     console.log(id, status);
+    let status_Approve=""
     
     if (status === 1) {
+      console.log("1")
       handleCloseDialog();
       handleClickDialog()
       // handleClickOpen(status,asset)
-      console.log(listapprove);
-      console.log("approve");
-      const status_Approve="Approve"
-      await ApproveUserMatch("/UserMatch/Approve/",token,id, status_Approve)
+
+      // console.log(listapprove);
+      // console.log("approve");
+      status_Approve="Approve"
      
     } else {
       // handleClickOpen(status,asset)
+      console.log("2")
       handleCloseDialog();
       handleClickDialog()
-      const status_Approve="Reject"
-      await ApproveUserMatch("/UserMatch/Approve/",token,id, status_Approve)
-      console.log("reject");
+      status_Approve="Reject"
+      // console.log("reject");
     }
+    await ApproveUserMatch(`/UserMatch/Approve/${id}`,token, status_Approve)
   };
 
   const handleOpenMenu = (event:any) => {
@@ -253,6 +256,7 @@ const HomeApprove: React.FC = () => {
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       ComponentMatch(user.token);
+      SetToken(user.token)
     } else {
       navigate("/login");
     }

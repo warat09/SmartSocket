@@ -22,7 +22,7 @@ export interface Assets {
     name_assets?: string;
     expire_hour?: number;
     status_assets?: string;
-    maintenance?: boolean;
+    maintenance ?: boolean;
     date_assets?: Date;
     //   children?: React.ReactNode;
   }

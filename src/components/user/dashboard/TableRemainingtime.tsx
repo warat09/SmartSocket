@@ -25,28 +25,66 @@ const statusMap = {
 };
 
 export default function OverviewLatestOrders (props:any) {
-  const { orders = [], sx } = props;
+  const { orders = [], sx ,title} = props;
+  const formatTime = (milliseconds:number) => {
+
+    const totalSeconds = Math.floor(milliseconds / 1000);
+    const totalMinutes = Math.floor(totalSeconds / 60);
+    const totalHours = Math.floor(totalMinutes / 60);
+    // const days = Math.floor(totalHours / 24);
+  
+    const seconds = totalSeconds % 60;
+    const minutes = totalMinutes % 60;
+    const hours = totalHours % 24;
+  
+    let time = 'Not use';
+    // if (days > 0) {
+    //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
+    // } else 
+    console.log(hours,minutes,seconds)
+    if (hours > 0) {
+      if(seconds === 0){
+        time = `${totalHours} Hours ${minutes} Minutes`;
+      }
+      if(minutes === 0 && seconds === 0){
+        time = `${totalHours} Hours`;
+      }
+      else{
+        time = `${totalHours} Hours ${minutes} Minutes ${seconds} Seconds`;
+      }
+    } else if (minutes > 0) {
+      if(seconds === 0){
+        time = `${minutes} Minutes`;
+      }
+      else{
+        time = `${minutes} Minutes ${seconds} Seconds`;
+      }
+    } else if (seconds > 0) {
+      time = `${seconds} Seconds`;
+    }
+    return time;
+  }
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest Orders" />
+      <CardHeader title={title}/>
       {/* <Scrollbar sx={{ flexGrow: 1 }}> */}
         <Box sx={{ minWidth: 800 }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Order
+                  Assets
+                </TableCell>
+                <TableCell sortDirection="asc">
+                  Remaining time
                 </TableCell>
                 <TableCell>
-                  Customer
-                </TableCell>
-                <TableCell sortDirection="desc">
                   Date
                 </TableCell>
-                <TableCell>
+                {/* <TableCell>
                   Status
-                </TableCell>
+                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -56,22 +94,20 @@ export default function OverviewLatestOrders (props:any) {
                 return (
                   <TableRow
                     hover
-                    key={order.id}
+                    key={order.Asset_name_assets}
                   >
                     <TableCell>
-                      {order.ref}
+                      {order.Asset_name_assets}
                     </TableCell>
                     <TableCell>
-                      {order.customer.name}
+                      {formatTime(order.Match_remain_time)} 
                     </TableCell>
                     <TableCell>
-                      {order.createdAt}
+                      {new Date(order.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}
                     </TableCell>
-                    <TableCell>
-                      {/* <SeverityPill color={statusMap[order.status]}>
-                        {order.status}
-                      </SeverityPill> */}
-                    </TableCell>
+                    {/* <TableCell>
+                      {order.Match_status_match}
+                    </TableCell> */}
                   </TableRow>
                 );
               })}

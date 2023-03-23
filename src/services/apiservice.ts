@@ -383,22 +383,30 @@ export const getApprove = async (path:string,token:any) => {
   }
 };
 
-export const ApproveUserMatch = async (path:string,token:string,id:number,status_Approve:any) => {
-  try{
-    const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
-    const response = await axios.post(api+path+id,attibute_approveuser_match,{
+export const ApproveUserMatch = async (path:string,token:string,status_Approve:string) => {
+  const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
+    const response = await axios.patch(api+path,attibute_approveuser_match,{
       headers:{
         Authorization: `Bearer ${token}`
       }
     })
     return response.data;
-  }
-  catch(err){
-      localStorage.clear();
-      window.history.pushState({},"Error","/login");
-      window.location.reload();
-      return null;
-  }
+  // try{
+  //   console.log(path,token,id,status_Approve)
+  //   const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
+  //   const response = await axios.post(api+path+id,attibute_approveuser_match,{
+  //     headers:{
+  //       Authorization: `Bearer ${token}`
+  //     }
+  //   })
+  //   return response.data;
+  // }
+  // catch(err){
+  //     localStorage.clear();
+  //     window.history.pushState({},"Error","/login");
+  //     window.location.reload();
+  //     return null;
+  // }
 }
 //Transaction
 export const getTransaction =async(path:string,token:string)=> {
