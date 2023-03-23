@@ -4,6 +4,7 @@ import { Assets } from '../entity/Asset';
 import { Match } from '../entity/Match';
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {name_assets , rfid_address , expire_hour} = req.body
+    console.log(name_assets , rfid_address , expire_hour)
     let Date_assets = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
    
     const assets = new Assets()
