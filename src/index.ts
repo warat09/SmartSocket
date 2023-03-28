@@ -9,6 +9,7 @@ import Transaction from './routes/Transaction';
 import Usermatch from './routes/Usermatch';
 import Asset from './routes/Asset';
 import Match from './routes/Match';
+import Maintenance from './routes/Maintenance';
 import Dashboard from './routes/Dashboard';
 import Rfid from './routes/Rfid';
 
@@ -78,6 +79,7 @@ AppDataSource.initialize().then(async () => {
       router.use('/Rfid',Rfid);
       router.use('/Asset', Asset)
       router.use('/Match', Match)
+      router.use('/Maintenance',Maintenance)
       router.use('/Transaction',Transaction)
       router.use('/Usermatch',auth,Usermatch)
       router.use('/Dashboard',auth,Dashboard)

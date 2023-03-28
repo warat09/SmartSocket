@@ -31,7 +31,14 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const remaining_time = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
     const maintenance = await AppDataSource.getRepository(Assets).find()
-    return res.status(200).json({countall:array,remainingtime:remaining_time,maintenance:maintenance})
+    const donut = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
+    .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
+    .select(['departure','COUNT(departure) AS total'])
+    .where(`Match.status_rent = :status_rent`, {status_rent: "Rent"})
+    .groupBy('departure').getRawMany();
+    console.log(donut)
+    return res.status(200).json({countall:array,remainingtime:remaining_time,maintenance:maintenance,totaldeparturerent:donut})
 }
 
 

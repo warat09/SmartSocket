@@ -54,6 +54,13 @@ const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => 
     res.json(GetRentMatch)
 };
 
+const GetAssetMaintenance = async (req: Request, res: Response, next: NextFunction) => {
+    const SelectMaintenance = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').where(`Asset.maintenance = :status_maintenanace`,{status_maintenanace:1}).getRawMany();
+    console.log(SelectMaintenance)
+    res.json(SelectMaintenance)     
+}
+
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
@@ -61,4 +68,4 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
 };
 
 
-export default {MatchingAsset,GetRentMatch,GetAllMatching};
+export default {MatchingAsset,GetRentMatch,GetAssetMaintenance,GetAllMatching};
