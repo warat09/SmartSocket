@@ -205,15 +205,15 @@ const HomeAsset: React.FC = () => {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name_assets)} />
                         </TableCell>
 
-                        <TableCell align="left">{name_assets}</TableCell>
+                        <TableCell align="center">{name_assets}</TableCell>
 
-                        <TableCell align="left">{expire_hour}</TableCell>
+                        <TableCell align="center">{expire_hour} Hour</TableCell>
 
-                        <TableCell align="left">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{status_assets}</TableCell>
+                        <TableCell align="center">{status_assets}</TableCell>
 
-                        <TableCell align="left">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell>
+                        <TableCell align="center">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell>
 
                         {/* <TableCell align="left">
                           <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>

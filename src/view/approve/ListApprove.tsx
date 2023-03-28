@@ -299,22 +299,22 @@ const HomeApprove: React.FC = () => {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Asset_name_assets)} />
                         </TableCell>
 
-                        <TableCell align="left">{Asset_name_assets}</TableCell>
+                        <TableCell align="center">{Asset_name_assets}</TableCell>
 
-                        <TableCell align="left">{UserMatch_room}</TableCell>
+                        <TableCell align="center">{UserMatch_room}</TableCell>
 
-                        <TableCell align="left">{UserMatch_floor}</TableCell>
+                        <TableCell align="center">{UserMatch_floor}</TableCell>
 
                         <TableCell align="center">{UserMatch_description ? UserMatch_description : '-'}</TableCell>
 
-                        <TableCell align="left">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{User_name+" "+User_surname}</TableCell>
+                        <TableCell align="center">{User_name+" "+User_surname}</TableCell>
 
-                        <TableCell align="left">{UserMatch_status_user_match}</TableCell>
+                        <TableCell align="center">{UserMatch_status_user_match}</TableCell>
                 
-                        <TableCell align="left">
-                          <Box sx={{display:'flex'}}>
+                        <TableCell align="center">
+                          <Box sx={{display:'flex',justifyContent:'center'}}>
                           <Button
                             variant="contained"
                             size="small"

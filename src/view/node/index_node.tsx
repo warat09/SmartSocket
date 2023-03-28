@@ -74,7 +74,7 @@ const HomeNode: React.FC = () => {
 
   const [selected, setSelected]:any = useState([]);
 
-  const [orderBy, setOrderBy] = useState('Asset_name_assets');
+  const [orderBy, setOrderBy] = useState('mac_address');
 
   const [filterName, setFilterName] = useState('');
 
@@ -189,13 +189,13 @@ const HomeNode: React.FC = () => {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, mac_address)} />
                         </TableCell>
 
-                        <TableCell align="left">{mac_address}</TableCell>
+                        <TableCell align="center">{mac_address}</TableCell>
 
-                        <TableCell align="left">{ip}</TableCell>
+                        <TableCell align="center">{ip}</TableCell>
                         
-                        <TableCell align="left">{new Date(date_node).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{new Date(date_node).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{status_node}</TableCell>
+                        <TableCell align="center">{status_node}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

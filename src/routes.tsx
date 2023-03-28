@@ -16,6 +16,8 @@ import { ListMatch , NewMatch } from './view/match';
 
 import Approve from './view/approve';
 
+import Maintenance from './view/maintenance';
+
 import UserMatch from './view/user_match';
 // import Transection from './view/node_transection'
 import Page404 from './view/Page404/Page404';
@@ -27,7 +29,7 @@ import { List } from '@mui/icons-material';
 const Dashboard = lazy( () => {
   return Promise.all([
     import('./view/dashboard/dashboard'),
-    new Promise(resolve => setTimeout(resolve,3000))
+    new Promise(resolve => setTimeout(resolve,1000))
   ]).then(
     (([moduleExports]) => moduleExports)
   )
@@ -145,6 +147,9 @@ const Router: React.FC =()=> {
               { path: 'approve',children: [
                 { element: <Navigate to="/app/admin/approve/list" />, index: true },
                 {path: 'list',element: <Approve />}
+              ]},
+              { path: 'maintenance',children: [
+                { element: <Maintenance/>, index: true },
               ]},
               { path: 'transaction' ,children:[
                 { element: <Navigate to='/app/admin/transaction/list'/>, index: true},

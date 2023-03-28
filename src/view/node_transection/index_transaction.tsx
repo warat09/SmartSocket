@@ -219,19 +219,19 @@ const HomeTransection: React.FC = () => {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Transaction_id_txn)} />
                         </TableCell>
 
-                        <TableCell align="left">{Asset_name_assets}</TableCell>
+                        <TableCell align="center">{Asset_name_assets}</TableCell>
 
-                        <TableCell align="left">{Match_mac_address}</TableCell>
+                        <TableCell align="center">{Match_mac_address}</TableCell>
 
-                        <TableCell align="left">{Transaction_status_transaction}</TableCell>
+                        <TableCell align="center">{Transaction_status_transaction}</TableCell>
 
-                        <TableCell align="left">{formatTime(Transaction_time_used)}</TableCell>
+                        <TableCell align="center">{formatTime(Transaction_time_used)}</TableCell>
                         
-                        <TableCell align="left">{new Date(Transaction_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{new Date(Transaction_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{Transaction_on_date}</TableCell>
+                        <TableCell align="center">{Transaction_on_date}</TableCell>
 
-                        <TableCell align="left">{Transaction_off_date}</TableCell>
+                        <TableCell align="center">{Transaction_off_date}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

@@ -28,6 +28,7 @@ import {
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
+import formatTime from '../../components/caltime/millisectohms'
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
@@ -151,45 +152,6 @@ const HomeMatch: React.FC = () => {
     setlistmatching(await getMatching("/Match/AllMatching",token));
   }
 
-  const formatTime = (milliseconds:number) => {
-
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const totalMinutes = Math.floor(totalSeconds / 60);
-    const totalHours = Math.floor(totalMinutes / 60);
-    // const days = Math.floor(totalHours / 24);
-  
-    const seconds = totalSeconds % 60;
-    const minutes = totalMinutes % 60;
-    const hours = totalHours % 24;
-  
-    let time = 'Not use';
-    // if (days > 0) {
-    //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
-    // } else 
-    console.log(hours,minutes,seconds)
-    if (hours > 0) {
-      if(seconds === 0){
-        time = `${totalHours} Hours ${minutes} Minutes`;
-      }
-      if(minutes === 0 && seconds === 0){
-        time = `${totalHours} Hours`;
-      }
-      else{
-        time = `${totalHours} Hours ${minutes} Minutes ${seconds} Seconds`;
-      }
-    } else if (minutes > 0) {
-      if(seconds === 0){
-        time = `${minutes} Minutes`;
-      }
-      else{
-        time = `${minutes} Minutes ${seconds} Seconds`;
-      }
-    } else if (seconds > 0) {
-      time = `${seconds} Seconds`;
-    }
-    return time;
-  }
-
   useEffect(() => {
     const item = localStorage.getItem("User");
       if (item && item !== "undefined") {
@@ -242,19 +204,19 @@ const HomeMatch: React.FC = () => {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Asset_name_assets)} />
                         </TableCell>
 
-                        <TableCell align="left">{Asset_name_assets}</TableCell>
+                        <TableCell align="center">{Asset_name_assets}</TableCell>
 
-                        <TableCell align="left">{Match_mac_address}</TableCell>
+                        <TableCell align="center">{Match_mac_address}</TableCell>
 
-                        <TableCell align="left">{Match_room}</TableCell>
+                        <TableCell align="center">{Match_room}</TableCell>
                         
-                        <TableCell align="left">{Match_floor}</TableCell>
+                        <TableCell align="center">{Match_floor}</TableCell>
 
-                        <TableCell align="left">{formatTime(Match_remain_time)}</TableCell>
+                        <TableCell align="center">{formatTime(Match_remain_time)}</TableCell>
 
-                        <TableCell align="left">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="left">{Match_status_match}</TableCell>
+                        <TableCell align="center">{Match_status_match}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={handleOpenMenu}>

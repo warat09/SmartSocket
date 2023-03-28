@@ -15,6 +15,7 @@ import {
   TableHead,
   TableRow
 } from '@mui/material';
+import formatTime from '../../caltime/millisectohms';
 // import { Scrollbar } from 'src/components/scrollbar';
 // import { SeverityPill } from 'src/components/severity-pill';
 
@@ -26,44 +27,6 @@ const statusMap = {
 
 export default function OverviewLatestOrders (props:any) {
   const { orders = [], sx ,title} = props;
-  const formatTime = (milliseconds:number) => {
-
-    const totalSeconds = Math.floor(milliseconds / 1000);
-    const totalMinutes = Math.floor(totalSeconds / 60);
-    const totalHours = Math.floor(totalMinutes / 60);
-    // const days = Math.floor(totalHours / 24);
-  
-    const seconds = totalSeconds % 60;
-    const minutes = totalMinutes % 60;
-    const hours = totalHours % 24;
-  
-    let time = 'Not use';
-    // if (days > 0) {
-    //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
-    // } else 
-    console.log(hours,minutes,seconds)
-    if (hours > 0) {
-      if(seconds === 0){
-        time = `${totalHours} Hours ${minutes} Minutes`;
-      }
-      if(minutes === 0 && seconds === 0){
-        time = `${totalHours} Hours`;
-      }
-      else{
-        time = `${totalHours} Hours ${minutes} Minutes ${seconds} Seconds`;
-      }
-    } else if (minutes > 0) {
-      if(seconds === 0){
-        time = `${minutes} Minutes`;
-      }
-      else{
-        time = `${minutes} Minutes ${seconds} Seconds`;
-      }
-    } else if (seconds > 0) {
-      time = `${seconds} Seconds`;
-    }
-    return time;
-  }
 
   return (
     <Card sx={sx}>
@@ -76,7 +39,7 @@ export default function OverviewLatestOrders (props:any) {
                 <TableCell>
                   Assets
                 </TableCell>
-                <TableCell sortDirection="asc">
+                <TableCell sortDirection="asc" >
                   Remaining time
                 </TableCell>
                 <TableCell>

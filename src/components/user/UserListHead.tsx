@@ -45,7 +45,7 @@ export default function UserListHead(props:any) {
         {headLabel.map((headCell:any) => (
           <TableCell
             key={headCell.id}
-            align={headCell.alignRight ? 'right' : 'left'}
+            align={'center'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
             <TableSortLabel

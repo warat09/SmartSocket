@@ -37,6 +37,11 @@ const navConfig = [
     icon: 'basil:user-clock-solid',
   },
   {
+    title: 'Maintenance',
+    path: '/app/admin/maintenance',
+    icon: 'wpf:maintenance',
+  },
+  {
     title: 'Transaction',
     path: '/app/admin/transaction/list',
     icon: 'icon-park-solid:transaction-order',

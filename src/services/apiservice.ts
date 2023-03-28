@@ -326,6 +326,23 @@ export const SelectMatchNode = async (path:string,id:any) => {
       return null;
   }
 };
+export const SelectAssetMaintenance = async (path:string,token:string)=>{
+  try{
+    const response = await axios.get(api+path,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    console.log(response.data)
+    return response.data;
+  }
+  catch(err){
+      localStorage.clear();
+      window.history.pushState({},"Error","/login");
+      window.location.reload();
+      return null;
+  } 
+}
 //UserMatch
 export const addUserMatching=async (path:string,token:string,id_match:string,room:string,floor:string,description:string)=>{
   try{

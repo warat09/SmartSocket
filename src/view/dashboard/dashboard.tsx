@@ -37,12 +37,26 @@ const HomeDashboard: React.FC = () => {
   const [Remainingtime, SetRemainingTime] = useState<Matching[]>([]);
   const [Maintenance, SetMaintenance] = useState<Assets[]>([]);
   const [role,setrole] = useState<string>("")
+  const [DepartureRent,SetDepartureRent]:any = useState([])
+  const [TotalRent,SetTotalRent]:any = useState([])
   const ComponentDashboard = async (token: string) => {
     const Alldashboards = await getDashboard("/Dashboard/AllDashboard",token)
     SetDashboard(Alldashboards.countall)
     SetRemainingTime(Alldashboards.remainingtime)
     SetMaintenance(Alldashboards.maintenance)
-    console.log(Alldashboards)
+    SetDepartureRent(Alldashboards.totaldeparturerent)
+    // await Alldashboards.totaldeparturerent.map((key:any) => {
+      
+    //   DepartureRent.push(key.departure)
+    //   TotalRent.push(Number(key.total))
+      
+    // });
+    // console.log("dsdsdsd",TotalRent)
+    // let departure = []
+    // let total = []
+    // departure.push(key.departure)
+    // total.push(val.to)
+
     // SetDashboard(await getDashboard("/Dashboard/AllDashboard",token));
     // console.log(ConDashboard)
   };
@@ -65,9 +79,7 @@ const HomeDashboard: React.FC = () => {
       <Box
        component="main"
        sx={{
-         flexGrow: 1,
-         py: 8,
-         pl:3
+         pt:3
        }}
       >
         <Container maxWidth="xl">
@@ -107,7 +119,6 @@ const HomeDashboard: React.FC = () => {
                   data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13]
                 }
               ]}
-              sx={{ height: '100%' }}
             />
           </Grid>
           <Grid
@@ -116,9 +127,7 @@ const HomeDashboard: React.FC = () => {
             lg={4}
           >
             <Circle
-              chartSeries={[63, 15, 22]}
-              labels={['Desktop', 'Tablet', 'Phone']}
-              sx={{ height: '100%' }}
+              chartData={DepartureRent}
             />
           </Grid>
           <Grid
@@ -143,22 +152,6 @@ const HomeDashboard: React.FC = () => {
               sx={{ height: '100%' }}
             />
           </Grid>
-          {/* {ConDashboard.map((row: any, i: any) => (
-              <Grid item xs={4}>
-                <Card>
-                  <CardActionArea>
-                    <CardContent>
-                      <Typography gutterBottom variant="h5" component="div">
-                        {row.topic}
-                      </Typography>
-                      <Typography variant="h4" color="text.secondary">
-                        {row.amount}
-                      </Typography>
-                    </CardContent>
-                  </CardActionArea>
-                </Card>
-              </Grid>
-              ))} */}
           </Grid>
       </Container>
     </Box>

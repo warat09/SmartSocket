@@ -369,7 +369,7 @@ const myHelper:any = {
       <Helmet>
           <title> User: List | SmartSocket </title>
       </Helmet>
-      <Container>
+      <Container >
         
         <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
           <Typography variant="h4" gutterBottom>
@@ -405,21 +405,21 @@ const myHelper:any = {
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id_user)} />
                         </TableCell>
 
-                        <TableCell align="left">
-                          <Box sx={{display: 'flex',alignItems: 'center'}}>
+                        <TableCell align="center">
+                          <Box sx={{display: 'flex',alignItems:'center'}}>
                             <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name="+fullname} alt="photoURL" sx={{mr:2}}/>{fullname}
                           </Box>
                         </TableCell>
 
-                        <TableCell align="left">{email}</TableCell>
+                        <TableCell align="center">{email}</TableCell>
 
-                        <TableCell align="left">{id_card}</TableCell>
+                        <TableCell align="center">{id_card}</TableCell>
 
-                        <TableCell align="left">{departure}</TableCell>
+                        <TableCell align="center">{departure}</TableCell>
 
-                        <TableCell align="left">{role}</TableCell>
+                        <TableCell align="center">{role}</TableCell>
 
-                        <TableCell align="left">{status_user}</TableCell>
+                        <TableCell align="center">{status_user}</TableCell>
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_user,id_card,fullname,email,departure,role,status_user)}>
