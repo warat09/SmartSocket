@@ -425,6 +425,24 @@ export const ApproveUserMatch = async (path:string,token:string,status_Approve:s
   //     return null;
   // }
 }
+//Maintenance
+export const AddStatusMaintenance = async(path:string,token:string,status_maintenance:string,asset:number)=>{
+  try{
+    const attibute_matchnode = {status_maintenance,asset};
+    const response = await axios.post(api+path,attibute_matchnode,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    return response.data;
+  }
+  catch(err){
+      // localStorage.clear();
+      // window.history.pushState({},"Error","/login");
+      // window.location.reload();
+      // return null;
+  }
+}
 //Transaction
 export const getTransaction =async(path:string,token:string)=> {
   try{

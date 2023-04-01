@@ -45,9 +45,8 @@ import {
   import Iconify from "../../components/iconify/Iconify";
   import Scrollbar from "../../components/scrollbar/Scrollbar";
   import { UserListHead,UserListToolbar } from '../../components/user';
-  import { getUsers,updateUser,updateUserStatus,register,SelectAssetMaintenance } from "../../services/apiservice";
+  import { getUsers,SelectAssetMaintenance,AddStatusMaintenance } from "../../services/apiservice";
   import { User } from "../../model/model";
-  import { Controller,useForm } from 'react-hook-form';
   import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import TableHead from '@mui/material/TableHead';
@@ -116,8 +115,6 @@ const HomeMaintenance: React.FC=()=>{
 
   const [listMaintenance,setlistMaintenance] = useState<[]>([])
 
-  const [open, setOpen] = useState(null);
-
   const [page, setPage] = useState(0);
 
   const [order, setOrder] = useState('asc');
@@ -130,86 +127,12 @@ const HomeMaintenance: React.FC=()=>{
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [openDialog, setOpenDialog] = useState(false);
 
-  const [openNewDialog, setOpenNewDialog] = useState(false);
-
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-
-  const [UserId,setId]:any = useState({})
-
-  const [dialog, setdialog] = React.useState({
-    header: "",
-    body: "",
-    id: 0,
-    status: 0,
-  });
-
-  const [openAlert, setOpenAlert] = useState(false);
-
-  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
-
-  //-----------------New User--------------------//
-  const { control, handleSubmit, watch, reset } = useForm({
-    reValidateMode: "onBlur"
-  });
-
-const myHelper:any = {
-    username:{
-      required: "Username is Required"
-    },
-    password:{
-      required: "Password is Required"
-    },
-    confirmpassword:{
-      required: "ConfirmPassword is Required",
-      validate: "Password Not Match"
-    },
-    name:{
-      required: "Name is Required"
-    },
-    surname:{
-      required: "Surname is Required"
-    },
-    email:{
-      required: "Email is Required",
-      pattern: "Invalid Email Address"
-    },
-    card:{
-      required: "Id Card is Required",
-      pattern: "Invalid Id Card"
-    },
-    role:{
-      required: "Role is Required"
-    },
-    departure:{
-        required: "Departure is Required"
-    }
-  };
     const ComponentUser = async(token:string) => {
         setlistUser(await getUsers("/Maintenance/AllMaintenance",token))
         setlistMaintenance(await SelectAssetMaintenance("/Match/SelectMaintenance",token))
       }
-    
-      const handleOpenMenu = (event:any,id:any,id_card:any,fullname:any,email:any,departure:any,role:any,status_user:any) => {
-        console.log(id,id_card,fullname,email,departure,role,status_user)
-        var splitfullname = fullname.split(" ");
-        setId({
-          id:id,
-          name:splitfullname[0],
-          surname:splitfullname[1],
-          email:email,
-          id_card:id_card,
-          departure:departure,
-          role:role
-        })
-        setOpen(event.currentTarget);
-      };
-    
-      const handleCloseMenu = () => {
-        setOpen(null);
-      };
-    
+
       const handleRequestSort = (event:any, property:any) => {
         const isAsc = orderBy === property && order === 'asc';
         setOrder(isAsc ? 'desc' : 'asc');
@@ -223,21 +146,6 @@ const myHelper:any = {
           return;
         }
         setSelected([]);
-      };
-    
-      const handleClick = (event:any, name:any) => {
-        const selectedIndex = selected.indexOf(name);
-        let newSelected:any = [];
-        if (selectedIndex === -1) {
-          newSelected = newSelected.concat(selected, name);
-        } else if (selectedIndex === 0) {
-          newSelected = newSelected.concat(selected.slice(1));
-        } else if (selectedIndex === selected.length - 1) {
-          newSelected = newSelected.concat(selected.slice(0, -1));
-        } else if (selectedIndex > 0) {
-          newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-        }
-        setSelected(newSelected);
       };
     
       const handleChangePage = (event:any, newPage:any) => {
@@ -254,95 +162,13 @@ const myHelper:any = {
         setFilterName(event.target.value);
       };
     
-      const handleCloseDialog = () => {
-        setOpenDialog(false);
-      };
-    
-      const handleCloseNewDialog = () => {
-        setOpenNewDialog(false);
-      };
-    
-      const handleCloseEditDialog = () => {
-        setOpenEditDialog(false);
-      };
-    
-      const handleCloseAlert = (
-        event?: React.SyntheticEvent | Event,
-        reason?: string
-      ) => {
-        if (reason === "clickaway") {
-          return;
-        }
-    
-        setOpenAlert(false);
-      };
-    
+
       const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listuser.length) : 0;
     
       const filteredUsers = applySortFilter(listuser, getComparator(order, orderBy), filterName);
       
       const isNotFound = !filteredUsers.length && !!filterName;
     
-      const handlemenu = async(menu:number) => {
-        setOpen(null)
-        if(menu === 1){
-          reset({})
-          setOpenEditDialog(true)
-          // setdialog({
-          //   header: "Approve",
-          //   body: `Do you want Delete User?`,
-          //   id: 0,
-          //   status: 0,
-          // });
-        }
-        else{
-          setOpenDialog(true)
-          setdialog({
-            header: "Delete",
-            body: `Are you sure want to delete?`,
-            id: 0,
-            status: 0,
-          });
-        }
-      };
-    
-      const Agree = async() => {
-        const UpdateUser = await updateUserStatus(`/User/AllUser/${UserId.id}`,Token);
-        if(UpdateUser.status === 1){
-          const filterDeleteUser = filteredUsers.filter((object:any) => {
-            return object.id_user !== UserId;
-          });
-          setlistUser(filterDeleteUser)
-          setMessagealert({message:UpdateUser.message,color:"success"})
-          handleCloseDialog() 
-          setOpenAlert(true);
-        }
-          setOpenDialog(false)
-      }
-    
-      const handleOnSubmit=async(data:any)=>{
-        console.log(data)
-        await register("/User/Register",Token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
-        // navigate('/app/admin/user/list')
-      }  
-      const handleOnEditSubmit=async(data:any)=>{
-        const UpdateUser = await updateUser(`/User/AllUser/${UserId.id}`,Token,data.editname,data.editsurname, data.editid_card,data.editemail,data.editrole,data.editdeparture);
-        if(UpdateUser.status === 1){
-          let Index = filteredUsers.findIndex((value: { id_user: number; })=>value.id_user === UserId.id);
-          filteredUsers[Index].fullname = data.editname+" "+data.editsurname;
-          filteredUsers[Index].email = data.editemail
-          filteredUsers[Index].id_card = data.editid_card
-          filteredUsers[Index].role = data.editrole
-          filteredUsers[Index].departure = data.editdeparture
-          setOpenEditDialog(false)
-          setMessagealert({message:UpdateUser.message,color:"success"})
-          setOpenAlert(true);
-        }else{
-          setOpenEditDialog(false)
-          setMessagealert({message:UpdateUser.message,color:"error"})
-          setOpenAlert(true);
-        }
-      }  
       //------------------------------//
       function Row(props:any) {
         const { row }:any = props;
@@ -358,6 +184,9 @@ const myHelper:any = {
           setPageTable(0);
           setPerPage(parseInt(event.target.value, 10));
         };
+        const handleAddStatus = async(status:string,asset:number) => {
+          await AddStatusMaintenance("/Maintenance/AddStatusMaintenance",Token,status,asset)
+        }
         const ColorlibStepIconRoot = styled("div")<{
           ownerState: { completed?: boolean; active?: boolean };
         }>(({ theme, ownerState }) => ({
@@ -437,17 +266,17 @@ const myHelper:any = {
           "Success Maintenance"
         ]
         switch(History[0].Maintenance_status_maintenance) {
-          case  "waiting for delivery":
+          case  "Waiting for Delivery":
             // code block
             break;
-          case "request accepted":
+          case "Request Accepted":
             // code block
             statusstep = statusstep+1;
             break;
-          case "maintenancing":
+          case "Maintenancing":
             statusstep = statusstep+2;
             break;
-          case "success maintenance":
+          case "Success Maintenance":
             statusstep = statusstep+3;
             stepbutton[3] = "success"
             // setCompleted(true)
@@ -483,6 +312,7 @@ const myHelper:any = {
               variant="contained"
               size="small"
               color="success"
+              onClick={()=>handleAddStatus(stepbutton[statusstep],row.History[0].Maintenance_id_assets)}
               >
                 {stepbutton[statusstep]}
               </Button>
@@ -572,9 +402,6 @@ const myHelper:any = {
                 <Typography variant="h4" gutterBottom>
                     Maintenance
                 </Typography>
-                <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
-                    Send Repairs
-                </Button>
             </Stack>
             <hr />
             <Card>
@@ -644,313 +471,7 @@ const myHelper:any = {
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
              </Card>
-            </Container>
-            <Popover
-                open={Boolean(open)}
-                anchorEl={open}
-                onClose={handleCloseMenu}
-                anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-                PaperProps={{
-                    sx: {
-                    p: 1,
-                    width: 140,
-                    '& .MuiMenuItem-root': {
-                        px: 1,
-                        typography: 'body2',
-                        borderRadius: 0.75,
-                    },
-                    },
-                }}
-                    
-            >
-                <MenuItem onClick={()=>handlemenu(1)}>
-                <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-                    Edit
-                </MenuItem>
-                <MenuItem sx={{ color: 'error.main' }} onClick={()=>handlemenu(0)}>
-                <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-                    Delete
-                </MenuItem>
-            </Popover>
-            <Dialog
-          open={openNewDialog}
-          onClose={handleCloseNewDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          sx={{
-            "& .MuiDialog-container": {
-              "& .MuiPaper-root": {
-                width: "100%",
-                maxWidth: "1000px",  // Set your width here
-                paddingTop:"20px"
-              },
-            },
-          }}
-        >
-          <DialogTitle id="form-dialog-title">
-            <Typography variant="h3" gutterBottom>
-                Send Repairs Asset
-            </Typography>
-          </DialogTitle>
-          <DialogContent>
-          <Stack spacing={3}>
-          <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
-            <CardContent sx={{pt:4}}>
-              <Box sx={{ m: -1.5 }}>
-                <Grid container spacing={2} pl={2} pr={2}>
-
-                <Grid
-                  xs={12}
-                  md={6}
-                >
-                  <Controller
-                      control={control}
-                      name="asset"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <FormControl error={error !== undefined} fullWidth>
-                        <InputLabel id="demo-simple-select-label">Assets</InputLabel>
-                          <Select 
-                          fullWidth
-                          labelId="demo-simple-select-label"
-                          label="Assets"
-                          {...field}
-                          onChange={(e) => {
-                            field.onChange(parseInt(e.target.value))
-                            // setInputassets(e.target.value);
-                            // Getnode(e.target.value);
-                          }}
-                          >
-                            <MenuItem
-                              value=""
-                            >
-                              <em>None</em>
-                            </MenuItem>
-                        {listMaintenance.map((inputassets:any) => {
-                          return (
-                            <MenuItem
-                              value={inputassets.Match_id_match}
-                              key={inputassets.Match_id_match}
-                            >
-                              {inputassets.Asset_name_assets}
-                            </MenuItem>
-                          );
-                        })}
-                          </Select>
-                        <FormHelperText>{error ? myHelper.asset[error.type] : ""}</FormHelperText>
-                        </FormControl>
-                      )}
-                    />
-                </Grid>  
-                <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="name"
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Name"
-                          defaultValue=""
-                          error={error !== undefined}
-                          helperText={error ? myHelper.name[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                 
-                </Grid>   
-              </Box> 
-            </CardContent>
-            <Divider />
-            <CardActions>
-               <Button fullWidth variant="text" type="submit">
-                Create a new user
-                </Button>
-             </CardActions>
-            </Box>
-          </Stack>
-          </DialogContent>
-        </Dialog>
-        
-        <Dialog
-          open={openEditDialog}
-          onClose={handleCloseEditDialog}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-          sx={{
-            "& .MuiDialog-container": {
-              "& .MuiPaper-root": {
-                width: "100%",
-                maxWidth: "1000px",  // Set your width here
-                paddingTop:"20px"
-              },
-            },
-          }}
-        >
-          <DialogTitle id="form-dialog-title">
-            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
-                Edit User {UserId.name}
-            </Typography>
-          </DialogTitle>
-          <DialogContent>
-          <Stack spacing={3}>
-          <Box component="form" onSubmit={handleSubmit(handleOnEditSubmit)}>
-            <CardContent sx={{pt:4}}>
-              <Box sx={{ m: -1.5 }}>
-                <Grid container spacing={2} pl={2} pr={2}>
-                <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="editname"
-                      defaultValue={UserId.name}
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          defaultValue={UserId.name}
-                          type="text"
-                          fullWidth
-                          label="Name"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.name[error.type] : ""}
-                          {...field}
-                          // onChange={(e) => {
-                          //   field.onChange(parseInt(e.target.value))
-                          //   setId({name:e.target.value})
-                          // }}
-                          
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                     <Controller
-                      control={control}
-                      name="editsurname"
-                      defaultValue={UserId.surname}
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Surname"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.surname[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="editemail"
-                      defaultValue={UserId.email}
-                      rules={{
-                        required: true,
-                        pattern: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Email"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.email[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="editrole"
-                      defaultValue={UserId.role}
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Role"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.role[error.type] : ""}
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  <Grid
-                    xs={12}
-                    md={6}
-                  >
-                    <Controller
-                      control={control}
-                      name="editdeparture"
-                      defaultValue={UserId.departure}
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Departure"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.departure[error.type] : ""}
-                          defaultValue={UserId.departure}
-                        />
-                      )}
-                    />  
-                  </Grid>
-                </Grid>   
-              </Box> 
-            </CardContent>
-            <Divider />
-            <CardActions>
-               <Button fullWidth variant="text" type="submit">
-                Save Changes
-                </Button>
-             </CardActions>
-            </Box>
-          </Stack>
-          </DialogContent>
-        </Dialog>                        
+            </Container>               
         </>
     );
 }

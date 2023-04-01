@@ -10,6 +10,7 @@ import {
   Divider,
   SvgIcon
 } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 import { alpha, useTheme } from '@mui/material/styles';
 import Chart  from 'react-apexcharts';
 
@@ -94,7 +95,7 @@ const useChartOptions = () => {
     },
     yaxis: {
       labels: {
-        formatter: (value:any) => (value > 0 ? `${value}K` : `${value}`),
+        formatter: (value:any) => (value > 0 ? `${value} Assets` : `${value}`),
         offsetX: -10,
         style: {
           colors: theme.palette.text.secondary
@@ -107,24 +108,12 @@ const useChartOptions = () => {
 export default function OverviewSales (props:any) {
   const { chartSeries, sx } = props;
   const chartOptions = useChartOptions();
+  const navigate = useNavigate();
 
   return (
     <Card sx={sx}>
       <CardHeader
-        action={(
-          <Button
-            color="inherit"
-            size="small"
-            startIcon={(
-              <SvgIcon fontSize="small">
-                {/* <ArrowPathIcon /> */}
-              </SvgIcon>
-            )}
-          >
-            Sync
-          </Button>
-        )}
-        title="Sales"
+        title="Month Maintenance"
       />
       <CardContent>
         <Chart
@@ -138,6 +127,7 @@ export default function OverviewSales (props:any) {
       <Divider />
       <CardActions sx={{ justifyContent: 'flex-end' }}>
         <Button
+          sx={{paddingLeft:3}}
           color="inherit"
           endIcon={(
             <SvgIcon fontSize="small">
@@ -145,6 +135,7 @@ export default function OverviewSales (props:any) {
             </SvgIcon>
           )}
           size="small"
+          onClick={() => navigate('/app/admin/maintenance')}
         >
           Overview
         </Button>

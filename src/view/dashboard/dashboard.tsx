@@ -38,13 +38,15 @@ const HomeDashboard: React.FC = () => {
   const [Maintenance, SetMaintenance] = useState<Assets[]>([]);
   const [role,setrole] = useState<string>("")
   const [DepartureRent,SetDepartureRent]:any = useState([])
-  const [TotalRent,SetTotalRent]:any = useState([])
+  const [Chart,SetChart]:any = useState([])
   const ComponentDashboard = async (token: string) => {
     const Alldashboards = await getDashboard("/Dashboard/AllDashboard",token)
     SetDashboard(Alldashboards.countall)
     SetRemainingTime(Alldashboards.remainingtime)
     SetMaintenance(Alldashboards.maintenance)
     SetDepartureRent(Alldashboards.totaldeparturerent)
+    SetChart(Alldashboards.totalchart)
+    console.log("ddddddddd",DepartureRent)
     // await Alldashboards.totaldeparturerent.map((key:any) => {
       
     //   DepartureRent.push(key.departure)
@@ -106,28 +108,21 @@ const HomeDashboard: React.FC = () => {
               ))}
           <Grid
             xs={12}
+            md={12}
             lg={8}
             >
             <Graph
-              chartSeries={[
-                {
-                  name: 'This year',
-                  data: [18, 16, 5, 8, 3, 14, 14, 16, 17, 19, 18, 20]
-                },
-                {
-                  name: 'Last year',
-                  data: [12, 11, 4, 6, 2, 9, 9, 10, 11, 12, 13, 13]
-                }
-              ]}
+              chartSeries={Chart}
             />
           </Grid>
           <Grid
             xs={12}
-            md={6}
+            md={12}
             lg={4}
           >
             <Circle
               chartData={DepartureRent}
+              sx={{ height: '100%' }}
             />
           </Grid>
           <Grid
