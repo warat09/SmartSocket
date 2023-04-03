@@ -60,7 +60,7 @@ const AddStatusMaintenance = async (req: Request, res: Response, next: NextFunct
                 })
                 if(Object.values(CheckMatchAssets).length !== 0){
                     const MatchAsset = new Match();
-                    MatchAsset.remain_time = CheckAssets.expire_hour*(1000*60*60);
+                    MatchAsset.sum_used_time = 0;
                      AppDataSource.getRepository(Match).merge(CheckMatchAssets, MatchAsset)
                      await AppDataSource.getRepository(Match).save(CheckMatchAssets)
                 }

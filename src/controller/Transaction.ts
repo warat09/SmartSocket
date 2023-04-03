@@ -29,20 +29,22 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
             .where(`UserMatch.id_match = ${CheckMatchingRent[0].Match_id_match}`).andWhere(`UserMatch.status_user_match = :status`,{status:"Approve"}).getRawOne();
             const UpdateTimeUserMatch = await AppDataSource
             .createQueryBuilder()
-            .update(User_match)
+            .update(Match)
             .set({
-                sum_used_time: Number(CheckUserMatchApprove.UserMatch_sum_used_time)+Number(time_used)
+                sum_used_time: () => `sum_used_time + ${Number(time_used)}`
             })
             .where("id_match = :id", { id: CheckMatchingRent[0].Match_id_match }).execute()
             if(UpdateTimeUserMatch){
-                const UpdateTimeRemainMatch= AppDataSource
-                .createQueryBuilder()
-                .update(Match)
-                .set({
-                    remain_time: () => `remain_time - ${Number(time_used)}`
-                })
-                .where("id_match = :id", { id: CheckMatchingRent[0].Match_id_match }).execute()
-                return res.status(200).json({status:1,data:UpdateTimeRemainMatch,message: "Insert Success"});
+                return res.status(200).json({status:1,data:UpdateTimeUserMatch,message: "Insert Success"});
+                // const UpdateTimeRemainMatch= AppDataSource
+                // .createQueryBuilder()
+                // .update(Match)
+                // .set({
+                    // remain_time: () => `remain_time - ${Number(time_used)}`
+                //     remain_time: Number(CheckMatchingRent[0].Asset_expire_hour*(1000*60*60))-Number(CheckUserMatchApprove.UserMatch_sum_used_time)
+                // })
+                // .where("id_match = :id", { id: CheckMatchingRent[0].Match_id_match }).execute()
+                // return res.status(200).json({status:1,data:UpdateTimeRemainMatch,message: "Insert Success"});
             }
         }
     }

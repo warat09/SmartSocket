@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { User } from '../entity/User';
 import bycript from 'bcrypt'
+import  config from "../config/config";
+import jwt from "jsonwebtoken";
 
 const CheckToken = async (req: Request, res: Response, next: NextFunction) => {
     return res.status(200).json({status:'ok',data:req["userData"]});
@@ -66,7 +68,18 @@ const UpdateUser = async(req:Request,  res: Response, next: NextFunction) => {
                     departure : departure
                 })
                 .where("id_user = :id", { id: id }).execute()
-                return res.status(200).json({status:1,message: "Update Success"});
+                const token = jwt.sign(
+                    { 
+                        name:name,
+                        surname:surname,
+                        email: email,
+                        role:role,
+                        departure:departure
+                    },
+                    config.token,
+                    { expiresIn: "30d" }
+                );
+                return res.status(200).json({status:1,token:token,message: "Update Success"});
         }
         else{
             return res.status(404).json({status:0,message: "User not found"});

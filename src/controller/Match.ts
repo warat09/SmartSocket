@@ -22,7 +22,8 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
     match.id_assets = id_assets;
     match.mac_address = mac_address;
     match.status_match = "Enable";
-    match.remain_time = InputRemainTime.expire_hour*(1000*60*60)//ดึง asset expire_hour no apiinput
+    // match.remain_time = InputRemainTime.expire_hour*(1000*60*60)//ดึง asset expire_hour no apiinput
+    match.sum_used_time = 0
     match.active_datetime = Datetime;
     match.room = room;
     match.floor = floor;
@@ -64,7 +65,23 @@ const GetAssetMaintenance = async (req: Request, res: Response, next: NextFuncti
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
-    res.json(AllMatching)
+    const FilterMatch = []
+    AllMatching.map((v,i)=>{
+        // console.log("value",v[i].Match_id_match)
+        const Match = AllMatching[i]
+        const attribute = {
+            Asset_name_assets:Match.Asset_name_assets,
+            Match_mac_address:Match.Match_mac_address,
+            Match_status_match:Match.Match_status_match,
+            Match_sum_used_time:(Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time,
+            Match_active_datetime:Match.Match_active_datetime,
+            Match_room:Match.Match_room,
+            Match_floor:Match.Match_floor
+        }
+        console.log(attribute)
+        FilterMatch.push(attribute);
+    })
+    res.json(FilterMatch)
 };
 
 

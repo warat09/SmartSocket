@@ -1,4 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
+import { User } from '../entity/User';
+import { AppDataSource } from "../data-source"
 import  config from "../config/config";
 import jwt from "jsonwebtoken";
 
@@ -17,6 +19,15 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
                     if(err){
                         return res.sendStatus(403) //invalid token
                     }
+                    const CheckUser = await AppDataSource.getRepository(User).find({
+                        where: {
+                            email: decoded.email,
+                            status_user:'Active'
+                        },
+                      });
+                    if(Object.values(CheckUser).length === 0){
+                        return res.sendStatus(401)
+                     }
                     // req.roles = decoded.role
                     // req.role = 'tenant-X'
 

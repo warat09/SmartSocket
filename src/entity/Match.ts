@@ -17,7 +17,7 @@ export class Match{
     mac_address: Node
 
     @Column({type: 'bigint'})
-    remain_time: number
+    sum_used_time: number
 
     @Column()
     active_datetime: Date
