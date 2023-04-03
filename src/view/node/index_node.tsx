@@ -185,9 +185,9 @@ const HomeNode: React.FC = () => {
 
                     return (
                       <TableRow hover key={mac_address} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, mac_address)} />
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="center">{mac_address}</TableCell>
 

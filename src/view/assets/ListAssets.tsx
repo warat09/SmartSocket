@@ -201,9 +201,9 @@ const HomeAsset: React.FC = () => {
 
                     return (
                       <TableRow hover key={id_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name_assets)} />
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="center">{name_assets}</TableCell>
 

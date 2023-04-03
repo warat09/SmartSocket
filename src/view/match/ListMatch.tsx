@@ -29,6 +29,7 @@ import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import formatTime from '../../components/caltime/millisectohms'
+import { match } from "assert";
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
@@ -150,6 +151,7 @@ const HomeMatch: React.FC = () => {
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching("/Match/AllMatching",token));
+    console.log(listmatching)
   }
 
   useEffect(() => {
@@ -195,14 +197,11 @@ const HomeMatch: React.FC = () => {
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
                     console.log(row)
-                    const { Asset_name_assets, Match_mac_address, Match_status_match, Match_remain_time, Match_active_datetime, Match_room,Match_floor  }:any = row;
+                    const { Asset_name_assets, Match_mac_address, Match_status_match, Match_sum_used_time, Match_active_datetime, Match_room,Match_floor  }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
 
                     return (
                       <TableRow hover key={Asset_name_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Asset_name_assets)} />
-                        </TableCell>
 
                         <TableCell align="center">{Asset_name_assets}</TableCell>
 
@@ -212,7 +211,7 @@ const HomeMatch: React.FC = () => {
                         
                         <TableCell align="center">{Match_floor}</TableCell>
 
-                        <TableCell align="center">{formatTime(Match_remain_time)}</TableCell>
+                        <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
 
                         <TableCell align="center">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 

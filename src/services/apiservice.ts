@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Nav from '../components/Siderbar/NewSidebar';
 
 const api = "http://localhost:9090";
 export const login = async(path:string,email:string,password:string) => {
@@ -131,12 +132,17 @@ export const register = async(path:string,token:string,name:string,surname:strin
 
 export const updateUser = async(path:string,token:string,name:string,surname:string,id_card:string,email:string,role:string,departure:string)=>{
   try{
-    console.log(token)
     const response = await axios.put(api+path,{name,surname,id_card,email,role,departure},{
       headers:{
         Authorization: `Bearer ${token}`
       }
     })
+    const userData = {
+      token:response.data.token
+    };
+    localStorage.setItem("User", JSON.stringify(userData));
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
     return response.data;
   }
   catch(err){
@@ -154,6 +160,8 @@ export const updateUserStatus = async(path:string,token:string)=>{
         Authorization: `Bearer ${token}`
       }
     })
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
     return response.data;
   }
   catch(err){

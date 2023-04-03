@@ -68,25 +68,6 @@ const HomeLogin :React.FC = () =>{
               }
 
             }
-            // if(LoginStatus.status === "error"){
-            //   alert(LoginStatus.message);
-            // }
-            // login("/Login",username,password).then((results)=>{
-            //   const login = JSON.parse(JSON.stringify(results))
-            //   console.log(login)
-            //   if(login.status === "ok"){
-            //       // alert(login.message);
-            //       const userData = {
-            //           username:username,
-            //           token:login.token
-            //         };
-            //       localStorage.setItem("User", JSON.stringify(userData));
-            //       navigate('/');
-            //   }
-            //   else{
-            //       alert(login.message);
-            //   }
-            // })
           }
           , 3000);
         var myHeaders = new Headers();

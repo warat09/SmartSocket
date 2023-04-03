@@ -314,17 +314,7 @@ const myHelper:any = {
   };
 
   const Agree = async() => {
-    const UpdateUser = await updateUserStatus(`/User/AllUser/${UserId.id}`,Token);
-    if(UpdateUser.status === 1){
-      const filterDeleteUser = filteredUsers.filter((object:any) => {
-        return object.id_user !== UserId;
-      });
-      setlistUser(filterDeleteUser)
-      setMessagealert({message:UpdateUser.message,color:"success"})
-      handleCloseDialog() 
-      setOpenAlert(true);
-    }
-      setOpenDialog(false)
+    await updateUserStatus(`/User/AllUser/${UserId.id}`,Token);
   }
 
   const handleOnSubmit=async(data:any)=>{
@@ -333,27 +323,18 @@ const myHelper:any = {
     navigate('/app/admin/user/list')
   }  
   const handleOnEditSubmit=async(data:any)=>{
-    const UpdateUser = await updateUser(`/User/AllUser/${UserId.id}`,Token,data.editname,data.editsurname, data.editid_card,data.editemail,data.editrole,data.editdeparture);
-    if(UpdateUser.status === 1){
-      let Index = filteredUsers.findIndex((value: { id_user: number; })=>value.id_user === UserId.id);
-      filteredUsers[Index].fullname = data.editname+" "+data.editsurname;
-      filteredUsers[Index].email = data.editemail
-      filteredUsers[Index].id_card = data.editid_card
-      filteredUsers[Index].role = data.editrole
-      filteredUsers[Index].departure = data.editdeparture
-      setOpenEditDialog(false)
-      setMessagealert({message:UpdateUser.message,color:"success"})
-      setOpenAlert(true);
-    }else{
-      setOpenEditDialog(false)
-      setMessagealert({message:UpdateUser.message,color:"error"})
-      setOpenAlert(true);
-    }
+    await updateUser(`/User/AllUser/${UserId.id}`,Token,data.editname,data.editsurname, data.editid_card,data.editemail,data.editrole,data.editdeparture);
   }  
   //------------------------------//
 
   useEffect(() => {
+    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
+      if(open === 1){
+          setMessagealert({message:message,color:"success"})
+          setOpenAlert(true);
+          window.history.replaceState({}, "", "");
+        }
       if (item && item !== "undefined") {
         const user:LocalStorage = JSON.parse(item);
         ComponentUser(user.token);
@@ -382,7 +363,7 @@ const myHelper:any = {
         <hr />
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
-          <Scrollbar>
+          {/* <Scrollbar> */}
             <TableContainer sx={{ minWidth: 800 }}>
               <Table>
                 <UserListHead
@@ -401,31 +382,46 @@ const myHelper:any = {
 
                     return (
                       <TableRow hover key={id_user} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, id_user)} />
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="center">
-                          <Box sx={{display: 'flex',alignItems:'center'}}>
-                            <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name="+fullname} alt="photoURL" sx={{mr:2}}/>{fullname}
-                          </Box>
+                        <Stack direction="row" alignItems="center" spacing={2} sx={{pl:3}}>
+                          <Avatar src={"https://ui-avatars.com/api/?background=random&bold=true&name="+fullname} />
+                            <Typography variant="subtitle2" noWrap>
+                              {fullname}
+                            </Typography>
+                          </Stack>
                         </TableCell>
 
                         <TableCell align="center">{email}</TableCell>
 
-                        <TableCell align="center">{id_card}</TableCell>
+                        <TableCell align="center">
+                            <Typography noWrap>
+                              {id_card}
+                            </Typography>
+                        </TableCell>
 
                         <TableCell align="center">{departure}</TableCell>
 
                         <TableCell align="center">{role}</TableCell>
 
                         <TableCell align="center">{status_user}</TableCell>
-
-                        <TableCell align="right">
+                        {
+                          id_user !== 1 &&
+                          <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_user,id_card,fullname,email,departure,role,status_user)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
+                        }
+                        {
+                          id_user === 1 &&
+                          <TableCell align="right">
+                        </TableCell>
+                        }
+
                       </TableRow> 
                     );
                   })}
@@ -461,7 +457,7 @@ const myHelper:any = {
                 )}
               </Table>
             </TableContainer>
-          </Scrollbar>
+          {/* </Scrollbar> */}
 
           <TablePagination
             rowsPerPageOptions={[5, 10, 25]}

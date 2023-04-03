@@ -295,9 +295,9 @@ const HomeApprove: React.FC = () => {
 
                     return (
                       <TableRow hover key={Asset_name_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Asset_name_assets)} />
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="center">{Asset_name_assets}</TableCell>
 

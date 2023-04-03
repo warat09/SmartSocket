@@ -56,7 +56,7 @@ export interface Assets {
     Asset_name_assets?: string;
     Match_mac_address?: string;
     Match_status_match?: string;
-    Match_remain_time?:number
+    Match_sum_used_time?:number
     Match_active_datetime?: Date;
     Match_room?: string;
     Match_floor?:string;

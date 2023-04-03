@@ -33,6 +33,7 @@ const StyledAccount = styled('div')(({ theme }) => ({
 export default function Nav(props:any) {
   // const [name, setname] = useState("");
   // const [user, setuser] = useState({name:"",surname:""});
+  const [data,setdata] = useState()
   const userData : any = props.UserData;
   const openNav : any = props.openNav;
   const onCloseNav : any = props.onCloseNav;
@@ -60,8 +61,11 @@ export default function Nav(props:any) {
   //   }
   //   console.log("ttttt",userData.name)
   // }, []);
+  console.log("ddddddddddddddddddddddddd",userData)
 
   useEffect(() => {
+    // setdata(userData)
+    console.log("dadsdasdasdwasd",userData)
     if (openNav) {
       onCloseNav();
     }

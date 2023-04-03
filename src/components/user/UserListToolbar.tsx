@@ -67,13 +67,13 @@ export default function UserListToolbar(props:any) {
         />
       )}
 
-      {numSelected > 0 &&
+      {/* {numSelected > 0 &&
         <Tooltip title="Delete">
           <IconButton>
             <Box component={Icon} icon={"eva:trash-2-fill"}/>
           </IconButton>
         </Tooltip>
-      }
+      } */}
 
       {/* {numSelected > 0 ? (
         <Tooltip title="Delete">
