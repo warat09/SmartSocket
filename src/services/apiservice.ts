@@ -140,7 +140,7 @@ export const updateUser = async(path:string,token:string,name:string,surname:str
     const userData = {
       token:response.data.token
     };
-    localStorage.setItem("User", JSON.stringify(userData));
+    // localStorage.setItem("User", JSON.stringify(userData));
     window.history.pushState({open:1,message:response.data.message},"Success","");
     window.location.reload();
     return response.data;

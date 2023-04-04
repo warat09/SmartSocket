@@ -215,9 +215,9 @@ const HomeTransection: React.FC = () => {
 
                     return (
                       <TableRow hover key={Transaction_id_txn} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        <TableCell padding="checkbox">
+                        {/* <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, Transaction_id_txn)} />
-                        </TableCell>
+                        </TableCell> */}
 
                         <TableCell align="center">{Asset_name_assets}</TableCell>
 

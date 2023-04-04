@@ -71,6 +71,7 @@ import { StepIconProps } from "@mui/material/StepIcon";
   }
 
   const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
+    { id: '', label: '', alignRight: false  },
     { id: 'Asset_name', label: 'AssetName', alignRight: false },
     { id: 'Asset_expire_hour', label: 'ExpireHour', alignRight: false },
     { id: 'Match_remain_time', label: 'TimeUse', alignRight: false },
@@ -172,7 +173,7 @@ const HomeMaintenance: React.FC=()=>{
       //------------------------------//
       function Row(props:any) {
         const { row }:any = props;
-        const { Match_id_match,Asset_name,Asset_expire_hour,Match_remain_time,History }:any = row;
+        const { Match_id_match,Asset_name,Asset_expire_hour,Match_sum_used_time,History }:any = row;
         const [openTable, setOpenTable] = useState(false);
         const [rowsPage, setPerPage] = useState(4);
         const [pageTable, setPageTable] = useState(0);
@@ -305,7 +306,7 @@ const HomeMaintenance: React.FC=()=>{
 
           <TableCell align="center">{formatTime(Asset_expire_hour)}</TableCell>
 
-          <TableCell align="center">{formatTime(Match_remain_time)}</TableCell>
+          <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
           <TableCell align="center">
             <Box>
               <Button

@@ -32,7 +32,7 @@ import formatTime from '../../caltime/millisectohms';
       <Card sx={sx}>
         <CardHeader title={title}/>
         {/* <Scrollbar sx={{ flexGrow: 1 }}> */}
-          <Box sx={{ minWidth: 800 }}>
+          <Box sx={{ minWidth: 700 }}>
             <Table>
               <TableHead>
                 <TableRow>

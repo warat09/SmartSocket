@@ -16,6 +16,7 @@ import {
   TableRow
 } from '@mui/material';
 import formatTime from '../../caltime/millisectohms';
+import Scrollbar from "../../../components/scrollbar";
 // import { Scrollbar } from 'src/components/scrollbar';
 // import { SeverityPill } from 'src/components/severity-pill';
 
@@ -32,7 +33,7 @@ export default function OverviewLatestOrders (props:any) {
     <Card sx={sx}>
       <CardHeader title={title}/>
       {/* <Scrollbar sx={{ flexGrow: 1 }}> */}
-        <Box sx={{ minWidth: 800 }}>
+        <Box sx={{ minWidth: 700 }}>
           <Table>
             <TableHead>
               <TableRow>
