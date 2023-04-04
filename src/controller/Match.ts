@@ -3,6 +3,7 @@ import { AppDataSource } from "../data-source"
 import { Assets } from '../entity/Asset';
 import {Match} from "../entity/Match"
 import {User_match} from "../entity/Usermatch"
+import { Maintenance_Assets } from '../entity/Maintenance';
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {mac_address,id_assets,room,floor} = req.body
@@ -66,7 +67,7 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
     const FilterMatch = []
-    AllMatching.map((v,i)=>{
+    AllMatching.map(async(v,i)=>{
         // console.log("value",v[i].Match_id_match)
         const Match = AllMatching[i]
         const attribute = {
@@ -78,8 +79,30 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
             Match_room:Match.Match_room,
             Match_floor:Match.Match_floor
         }
-        console.log(attribute)
+
         FilterMatch.push(attribute);
+        if((Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time < 0){
+            const a = await AppDataSource.getRepository(Assets).createQueryBuilder('Asset').where('Asset.maintenance = 0 AND Asset.id_assets = :id',{id:Match.Asset_id_assets}).getRawMany();
+            console.log(Object.values(a).length)
+            if(Object.values(a).length > 0){
+            const UpdateStatusMaintenance = await AppDataSource
+            .createQueryBuilder()
+            .update(Assets)
+            .set({
+                maintenance: () => `1`
+            })
+            .where("id_assets = :id", { id:  Match.Asset_id_assets}).execute()
+                if(UpdateStatusMaintenance){
+                    let Date_maintenance = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
+                    const Maintenance = new Maintenance_Assets();
+                    Maintenance.id_assets = Match.Asset_id_assets;
+                    Maintenance.date_maintenance = new Date(Date_maintenance);
+                    Maintenance.status_maintenance = "Wait for Delivery"
+                    const AddMaintenance = AppDataSource.getRepository(Maintenance_Assets).create(Maintenance)
+                    await AppDataSource.getRepository(Maintenance_Assets).save(AddMaintenance)   
+                }
+            }
+        }
     })
     res.json(FilterMatch)
 };

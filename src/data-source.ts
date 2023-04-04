@@ -7,7 +7,7 @@ export const AppDataSource = new DataSource({
     port: 3306,
     username: "root",
     password: "",
-    database: "smartsocket",
+    database: "db",
     synchronize: true,
     logging: false,
     entities: ["src/entity/*.ts"],

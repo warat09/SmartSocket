@@ -25,7 +25,7 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
         const AddUser = AppDataSource.getRepository(Node_Transaction).create(Transaction)
         const results = await AppDataSource.getRepository(Node_Transaction).save(AddUser)
         if(results){
-            const CheckUserMatchApprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+            await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .where(`UserMatch.id_match = ${CheckMatchingRent[0].Match_id_match}`).andWhere(`UserMatch.status_user_match = :status`,{status:"Approve"}).getRawOne();
             const UpdateTimeUserMatch = await AppDataSource
             .createQueryBuilder()
