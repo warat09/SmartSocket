@@ -81,7 +81,7 @@ const AddStatusMaintenance = async (req: Request, res: Response, next: NextFunct
     Maintenance.date_maintenance = new Date(Date_maintenance);
     const AddMaintenance = AppDataSource.getRepository(Maintenance_Assets).create(Maintenance)
     const results = await AppDataSource.getRepository(Maintenance_Assets).save(AddMaintenance)
-    return res.status(200).json({status:1,data:results,message: "Add StatusMaintenance Success"});
+    return res.status(200).json({status:1,data:results,message: "Update Status Success"});
 }
 
 

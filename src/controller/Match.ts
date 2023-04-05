@@ -63,17 +63,32 @@ const GetAssetMaintenance = async (req: Request, res: Response, next: NextFuncti
     res.json(SelectMaintenance)     
 }
 
+const UpdateMatching = async (req: Request, res: Response, next: NextFunction) => {
+    const {node,room,floor} = req.body;
+    await AppDataSource
+            .createQueryBuilder()
+            .update(Match)
+            .set({
+                mac_address : node,
+                room : room,
+                floor : floor,
+            })
+            .where("id_match = :id", { id: req.params.id }).execute()
+    return res.status(200).json({status:1,message: "Update Success"});
+}
+
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
     const FilterMatch = []
     AllMatching.map(async(v,i)=>{
-        // console.log("value",v[i].Match_id_match)
         const Match = AllMatching[i]
         const attribute = {
+            Match_id_match:Match.Match_id_match,
             Asset_name_assets:Match.Asset_name_assets,
             Match_mac_address:Match.Match_mac_address,
             Match_status_match:Match.Match_status_match,
+            Match_status_rent:Match.Match_status_rent,
             Match_sum_used_time:(Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time,
             Match_active_datetime:Match.Match_active_datetime,
             Match_room:Match.Match_room,
@@ -108,4 +123,4 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
 };
 
 
-export default {MatchingAsset,GetRentMatch,GetAssetMaintenance,GetAllMatching};
+export default {MatchingAsset,GetRentMatch,GetAssetMaintenance,GetAllMatching,UpdateMatching};

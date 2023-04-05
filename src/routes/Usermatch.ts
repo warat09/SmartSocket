@@ -8,6 +8,7 @@ router.post('/AddUsermatch',verifyRoles("admin","user"),controller.AddUsermatch)
 router.get('/GetRequestRent', controller.GetRequestRent);
 router.get('/GetApprove', controller.GetApprove);
 router.get('/AllUsermatch', controller.GetAllUsermatch);
-router.patch('/Approve/:id',controller.UpdateStatusApprove)
+router.put('/AllUsermatch/:id',controller.UpdateUsermatch)
+router.patch('/Approve/:id',controller.UpdateStatusApprove);
 
 export = router;

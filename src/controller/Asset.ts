@@ -35,9 +35,35 @@ const GetMatchAsset = async(req:Request,  res: Response, next: NextFunction) => 
     const SelectIdAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').where(`Assets.id_assets NOT IN (${SelectMatch})`).getRawMany();
     res.json(SelectIdAsset)
 }
+const UpdateAsset = async(req:Request,  res: Response, next: NextFunction) => {
+    const  {asset_name,rfid_address,expire_hour} = req.body;
+    const CheckAssets = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets')
+    .where(` Assets.rfid_address != :oldrfid AND (Assets.name_assets = :assets OR Assets.rfid_address  = :rfid)`, {assets:asset_name,rfid:rfid_address,oldrfid:req.params.id}).getRawMany();
+    if(Object.values(CheckAssets).length === 0){
+        await AppDataSource
+            .createQueryBuilder()
+            .update(Assets)
+            .set({
+                name_assets : asset_name,
+                expire_hour : Number(expire_hour),
+                rfid_address : rfid_address,
+            })
+            .where("rfid_address = :id", { id: req.params.id }).execute()
+            return res.status(200).json({status:1,message: "Update Success"});
+    }
+    else{
+        console.log("Assets Name or Rfid already exists")
+        return res.status(200).json({status:0,message: "Assets Name or Rfid already exists"});
+    }
+    
+}
 const GetAllAsset = async(req:Request,  res: Response, next: NextFunction) => {
-    const AllAssets = await AppDataSource.getRepository(Assets).find()
+    const AllAssets = await AppDataSource.getRepository(Assets).find({
+        relations: {
+            rfid_address:true
+        }
+    })
     res.json(AllAssets)
 };
 
-export default {AddAsset,GetAllAsset,GetMatchAsset};
+export default {AddAsset,GetAllAsset,GetMatchAsset,UpdateAsset};

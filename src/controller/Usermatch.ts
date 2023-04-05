@@ -53,7 +53,7 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
             .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
-            .getRawMany();   
+            .getRawMany();
             return res.status(200).json(RequestRent);
     }
     else{
@@ -121,4 +121,18 @@ const UpdateStatusApprove = async(req:Request,  res: Response, next: NextFunctio
 
 }
 
-export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove};
+const UpdateUsermatch = async(req:Request,  res: Response, next: NextFunction) => {
+    let {room,floor,description} = req.body;
+    await AppDataSource
+    .createQueryBuilder()
+    .update(User_match)
+    .set({
+        room : room,
+        floor : floor,
+        description : description,
+    })
+    .where("id_user_match = :id", { id: req.params.id }).execute()
+    return res.status(200).json({status:1,message: "Update Success"});        
+}
+
+export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove,UpdateUsermatch};

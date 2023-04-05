@@ -25,12 +25,9 @@ const AddUser = async (req: Request, res: Response, next: NextFunction) => {
             user.role = role;
             user.departure = departure;
             user.status_user = 'Active';
-            const CheckUser = await AppDataSource.getRepository(User).find({
-                where: [
-                    { id_card: id_card },
-                    { email: email }
-                ]
-              });
+            const CheckUser = await AppDataSource.getRepository(User).createQueryBuilder('User')
+            .where(`(User.email = :email OR User.id_card = :id_card) AND User.status_user = :status`, {email:email,id_card:id_card,status:"Active"}).getRawMany();
+              console.log("userr",Object.values(CheckUser).length)
             if(Object.values(CheckUser).length === 0){
                 const AddUser = AppDataSource.getRepository(User).create(user)
                 const results = await AppDataSource.getRepository(User).save(AddUser)

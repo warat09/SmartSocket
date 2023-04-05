@@ -88,6 +88,11 @@ AppDataSource.initialize().then(async () => {
         let Date_time = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
         return res.status(200).json({epoch:Date.now(),date:Date_time,message: `date time`});
       })
+      router.get('/time',async(req:Request,res:Response)=>{
+        // let {Address} = req.body;
+        let Date_time = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
+        return res.status(200).json({epoch:Date.now(),date:Date_time,message: `date time`});
+      })
       router.post('/email',async(req:Request,res:Response)=>{
         const {google} = require('googleapis');
         const CLIENT_ID =
