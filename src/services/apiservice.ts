@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Nav from '../components/Siderbar/NewSidebar';
+import path from 'path';
 
 const api = "http://localhost:9090";
 export const login = async(path:string,email:string,password:string) => {
@@ -96,7 +97,8 @@ export const register = async(path:string,token:string,name:string,surname:strin
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/admin/user/list");
+    // window.history.pushState({},"Success","/app/admin/user/list");
+    window.history.pushState({open:1,message:response.data.message},"Success","");
     window.location.reload();
     return response.data;
   }
@@ -197,7 +199,7 @@ export const addAssets = async(path:string,token:string,name_assets:string,rfid_
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/admin/asset/list");
+    window.history.pushState({open:1,message:response.data.message},"Success","/app/admin/asset/list");
     window.location.reload();
     return response.data;
   }
@@ -228,6 +230,28 @@ export const getRfidAssets = async (path:string):Promise<any>=> {
       return null;
   }
 };
+
+export const updateAsset = async (path:string,asset_name:string,rfid_address:string,expire_hour:string) => {
+  try{
+    const response = await axios.put(api+path,{asset_name,rfid_address,expire_hour}
+    //   ,{
+    //   headers:{
+    //     Authorization: `Bearer ${token}`
+    //   }
+    // }
+    )
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+      // localStorage.clear();
+      // window.history.pushState({},"Error","/login");
+      // window.location.reload();
+      return null;
+  }
+
+}
 //Match
 export const getMatching = async (path:string,token:string):Promise<any> => {
   try{
@@ -305,7 +329,7 @@ export const addMatching=async (path:string,token:string,id_assets:string,mac_ad
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/admin/match/list");
+    window.history.pushState({open:1,message:response.data.message},"Success","/app/admin/match/list");
     window.location.reload();
     return response.data;
   }
@@ -351,6 +375,26 @@ export const SelectAssetMaintenance = async (path:string,token:string)=>{
       return null;
   } 
 }
+export const updateMatching = async (path:string,token:string,asset:string,node:string,room:string,floor:string) => {
+  try{
+    const response = await axios.put(api+path,{asset,node,room,floor}
+      ,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    }
+    )
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+      localStorage.clear();
+      window.history.pushState({},"Error","/login");
+      window.location.reload();
+      return null;
+  }
+}
 //UserMatch
 export const addUserMatching=async (path:string,token:string,id_match:string,room:string,floor:string,description:string)=>{
   try{
@@ -360,7 +404,28 @@ export const addUserMatching=async (path:string,token:string,id_match:string,roo
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({},"Success","/app/personnel/borrow");
+    window.history.pushState({open:1,message:response.data.message},"Success","/app/personnel/borrow");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+      localStorage.clear();
+      window.history.pushState({},"Error","/login");
+      window.location.reload();
+      return null;
+  }
+}
+
+export const updateUsermatch = async (path:string,token:string,room:string,floor:string,description:string) =>{
+  try{
+    const response = await axios.put(api+path,{room,floor,description}
+      ,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    }
+    )
+    window.history.pushState({open:1,message:response.data.message},"Success","");
     window.location.reload();
     return response.data;
   }
@@ -409,29 +474,23 @@ export const getApprove = async (path:string,token:any) => {
 };
 
 export const ApproveUserMatch = async (path:string,token:string,status_Approve:string) => {
-  const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
+  try{
+    const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
     const response = await axios.patch(api+path,attibute_approveuser_match,{
       headers:{
         Authorization: `Bearer ${token}`
       }
     })
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
     return response.data;
-  // try{
-  //   console.log(path,token,id,status_Approve)
-  //   const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
-  //   const response = await axios.post(api+path+id,attibute_approveuser_match,{
-  //     headers:{
-  //       Authorization: `Bearer ${token}`
-  //     }
-  //   })
-  //   return response.data;
-  // }
-  // catch(err){
-  //     localStorage.clear();
-  //     window.history.pushState({},"Error","/login");
-  //     window.location.reload();
-  //     return null;
-  // }
+  }
+  catch(err){
+      localStorage.clear();
+      window.history.pushState({},"Error","/login");
+      window.location.reload();
+      return null;
+  }
 }
 //Maintenance
 export const AddStatusMaintenance = async(path:string,token:string,status_maintenance:string,asset:number)=>{
@@ -442,6 +501,8 @@ export const AddStatusMaintenance = async(path:string,token:string,status_mainte
         Authorization: `Bearer ${token}`
       }
     })
+    window.history.pushState({open:1,message:response.data.message},"Success","");
+    window.location.reload();
     return response.data;
   }
   catch(err){

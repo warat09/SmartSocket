@@ -24,8 +24,10 @@ export interface Assets {
     status_assets?: string;
     maintenance ?: boolean;
     date_assets?: Date;
+    rfid_address?:string
     //   children?: React.ReactNode;
   }
+
   export interface RfidAssets {
     Rfid_rfid_address?: string;
     Rfid_date_rfid?: Date;
@@ -53,9 +55,11 @@ export interface Assets {
     Node_status_node?:  string;
   }
   export interface Matching{
+    Match_id_match?:string
     Asset_name_assets?: string;
     Match_mac_address?: string;
     Match_status_match?: string;
+    Match_status_rent?:string;
     Match_sum_used_time?:number
     Match_active_datetime?: Date;
     Match_room?: string;
@@ -77,7 +81,7 @@ export interface Assets {
     Asset_name_assets?: string;
     UserMatch_room?: string;
     UserMatch_floor?: string;
-    UserMatch_sum_used_time?: string;
+    Match_sum_used_time?: string;
     UserMatch_datetime?:string;
     UserMatch_status_user_match?:string;
   }

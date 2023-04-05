@@ -36,7 +36,8 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,Snackbar,
-  Popover
+  Popover,
+  TextField
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
@@ -110,6 +111,8 @@ const HomeApprove: React.FC = () => {
 
   const [openAlert, setOpenAlert] = useState(false);
 
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
   const [token, SetToken] = useState("");
   
   const [open, setOpen] = useState(null);
@@ -174,8 +177,8 @@ const HomeApprove: React.FC = () => {
     
     if (status === 1) {
       console.log("1")
-      handleCloseDialog();
-      handleClickDialog()
+      // handleCloseDialog();
+      // handleClickDialog()
       // handleClickOpen(status,asset)
 
       // console.log(listapprove);
@@ -185,8 +188,8 @@ const HomeApprove: React.FC = () => {
     } else {
       // handleClickOpen(status,asset)
       console.log("2")
-      handleCloseDialog();
-      handleClickDialog()
+      // handleCloseDialog();
+      // handleClickDialog()
       status_Approve="Reject"
       // console.log("reject");
     }
@@ -252,7 +255,13 @@ const HomeApprove: React.FC = () => {
   const isNotFound = !filteredUsers.length && !!filterName;
 
   useEffect(() => {
+    const {open,message} = window.history.state;
     const item = localStorage.getItem("User");
+    if(open === 1) {
+      setMessagealert({message:message,color:"success"})
+      setOpenAlert(true);
+      window.history.replaceState({}, "", "");
+    }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       ComponentMatch(user.token);
@@ -305,7 +314,18 @@ const HomeApprove: React.FC = () => {
 
                         <TableCell align="center">{UserMatch_floor}</TableCell>
 
-                        <TableCell align="center">{UserMatch_description ? UserMatch_description : '-'}</TableCell>
+                        <TableCell align="center">
+                          {/* {UserMatch_description ? UserMatch_description : '-'} */}
+                          <TextField
+                              InputProps={{
+                                readOnly: true,
+                              }}
+                              type="text"
+                              multiline
+                              rows={2}
+                              defaultValue={UserMatch_description ? UserMatch_description : 'No Description'}
+                            />
+                        </TableCell>
 
                         <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
@@ -459,10 +479,10 @@ const HomeApprove: React.FC = () => {
         >
           <Alert
             onClose={handleCloseAlert}
-            severity="success"
+            severity={messagealert.color}
             sx={{ width: "100%" }}
           >
-            This is a success message!
+            {messagealert.message}!
           </Alert>
         </Snackbar>
     </>

@@ -122,12 +122,15 @@ const HomeMaintenance: React.FC=()=>{
 
   const [selected, setSelected]:any = useState([]);
 
-  const [orderBy, setOrderBy] = useState('fullname');
+  const [orderBy, setOrderBy] = useState('Asset_name');
 
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
 
     const ComponentUser = async(token:string) => {
         setlistUser(await getUsers("/Maintenance/AllMaintenance",token))
@@ -162,8 +165,18 @@ const HomeMaintenance: React.FC=()=>{
         setPage(0);
         setFilterName(event.target.value);
       };
-    
 
+      const handleCloseAlert = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+      ) => {
+        if (reason === "clickaway") {
+          return;
+        }
+    
+        setOpenAlert(false);
+      };
+    
       const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listuser.length) : 0;
     
       const filteredUsers = applySortFilter(listuser, getComparator(order, orderBy), filterName);
@@ -382,7 +395,13 @@ const HomeMaintenance: React.FC=()=>{
       }
 
       useEffect(() => {
+        const {open,message} = window.history.state;
         const item = localStorage.getItem("User");
+          if(open === 1) {
+            setMessagealert({message:message,color:"success"})
+            setOpenAlert(true);
+            window.history.replaceState({}, "", "");
+          }
           if (item && item !== "undefined") {
             const user:LocalStorage = JSON.parse(item);
             ComponentUser(user.token);
@@ -472,7 +491,20 @@ const HomeMaintenance: React.FC=()=>{
                     onRowsPerPageChange={handleChangeRowsPerPage}
                 />
              </Card>
-            </Container>               
+            </Container>
+            <Snackbar
+              open={openAlert}
+              autoHideDuration={6000}
+              onClose={handleCloseAlert}
+            >
+              <Alert
+                onClose={handleCloseAlert}
+                severity={messagealert.color}
+                sx={{ width: "100%" }}
+              >
+                {messagealert.message}!
+              </Alert>
+            </Snackbar>               
         </>
     );
 }

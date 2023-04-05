@@ -2,8 +2,8 @@ import React, { useEffect, useState, useRef } from "react";
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
-import { Matching } from "../../model/model";
-import { getMatching } from "../../services/apiservice";
+import { MatchAsset, Matching, NodeSelection ,Node } from "../../model/model";
+import { SelectMatchNode, addMatching, getMatchAssets, getMatching, getNode, updateMatching } from "../../services/apiservice";
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -23,22 +23,34 @@ import {
   MenuItem,
   IconButton,
   Box,
-  Stack
+  Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  CardContent,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
+  CardActions,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import formatTime from '../../components/caltime/millisectohms'
-import { match } from "assert";
+import { Controller, useForm } from "react-hook-form";
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
   { id: 'Match_mac_address', label: 'MacAddress', alignRight: false },
   { id: 'Match_room', label: 'Room', alignRight: false },
   { id: 'Match_floor', label: 'Floor', alignRight: false },
-  { id: 'Match_remain_time', label: 'RemainTime', alignRight: false },
+  { id: 'Match_sum_used_time', label: 'RemainTime', alignRight: false },
   { id: 'Match_active_datetime', label: 'Date', alignRight: false },
-  { id: 'Match_status_match', label: 'Status', alignRight: false },
+  { id: 'Match_status_rent', label: 'Status', alignRight: false },
   { id: '' },
 ];
 
@@ -75,7 +87,15 @@ const HomeMatch: React.FC = () => {
   
   const navigate = useNavigate();
 
+  const [listnode, SetlistNode] = useState<Node[]>([]);
+
   const [listmatching, setlistmatching] = useState<Matching[]>([]);
+
+  const [listnodeselect, setlistnode] = useState<NodeSelection[]>([]);
+
+  const [listassets, setlistassets] = useState<MatchAsset[]>([]);
+
+  const [Token, setToken] = useState("");
 
   const [open, setOpen] = useState(null);
 
@@ -91,7 +111,43 @@ const HomeMatch: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleOpenMenu = (event:any) => {
+  const [openNewDialog, setOpenNewDialog] = useState(false);
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const [Matching,setMatching]:any = useState({})
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const { control, handleSubmit, watch, reset } = useForm({
+    reValidateMode: "onBlur"
+  });
+
+  const myHelper:any = {
+    asset:{
+      required: "Asset is Required"
+    },
+    node:{
+      required: "Please Select Node"
+    },
+    room:{
+      required: "Room is Required"
+    },
+    floor:{
+      required: "Floor is Required"
+    }
+  };
+
+  const handleOpenMenu = (event:any,Match_id_match:string,Asset_name_assets:string,Match_mac_address:string,Match_room:string,Match_floor:string) => {
+    setMatching({
+      Match_id_match:Match_id_match,
+      Asset_name_assets:Asset_name_assets,
+      Match_mac_address:Match_mac_address,
+      Match_room:Match_room,
+      Match_floor:Match_floor
+    })
     setOpen(event.currentTarget);
   };
 
@@ -143,22 +199,82 @@ const HomeMatch: React.FC = () => {
     setFilterName(event.target.value);
   };
 
+  const handleCloseNewDialog = () => {
+    setOpenNewDialog(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+  };
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listmatching.length) : 0;
 
   const filteredUsers = applySortFilter(listmatching, getComparator(order, orderBy), filterName);
   
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const handlemenu = async(menu:number) => {
+    setOpen(null)
+    if(menu === 1){
+      reset({})
+      setOpenEditDialog(true)
+    }
+    else{
+      console.log(2)
+    //   setOpenDialog(true)
+    //   setdialog({
+    //     header: "Delete",
+    //     body: `Are you sure want to delete?`,
+    //     id: 0,
+    //     status: 0,
+    //   });
+    // }
+  };
+}
+
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching("/Match/AllMatching",token));
-    console.log(listmatching)
+    setlistassets(await getMatchAssets("/Asset/SelectMatchAsset",token));
+    SetlistNode(await getNode("/Node/AllMACAddress"))
+  }
+
+  const Getnode = async (id:string) => {
+    setlistnode(await SelectMatchNode("/Node/SelectNode",id));
+  };
+
+  const handleOnSubmit=async(data:any)=>{
+    const {asset,node, room, floor} = data
+    await addMatching("/Match/MatchingAssets",Token,asset,node, room, floor)
+  }  
+
+  const handleOnEditSubmit=async(data:any)=>{
+    const {editasset,editnode,editroom,editfloor} = data;
+    await updateMatching(`/Match/AllMatching/${Matching.Match_id_match}`,Token, editasset, editnode, editroom, editfloor);
   }
 
   useEffect(() => {
+    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
+      if(open === 1) {
+        setMessagealert({message:message,color:"success"})
+        setOpenAlert(true);
+        window.history.replaceState({}, "", "");
+      }
       if (item && item !== "undefined") {
           const user = JSON.parse(item);
           ComponentMatch(user.token);
+          setToken(user.token)
       }
       else{
         navigate('/login')
@@ -175,7 +291,7 @@ const HomeMatch: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             Match List
           </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/match/new')}>
+          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
             New Matching
           </Button>
         </Stack>
@@ -197,7 +313,7 @@ const HomeMatch: React.FC = () => {
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
                     console.log(row)
-                    const { Asset_name_assets, Match_mac_address, Match_status_match, Match_sum_used_time, Match_active_datetime, Match_room,Match_floor  }:any = row;
+                    const { Match_id_match,Asset_name_assets, Match_mac_address, Match_status_rent, Match_sum_used_time, Match_active_datetime, Match_room,Match_floor  }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
 
                     return (
@@ -215,10 +331,10 @@ const HomeMatch: React.FC = () => {
 
                         <TableCell align="center">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{Match_status_match}</TableCell>
+                        <TableCell align="center">{Match_status_rent}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,Match_id_match,Asset_name_assets,Match_mac_address,Match_room,Match_floor)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -289,16 +405,341 @@ const HomeMatch: React.FC = () => {
           },
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
           Delete
         </MenuItem>
       </Popover>
+      
+      <Dialog
+          open={openNewDialog}
+          onClose={handleCloseNewDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography variant="h3" gutterBottom>
+                Create a Matching
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Stack spacing={3}>
+          <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+              <Stack spacing={3} mb={3}>
+                
+                <Controller
+                    control={control}
+                    name="asset"
+                    defaultValue=""
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormControl error={error !== undefined} fullWidth>
+                      <InputLabel id="demo-simple-select-label">Assets</InputLabel>
+                        <Select 
+                        fullWidth
+                        labelId="demo-simple-select-label"
+                        label="Assets"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(parseInt(e.target.value))
+                          // setInputassets(e.target.value);
+                          Getnode(e.target.value);
+                        }}
+                        >
+                          <MenuItem
+                            value=""
+                          >
+                            <em>None</em>
+                          </MenuItem>
+                      {listassets.map((inputassets) => {
+                        return (
+                          <MenuItem
+                            value={inputassets.Assets_id_assets}
+                            key={inputassets.Assets_id_assets}
+                          >
+                            {inputassets.Assets_name_assets}
+                          </MenuItem>
+                        );
+                      })}
+                        </Select>
+                      <FormHelperText>{error ? myHelper.asset[error.type] : ""}</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="node"
+                    defaultValue=""
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormControl error={error !== undefined} fullWidth>
+                      <InputLabel id="demo-simple-select-label">Node</InputLabel>
+                        <Select 
+                        {...field}
+                        fullWidth
+                        labelId="demo-simple-select-label"
+                        // value={inputnode}
+                        label="Node"
+                        // onChange={handleChangeNode} 
+                        error={error !== undefined}
+                        >
+                          <MenuItem
+                            value=""
+                          >
+                            <em>None</em>
+                          </MenuItem>
+                      {listnodeselect.map((inputnode) => {
+                        return (
+                          <MenuItem
+                            value={inputnode.Node_mac_address}
+                            key={inputnode.Node_mac_address}
+                          >
+                            {inputnode.Node_mac_address}
+                          </MenuItem>
+                        );
+                      })}
+                        </Select>
+                      <FormHelperText>{error ? myHelper.node[error.type] : ""}</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="room"
+                    defaultValue=""
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                      {...field}
+                      label="Room"
+                      type="text"
+                      // onChange={(e) => {
+                      //   SetRoom(e.target.value);
+                      // }}
+                      error={error !== undefined}
+                      helperText={error ? myHelper.room[error.type] : ""}
+                    />
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="floor"
+                    defaultValue=""
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        type="text"
+                        fullWidth
+                        label="Floor"
+                        // onChange={(e) => {
+                        //   SetFloor(e.target.value);
+                        // }}
+                        error={error !== undefined}
+                        helperText={error ? myHelper.floor[error.type] : ""}
+                      />
+                    )}
+                  />
+          
+              </Stack>
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Create a new user
+                </Button>
+             </CardActions>
+            </Box>
+          </Stack>
+          </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openEditDialog}
+          onClose={handleCloseEditDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+                Edit Matching
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Box component="form" onSubmit={handleSubmit(handleOnEditSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+              <Stack spacing={2} mb={3}>
+                        
+                <Controller
+                    control={control}
+                    name="editasset"
+                    defaultValue={Matching.Asset_name_assets}
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                    <TextField
+                      {...field}
+                      type="text"
+                      fullWidth
+                      label="Asset Name"
+                      defaultValue={Matching.Asset_name_assets}
+                      InputProps={{
+                        readOnly: true,
+                      }}
+                      error={error !== undefined}
+                      helperText={error ? myHelper.asset[error.type] : ""}
+                    />
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="editnode"
+                    defaultValue={Matching.Match_mac_address}
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormControl error={error !== undefined} fullWidth>
+                      <InputLabel id="demo-simple-select-label">Node</InputLabel>
+                        <Select 
+                        {...field}
+                        fullWidth
+                        labelId="demo-simple-select-label"
+                        // value={inputnode}
+                        label="Node"
+                        defaultValue={Matching.Match_mac_address}
+                        error={error !== undefined}
+                        >
+                          <MenuItem
+                            value=""
+                          >
+                            <em>None</em>
+                          </MenuItem>
+                      {listnode.map((inputnode) => {
+                        return (
+                          <MenuItem
+                            value={inputnode.mac_address}
+                            key={inputnode.mac_address}
+                          >
+                            {inputnode.mac_address}
+                          </MenuItem>
+                        );
+                      })}
+                        </Select>
+                      <FormHelperText>{error ? myHelper.node[error.type] : ""}</FormHelperText>
+                      </FormControl>
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="editroom"
+                    defaultValue={Matching.Match_room}
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                      {...field}
+                      label="Room"
+                      type="text"
+                      // onChange={(e) => {
+                      //   SetRoom(e.target.value);
+                      // }}
+                      error={error !== undefined}
+                      defaultValue={Matching.Match_room}
+                      helperText={error ? myHelper.room[error.type] : ""}
+                    />
+                    )}
+                  />
+
+                <Controller
+                    control={control}
+                    name="editfloor"
+                    defaultValue={Matching.Match_floor}
+                    rules={{
+                      required: true
+                    }}
+                    render={({ field, fieldState: { error } }) => (
+                      <TextField
+                        {...field}
+                        type="text"
+                        fullWidth
+                        label="Floor"
+                        defaultValue={Matching.Match_floor}
+                        error={error !== undefined}
+                        helperText={error ? myHelper.floor[error.type] : ""}
+                      />
+                    )}
+                  />
+
+              </Stack>
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Save Changes
+                </Button>
+             </CardActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            variant="filled"
+            severity={messagealert.color}
+            sx={{ width: "100%" }}
+          >
+            {messagealert.message}!
+          </Alert>
+        </Snackbar>
 
     </>
   );

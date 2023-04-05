@@ -320,7 +320,6 @@ const myHelper:any = {
   const handleOnSubmit=async(data:any)=>{
     console.log(data)
     await register("/User/Register",Token,data.name,data.surname,data.id_card,data.password,data.email,data.role,data.departure)
-    navigate('/app/admin/user/list')
   }  
   const handleOnEditSubmit=async(data:any)=>{
     await updateUser(`/User/AllUser/${UserId.id}`,Token,data.editname,data.editsurname, data.editid_card,data.editemail,data.editrole,data.editdeparture);
@@ -334,7 +333,7 @@ const myHelper:any = {
           setMessagealert({message:message,color:"success"})
           setOpenAlert(true);
           window.history.replaceState({}, "", "");
-        }
+      }
       if (item && item !== "undefined") {
         const user:LocalStorage = JSON.parse(item);
         ComponentUser(user.token);

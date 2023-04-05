@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
-import {Assets} from '../../model/model'
-import {getAssets} from "../../services/apiservice"
+import {Assets, RfidAssets} from '../../model/model'
+import {addAssets, getAssets, getRfidAssets, updateAsset} from "../../services/apiservice"
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -24,11 +24,25 @@ import {
   MenuItem,
   IconButton,
   Box,
-  Stack
+  Stack,
+  DialogTitle,
+  DialogContent,
+  CardContent,
+  Grid,
+  Dialog,
+  CardActions,
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  FormHelperText,
+  Snackbar,
+  Alert
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
+import { Controller, useForm } from "react-hook-form";
 
 const TABLE_HEAD = [
   { id: 'name_assets', label: 'Assets', alignRight: false },
@@ -76,6 +90,8 @@ const HomeAsset: React.FC = () => {
 
   const [listassets, SetDataassetslist] = useState<Assets[]>([]);
 
+  const [ RfidAssets,SetRfidAssets ] = useState<RfidAssets[]>([]);
+
   const [token, settoken] = useState("");
 
   const [open, setOpen] = useState(null);
@@ -92,11 +108,46 @@ const HomeAsset: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openNewDialog, setOpenNewDialog] = useState(false);
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const [Asset,setAsset]:any = useState({})
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const { control, handleSubmit, watch, reset } = useForm({
+    reValidateMode: "onBlur"
+  });
+
+  const myHelper:any = {
+    asset:{
+      required: "Name Assets is Required"
+    },
+    rfid:{
+      required: "Please Select Rfid Address"
+    },
+    expiration:{
+      required: "Expiration time is Required"
+    }
+  };
+
   const handleGetassets=async(token:string)=>{
     SetDataassetslist(await getAssets("/Asset/AllAsset",token))
   }
 
-  const handleOpenMenu = (event:any) => {
+  const handleGetRfid=async(token:string)=>{
+    SetRfidAssets(await getRfidAssets("/Rfid/SelectRfidAsset"))
+  }
+
+  const handleOpenMenu = (event:any,name_assets:string,expire_hour:number,rfid_address:string) => {
+    setAsset({
+      name_assets:name_assets,
+      expire_hour:expire_hour,
+      rfid_address:rfid_address
+    })
     setOpen(event.currentTarget);
   };
 
@@ -148,17 +199,72 @@ const HomeAsset: React.FC = () => {
     setFilterName(event.target.value);
   };
 
+  const handleCloseNewDialog = () => {
+    setOpenNewDialog(false);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+  };
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
   const emptyRows = page > 0 ? Math.max(0, (1 + page) * rowsPerPage - listassets.length) : 0;
 
   const filteredUsers = applySortFilter(listassets, getComparator(order, orderBy), filterName);
   
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const handlemenu = async(menu:number) => {
+    setOpen(null)
+    if(menu === 1){
+      reset({})
+      setOpenEditDialog(true)
+    }
+    else{
+      console.log(2)
+    //   setOpenDialog(true)
+    //   setdialog({
+    //     header: "Delete",
+    //     body: `Are you sure want to delete?`,
+    //     id: 0,
+    //     status: 0,
+    //   });
+    // }
+  };
+}
+
+const handleOnSubmit=async(data:any)=>{
+  const {nameassets,rfid,expirehour} = data
+  await addAssets("/Asset/AddAsset",token,nameassets,rfid,expirehour)
+}
+
+const handleOnEditSubmit=async(data:any)=>{
+  const {editassetname,editrfid,editexpirehour} = data
+  await updateAsset(`/Asset/AllAsset/${Asset.rfid_address}`,editassetname,editrfid,editexpirehour);
+}
+
   useEffect(() => {
+    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
+    if(open === 1) {
+      setMessagealert({message:message,color:"success"})
+      setOpenAlert(true);
+      window.history.replaceState({}, "", "");
+    }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       handleGetassets(user.token);
+      handleGetRfid(user.token)
     }
     else{
       navigate('/login')
@@ -174,7 +280,7 @@ const HomeAsset: React.FC = () => {
           <Typography variant="h4" gutterBottom>
             Asset List
           </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => navigate('/app/admin/asset/new')}>
+          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
             New Asset
           </Button>
       </Stack>
@@ -196,8 +302,9 @@ const HomeAsset: React.FC = () => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    const { id_assets, name_assets, expire_hour, date_assets, status_assets, maintenance }:any = row;
+                    const { id_assets, name_assets, expire_hour, date_assets, status_assets, maintenance,rfid_address }:any = row;
                     const selectedUser = selected.indexOf(name_assets) !== -1;
+                    console.log(row)
 
                     return (
                       <TableRow hover key={id_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
@@ -220,7 +327,7 @@ const HomeAsset: React.FC = () => {
                         </TableCell> */}
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,name_assets,expire_hour,rfid_address.rfid_address)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -291,17 +398,267 @@ const HomeAsset: React.FC = () => {
           },
         }}
       >
-        <MenuItem>
+        <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
         </MenuItem>
 
-        <MenuItem sx={{ color: 'error.main' }}>
+        <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
           <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
           Delete
         </MenuItem>
       </Popover>
-      
+
+      <Dialog
+          open={openNewDialog}
+          onClose={handleCloseNewDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography variant="h3" gutterBottom>
+                Create a Asset
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Stack spacing={3}>
+          <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+              <Stack spacing={3} mb={3}>
+          <Controller
+              control={control}
+              name="nameassets"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                {...field}
+                label="Name Assets"
+                type="text"
+                error={error !== undefined}
+                helperText={error ? myHelper.asset[error.type] : ""}
+              />
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="rfid"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel id="demo-simple-select-label">Rfid</InputLabel>
+                  <Select 
+                  {...field}
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  label="Rfid"
+                  error={error !== undefined}
+                   >
+                    <MenuItem
+                      value=""
+                    >
+                      <em>None</em>
+                    </MenuItem>
+                {RfidAssets.map((inputnode) => {
+                  return (
+                    <MenuItem
+                      value={inputnode.Rfid_rfid_address}
+                      key={inputnode.Rfid_rfid_address}
+                    >
+                      {inputnode.Rfid_rfid_address}
+                    </MenuItem>
+                  );
+                })}
+                   </Select>
+                <FormHelperText>{error ? myHelper.rfid[error.type] : ""}</FormHelperText>
+                </FormControl>
+              )}
+            />
+
+          <Controller
+              control={control}
+              name="expirehour"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <TextField
+                  {...field}
+                  type="number"
+                  fullWidth
+                  label="Expiration time"
+                  error={error !== undefined}
+                  helperText={error ? myHelper.expiration[error.type] : ""}
+                />
+              )}
+            />
+          </Stack>
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Create a new user
+                </Button>
+             </CardActions>
+            </Box>
+          </Stack>
+          </DialogContent>
+        </Dialog>
+
+      <Dialog
+          open={openEditDialog}
+          onClose={handleCloseEditDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "1000px",  // Set your width here
+                paddingTop:"20px"
+              },
+            },
+          }}
+        >
+          <DialogTitle id="form-dialog-title">
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+                Edit Asset
+            </Typography>
+          </DialogTitle>
+          <DialogContent>
+          <Box component="form" onSubmit={handleSubmit(handleOnEditSubmit)}>
+            <CardContent sx={{pt:4}}>
+              <Box sx={{ m: -1.5 }}>
+              <Stack spacing={2} mb={3}>
+                    <Controller
+                      control={control}
+                      name="editassetname"
+                      defaultValue={Asset.name_assets}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          defaultValue={Asset.name}
+                          type="text"
+                          fullWidth
+                          label="Name Assets"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.assets[error.type] : ""}
+                          {...field}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="editexpirehour"
+                      defaultValue={Asset.expire_hour}
+                      rules={{
+                        required: true
+                      }}
+                      render={({ field, fieldState: { error } }) => (
+                        <TextField
+                          defaultValue={Asset.expire_hour}
+                          type="text"
+                          fullWidth
+                          label="Expiration time (hr)"
+                          error={error !== undefined}
+                          helperText={error ? myHelper.expiration[error.type] : ""}
+                          {...field}
+                        />
+                      )}
+                    />
+
+                  <Controller
+              control={control}
+              name="editrfid"
+              defaultValue={Asset.rfid_address}
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel id="demo-simple-select-label">Rfid</InputLabel>
+                  <Select 
+                  {...field}
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  label="Rfid"
+                  defaultValue={Asset.rfid_address}
+                  error={error !== undefined}
+                   >
+                    
+                    <MenuItem
+                      value=""
+                    >
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem
+                      value={Asset.rfid_address}
+                    >
+                      {Asset.rfid_address}
+                    </MenuItem>
+                {RfidAssets.map((inputnode) => {
+                  return (
+                    <MenuItem
+                      value={inputnode.Rfid_rfid_address}
+                      key={inputnode.Rfid_rfid_address}
+                    >
+                      {inputnode.Rfid_rfid_address}
+                    </MenuItem>
+                  );
+                })}
+                   </Select>
+                <FormHelperText>{error ? myHelper.rfid[error.type] : ""}</FormHelperText>
+                </FormControl>
+              )}
+            />
+              </Stack>
+              </Box> 
+            </CardContent>
+            <Divider />
+            <CardActions>
+               <Button fullWidth variant="text" type="submit">
+                Save Changes
+                </Button>
+             </CardActions>
+            </Box>
+          </DialogContent>
+        </Dialog>
+
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            variant="filled"
+            severity={messagealert.color}
+            sx={{ width: "100%" }}
+          >
+            {messagealert.message}!
+          </Alert>
+        </Snackbar>
     </>
   );
 };
