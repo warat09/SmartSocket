@@ -6,91 +6,43 @@ import NotFoundLayout from './layouts/404/index'
 import Home from './view/home';
 import Login from './view/login';
 
-import Node from './view/node';
+import Register from './view/register/register';
 
-import {ListUser , NewUser} from './view/user';
-
-import { ListAsset , NewAsset} from './view/assets';
-
-import { ListMatch , NewMatch } from './view/match';
-
-import Approve from './view/approve';
-
-import Maintenance from './view/maintenance';
+import ForgotPassword from './view/forgotpassword';
 
 import UserMatch from './view/user_match';
 // import Transection from './view/node_transection'
 import Page404 from './view/Page404/Page404';
+
 import Loading from './components/Loading';
+
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
-import LinearProgress from '@mui/material/LinearProgress';
-import { List } from '@mui/icons-material';
-const Dashboard = lazy( () => {
-  return Promise.all([
-    import('./view/dashboard/dashboard'),
-    new Promise(resolve => setTimeout(resolve,1000))
-  ]).then(
-    (([moduleExports]) => moduleExports)
-  )
-});
-// const Transection = lazy( () => {
+// const Dashboard = lazy( () => {
 //   return Promise.all([
-//     import('./view/node_transection'),
-//     new Promise(resolve => setTimeout(resolve,3000))
+//     import('./view/dashboard/dashboard'),
+//     new Promise(resolve => setTimeout(resolve,1000))
 //   ]).then(
 //     (([moduleExports]) => moduleExports)
 //   )
 // });
 
+const Dashboard  = lazy(() => import('./view/dashboard'));
+
+const Socket  = lazy(() => import('./view/socket'));
+
+const User  = lazy(() => import('./view/user'));
+
+const Asset  = lazy(() => import('./view/assets'));
+
+const Match  = lazy(() => import('./view/match'));
+
+const Approve  = lazy(() => import('./view/approve'));
+
+const Maintenance  = lazy(() => import('./view/maintenance/Maintenance'));
+
 const Transection  = lazy(() => import('./view/node_transection'));
 
-
 const Router: React.FC =()=> {
-  // return(
-  //   <Routes>
-  //     <Route index path={"/"} element={<Home/>}/>
-  //     <Route path={"login"} element={<Login/>} />
-  //       {/* <Route index element={<Navigate to="/login"/>}/>
-        
-  //     </Route> */}
-      
-  //     {/* <Route path={"/app"} element={<CreateAccount />} /> */}
-  //     <Route path={"/app/personnel"} element={<LayoutUser/>}>
-  //       <Route index element={<Navigate to="/app/personnel/borrow" />}/>
-  //       <Route path={"borrow"} element={<UserMatch/>} />
-  //     </Route>
-
-  //     <Route path={"/app/admin"} element={<LayoutAdmin/>}>
-  //       {/* <Route index element={<Navigate to="/app/admin/dashboard" />}/> */}
-  //       <Route index path={"dashboard"} element={<Dashboard/>} />
-  //       <Route path={"socket"} element={<Node/>} />
-  //       <Route path={"user"}>
-  //         <Route index element={<Navigate to="/app/admin/user/list" />}/>
-  //         <Route path={"list"} element={<ListUser/>}/>
-  //         <Route path={"new"} element={<NewUser/>}/>
-  //       </Route>
-  //       <Route path={"asset"}>
-  //         <Route index element={<Navigate to="/app/admin/asset/list" />}/>
-  //         <Route path={"list"} element={<ListAsset/>}/>
-  //         <Route path={"new"} element={<NewAsset/>}/>
-  //       </Route>
-  //       <Route path={"match"}>
-  //         <Route index element={<Navigate to="/app/admin/match/list" />}/>
-  //         <Route path={"list"} element={<ListMatch/>}/>
-  //         <Route path={"new"} element={<NewMatch/>}/>
-  //       </Route>
-  //       <Route path={"approve"} element={<Approve/>}/>
-  //       <Route path={"transaction"} element={<Transection/>}/>
-  //     </Route>
-  //     <Route element={<NotFoundLayout/>}>
-  //       <Route index element={<Navigate to="/app" />}/>
-  //       <Route path={"404"} element={<Page404/>} />
-  //       <Route path={"*"} element={ <Navigate to="/404" />} />
-  //     </Route>
-  //     <Route path="*" element={<Navigate to="/404" replace/>} />
-  //   </Routes>
-  // );
   
     const routes:any = useRoutes([
         {
@@ -102,67 +54,73 @@ const Router: React.FC =()=> {
             path: '/app/admin',
             element: <LayoutAdmin />,
             children: [
-              { element: <Navigate to="/app/admin/dashboard" />, index: true },
-              { path: 'dashboard', element: 
-              <Suspense fallback={
-                <Loading/>
-            }>
+              { path: 'dashboard',element: 
+              <Suspense fallback={<Loading/>}>
                 <Dashboard />
-              </Suspense>},
-              { path: 'socket', element: <Node /> },
-              {
-                path: 'user',
-                children:[
-                  { element: <Navigate to='/app/admin/user/list'/>, index: true},
-                  {path: 'list',element:
-                  <Suspense fallback={
-                    <Box sx={{ width: '100%' }}>
-                      <Loading />
-                    </Box>
-                    }>
-                    <ListUser />
-                  </Suspense>
-                  },
-                  {path: 'new',element:
-                  <Suspense fallback={
-                    <Box sx={{ width: '100%' }}>
-                      <Loading />
-                    </Box>
-                    }>
-                    <NewUser />
-                  </Suspense>
-                  }
-                ]
+              </Suspense>, index: true },
+              { path: 'socket', element:
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Socket />
+              </Suspense> 
               },
-              { path: 'asset',children: [
-                { element: <Navigate to="/app/admin/asset/list" />, index: true },
-                {path: 'list',element: <ListAsset />},
-                {path: 'new',element: <NewAsset />}
-              ]},
-              { path: 'match',children: [
-                { element: <Navigate to="/app/admin/match/list" />, index: true },
-                {path: 'list',element: <ListMatch />},
-                {path: 'new',element: <NewMatch />}
-              ]},
-              { path: 'approve',children: [
-                { element: <Navigate to="/app/admin/approve/list" />, index: true },
-                {path: 'list',element: <Approve />}
-              ]},
-              { path: 'maintenance',children: [
-                { element: <Maintenance/>, index: true },
-              ]},
-              { path: 'transaction' ,children:[
-                { element: <Navigate to='/app/admin/transaction/list'/>, index: true},
-                {path: 'list',element:
+              {
+                path: 'user',element: 
                 <Suspense fallback={
                   <Box sx={{ width: '100%' }}>
                     <Loading />
                   </Box>
                   }>
-                  <Transection />
+                  <User />
                 </Suspense>
+              },
+              { path: 'asset',element: 
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Asset />
+              </Suspense>},
+              { path: 'match',element: 
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Match />
+              </Suspense> 
+              },
+              { path: 'approve',element:
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Approve />
+              </Suspense>
+              },
+              { path: 'maintenance',element:
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Maintenance />
+              </Suspense>
+              },
+              { path: 'transaction' ,element:
+              <Suspense fallback={
+                <Box sx={{ width: '100%' }}>
+                  <Loading />
+                </Box>
+                }>
+                <Transection />
+              </Suspense>
               }
-              ]}
             ],
           },
           { path: '/app/personnel', 
@@ -178,6 +136,14 @@ const Router: React.FC =()=> {
           {
             path: 'login',
             element: <Login />,
+          },
+          {
+            path: 'register',
+            element: <Register />,
+          },
+          {
+            path: 'forgotpassword',
+            element: <ForgotPassword />
           },
           {
             element: <NotFoundLayout />,

@@ -31,7 +31,9 @@ export default function AccountPopover(props:any) {
   };
 
   const handleClose = () => {
-    setOpen(null);
+    localStorage.clear()
+    window.location.reload()
+    // setOpen(null);
   };
 
   return (
@@ -93,7 +95,7 @@ export default function AccountPopover(props:any) {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Stack sx={{ p: 1 }}>
+        {/* <Stack sx={{ p: 1 }}>
           {MENU_OPTIONS.map((option) => (
             <MenuItem key={option.label} onClick={handleClose}>
               {option.label}
@@ -101,7 +103,7 @@ export default function AccountPopover(props:any) {
           ))}
         </Stack>
 
-        <Divider sx={{ borderStyle: 'dashed' }} />
+        <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
         <MenuItem onClick={handleClose} sx={{ m: 1 }}>
           Logout

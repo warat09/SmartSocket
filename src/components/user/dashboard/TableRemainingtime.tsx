@@ -40,11 +40,14 @@ export default function OverviewLatestOrders (props:any) {
                 <TableCell>
                   Assets
                 </TableCell>
+                <TableCell>
+                  Socket
+                </TableCell>
                 <TableCell sortDirection="asc" >
                   Remaining time
                 </TableCell>
                 <TableCell>
-                  Date
+                  Status Rent
                 </TableCell>
                 {/* <TableCell>
                   Status
@@ -64,14 +67,14 @@ export default function OverviewLatestOrders (props:any) {
                       {order.Asset_name_assets}
                     </TableCell>
                     <TableCell>
-                      {formatTime(order.Match_remain_time)} 
+                      {order.Match_mac_address} 
                     </TableCell>
                     <TableCell>
-                      {new Date(order.Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}
+                      {formatTime(order.Match_sum_used_time)}
                     </TableCell>
-                    {/* <TableCell>
-                      {order.Match_status_match}
-                    </TableCell> */}
+                    <TableCell>
+                      {order.Match_status_rent}
+                    </TableCell>
                   </TableRow>
                 );
               })}

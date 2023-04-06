@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import {Assets, RfidAssets} from '../../model/model'
-import {addAssets, getAssets, getRfidAssets, updateAsset} from "../../services/apiservice"
+import {addAssets, getAssets, getRfidAssets, updateAsset, updateStatusAsset} from "../../services/apiservice"
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -37,7 +37,9 @@ import {
   Select,
   FormHelperText,
   Snackbar,
-  Alert
+  Alert,
+  DialogContentText,
+  DialogActions
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
@@ -108,6 +110,8 @@ const HomeAsset: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   const [openNewDialog, setOpenNewDialog] = useState(false);
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -117,6 +121,13 @@ const HomeAsset: React.FC = () => {
   const [openAlert, setOpenAlert] = useState(false);
 
   const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const [dialog, setdialog] = React.useState({
+    header: "",
+    body: "",
+    id: 0,
+    status: 0,
+  });
 
   const { control, handleSubmit, watch, reset } = useForm({
     reValidateMode: "onBlur"
@@ -142,8 +153,9 @@ const HomeAsset: React.FC = () => {
     SetRfidAssets(await getRfidAssets("/Rfid/SelectRfidAsset"))
   }
 
-  const handleOpenMenu = (event:any,name_assets:string,expire_hour:number,rfid_address:string) => {
+  const handleOpenMenu = (event:any,id_assets:string,name_assets:string,expire_hour:number,rfid_address:string) => {
     setAsset({
+      id_assets:id_assets,
       name_assets:name_assets,
       expire_hour:expire_hour,
       rfid_address:rfid_address
@@ -199,6 +211,10 @@ const HomeAsset: React.FC = () => {
     setFilterName(event.target.value);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   const handleCloseNewDialog = () => {
     setOpenNewDialog(false);
   };
@@ -231,16 +247,18 @@ const HomeAsset: React.FC = () => {
       setOpenEditDialog(true)
     }
     else{
-      console.log(2)
-    //   setOpenDialog(true)
-    //   setdialog({
-    //     header: "Delete",
-    //     body: `Are you sure want to delete?`,
-    //     id: 0,
-    //     status: 0,
-    //   });
-    // }
+      setOpenDialog(true)
+      setdialog({
+        header: "Delete",
+        body: `Are you sure want to delete?`,
+        id: 0,
+        status: 0,
+      });
   };
+}
+
+const Agree = async() => {
+  await updateStatusAsset(`/Asset/AllAsset/${Asset.id_assets}`,token);
 }
 
 const handleOnSubmit=async(data:any)=>{
@@ -254,17 +272,20 @@ const handleOnEditSubmit=async(data:any)=>{
 }
 
   useEffect(() => {
-    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
-    if(open === 1) {
-      setMessagealert({message:message,color:"success"})
-      setOpenAlert(true);
-      window.history.replaceState({}, "", "");
+    if(window.history.state !== null){
+      const {open,message} = window.history.state;
+      if(open === 1) {
+        setMessagealert({message:message,color:"success"})
+        setOpenAlert(true);
+        window.history.replaceState({}, "", "");
+      }
     }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       handleGetassets(user.token);
       handleGetRfid(user.token)
+      settoken(user.token)
     }
     else{
       navigate('/login')
@@ -327,7 +348,7 @@ const handleOnEditSubmit=async(data:any)=>{
                         </TableCell> */}
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,name_assets,expire_hour,rfid_address.rfid_address)}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_assets,name_assets,expire_hour,rfid_address.rfid_address)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -408,6 +429,37 @@ const handleOnEditSubmit=async(data:any)=>{
           Delete
         </MenuItem>
       </Popover>
+
+      <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "500px",  // Set your width here
+              },
+            },
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">{dialog.header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialog.body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button
+              onClick={Agree}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
 
       <Dialog
           open={openNewDialog}

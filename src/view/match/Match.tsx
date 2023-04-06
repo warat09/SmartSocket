@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import { MatchAsset, Matching, NodeSelection ,Node } from "../../model/model";
-import { SelectMatchNode, addMatching, getMatchAssets, getMatching, getNode, updateMatching } from "../../services/apiservice";
+import { SelectMatchNode, addMatching, getMatchAssets, getMatching, getNode, updateMatching, updateStatusMatch } from "../../services/apiservice";
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -35,7 +35,9 @@ import {
   FormHelperText,
   CardActions,
   Snackbar,
-  Alert
+  Alert,
+  DialogContentText,
+  DialogActions
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
@@ -111,6 +113,8 @@ const HomeMatch: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   const [openNewDialog, setOpenNewDialog] = useState(false);
 
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -120,6 +124,13 @@ const HomeMatch: React.FC = () => {
   const [openAlert, setOpenAlert] = useState(false);
 
   const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const [dialog, setdialog] = React.useState({
+    header: "",
+    body: "",
+    id: 0,
+    status: 0,
+  });
 
   const { control, handleSubmit, watch, reset } = useForm({
     reValidateMode: "onBlur"
@@ -199,6 +210,10 @@ const HomeMatch: React.FC = () => {
     setFilterName(event.target.value);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   const handleCloseNewDialog = () => {
     setOpenNewDialog(false);
   };
@@ -232,16 +247,19 @@ const HomeMatch: React.FC = () => {
     }
     else{
       console.log(2)
-    //   setOpenDialog(true)
-    //   setdialog({
-    //     header: "Delete",
-    //     body: `Are you sure want to delete?`,
-    //     id: 0,
-    //     status: 0,
-    //   });
-    // }
+      setOpenDialog(true)
+      setdialog({
+        header: "Delete",
+        body: `Are you sure want to delete?`,
+        id: 0,
+        status: 0,
+      });
+    }
   };
-}
+
+  const Agree = async() => {
+    await updateStatusMatch(`/Match/AllMatching/${Matching.Match_id_match}`,Token);
+  }
 
   const ComponentMatch= async (token:string) => {
     setlistmatching(await getMatching("/Match/AllMatching",token));
@@ -264,12 +282,14 @@ const HomeMatch: React.FC = () => {
   }
 
   useEffect(() => {
-    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
-      if(open === 1) {
-        setMessagealert({message:message,color:"success"})
-        setOpenAlert(true);
-        window.history.replaceState({}, "", "");
+      if(window.history.state !== null){
+        const {open,message} = window.history.state;
+        if(open === 1) {
+          setMessagealert({message:message,color:"success"})
+          setOpenAlert(true);
+          window.history.replaceState({}, "", "");
+        }
       }
       if (item && item !== "undefined") {
           const user = JSON.parse(item);
@@ -415,6 +435,37 @@ const HomeMatch: React.FC = () => {
           Delete
         </MenuItem>
       </Popover>
+
+      <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "500px",  // Set your width here
+              },
+            },
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">{dialog.header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialog.body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button
+              onClick={Agree}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
       
       <Dialog
           open={openNewDialog}

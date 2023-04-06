@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState,useEffect } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 // @mui
@@ -15,7 +15,7 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from '../../components/iconify';
 
 import { Controller, useForm } from 'react-hook-form';
-import { Checktoken, login } from '../../services/apiservice';
+import { forgotpassword } from '../../services/apiservice';
 // // sections
 // import { LoginForm } from '../sections/auth/login';
 
@@ -49,13 +49,8 @@ const StyledContent = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
-export default function LoginPage() {
-  
+export default function ForgotPage() {
   const mdUp = useResponsive('up', 'md','');
-
-  const navigate = useNavigate();
-
-  const [showPassword, setShowPassword] = useState(false);
 
   const { control, handleSubmit } = useForm({
     reValidateMode: "onBlur"
@@ -82,36 +77,31 @@ export default function LoginPage() {
     email:{
       required: "Email is Required",
       pattern: "Invalid Email Address"
-    },
-    password:{
-      required: "Password is Required",
     }
   };
 
   const handleOnSubmit=async(data:any)=>{
     setLoad(true)
-    const {email,password} = data
+    const {email} = data
     setTimeout(async()=>{
-      await login("/Login",email,password);
+        await forgotpassword("/Forgotpassword",email)
     }
     , 2000);
   }
   
   useEffect(() => {
-        if(window.history.state !== null){
-          const {open,message,status} = window.history.state
-          if(open === 1){
-            setMessagealert({message:message,color:status})
-            setOpenAlert(true);
-            window.history.replaceState({}, "", "");
-        }
+    const {open,message} = window.history.state
+      if(open === 1){
+          setMessagealert({message:message,color:"success"})
+          setOpenAlert(true);
+          window.history.replaceState({}, "", "");
       }
   }, []);
 
   return (
     <>
       <Helmet>
-        <title> Login | SmartSocket </title>
+        <title> ForgotPassword | SmartSocket </title>
       </Helmet>
 
       <StyledRoot>  
@@ -124,22 +114,15 @@ export default function LoginPage() {
           }}
         />
 
-        {mdUp && (
-          <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
-            </Typography>
-            <img src="/assets/illustrations/illustration_login.png" alt="login" />
-          </StyledSection>
-        )}
+
 
         <Container maxWidth="sm">
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Sign in to SmartS<Iconify icon={"solar:plug-circle-outline"} />cket
+            <Typography variant="body1" textAlign={'center'} color={'gray'} gutterBottom>
+            Please enter the email address associated with your account and We will email you a link to reset your password.
             </Typography>
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
-            <Stack spacing={3} sx={{mt:5}}>
+            <Stack spacing={3} sx={{mt:3}}>
                   <Controller
                       control={control}
                       name="email"
@@ -160,53 +143,23 @@ export default function LoginPage() {
                       )}
                     />
 
-                  <Controller
-                      control={control}
-                      name="password"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-
-                        <TextField
-                          {...field}
-                          name="password"
-                          label="Password"
-                          type={showPassword ? 'text' : 'password'}
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
-                                  <Iconify icon={showPassword ? 'eva:eye-fill' : 'eva:eye-off-fill'} />
-                                </IconButton>
-                              </InputAdornment>
-                            ),
-                          }}
-                          error={error !== undefined}
-                          helperText={error ? myHelper.password[error.type] : ""}
-                        />
-                      )}
-                    />
-
-              
             </Stack>
 
-
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-              <Typography variant="body2">
-              </Typography>
-              <Link  variant="subtitle2" underline="hover" onClick={() => {navigate("/forgotpassword")}}>
-                Forgot password?
-              </Link>
-            </Stack>
-
-            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={load}>
-              Login
+            <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={load} sx={{mt:4}}>
+              Send Request
             </LoadingButton>
             </Box>
           </StyledContent>
         </Container>
+
+        {mdUp && (
+          <StyledSection>
+            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+            Forgot your password?
+            </Typography>
+            <img src="/assets/illustrations/illustration_forgotpassword.png" alt="forgotpassword" />
+          </StyledSection>
+        )}
       </StyledRoot>
 
       <Snackbar
@@ -223,6 +176,7 @@ export default function LoginPage() {
             {messagealert.message}!
           </Alert>
         </Snackbar>
+        
     </>
   );
 }

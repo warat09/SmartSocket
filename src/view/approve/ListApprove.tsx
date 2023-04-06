@@ -255,12 +255,14 @@ const HomeApprove: React.FC = () => {
   const isNotFound = !filteredUsers.length && !!filterName;
 
   useEffect(() => {
-    const {open,message} = window.history.state;
     const item = localStorage.getItem("User");
-    if(open === 1) {
-      setMessagealert({message:message,color:"success"})
-      setOpenAlert(true);
-      window.history.replaceState({}, "", "");
+    if(window.history.state !== null){
+      const {open,message} = window.history.state;
+      if(open === 1) {
+        setMessagealert({message:message,color:"success"})
+        setOpenAlert(true);
+        window.history.replaceState({}, "", "");
+      }
     }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);

@@ -395,13 +395,15 @@ const HomeMaintenance: React.FC=()=>{
       }
 
       useEffect(() => {
-        const {open,message} = window.history.state;
         const item = localStorage.getItem("User");
+        if(window.history.state !== null){
+          const {open,message} = window.history.state;
           if(open === 1) {
             setMessagealert({message:message,color:"success"})
             setOpenAlert(true);
             window.history.replaceState({}, "", "");
           }
+        }
           if (item && item !== "undefined") {
             const user:LocalStorage = JSON.parse(item);
             ComponentUser(user.token);

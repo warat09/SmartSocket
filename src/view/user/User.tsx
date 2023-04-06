@@ -327,12 +327,14 @@ const myHelper:any = {
   //------------------------------//
 
   useEffect(() => {
-    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
-      if(open === 1){
+      if(window.history.state !== null){
+        const {open,message} = window.history.state;
+        if(open === 1) {
           setMessagealert({message:message,color:"success"})
           setOpenAlert(true);
           window.history.replaceState({}, "", "");
+        }
       }
       if (item && item !== "undefined") {
         const user:LocalStorage = JSON.parse(item);
@@ -662,24 +664,39 @@ const myHelper:any = {
                     xs={12}
                     md={6}
                   >
-                    <Controller
-                      control={control}
-                      name="role"
-                      defaultValue=""
-                      rules={{
-                        required: true
-                      }}
-                      render={({ field, fieldState: { error } }) => (
-                        <TextField
-                          {...field}
-                          type="text"
-                          fullWidth
-                          label="Role"
-                          error={error !== undefined}
-                          helperText={error ? myHelper.role[error.type] : ""}
-                        />
-                      )}
-                    />
+                  <Controller
+              control={control}
+              name="role"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                  <Select 
+                  {...field}
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  label="Role"
+                  error={error !== undefined}
+                   >
+                    
+                    <MenuItem
+                      value="admin"
+                    >
+                      Admin
+                    </MenuItem>
+                    <MenuItem
+                      value="user"
+                    >
+                      User
+                    </MenuItem>
+                   </Select>
+                <FormHelperText>{error ? myHelper.role[error.type] : ""}</FormHelperText>
+                </FormControl>
+              )}
+            />
                   </Grid>
 
                   <Grid

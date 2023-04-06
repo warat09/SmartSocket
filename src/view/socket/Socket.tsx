@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Helmet } from 'react-helmet-async';
-import { filter } from 'lodash';
+import { concat, filter, update } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import {Node} from '../../model/model'
 import {Table,TableBody,
@@ -16,9 +16,17 @@ import {Table,TableBody,
   Card,
   IconButton,
   Popover,
-  MenuItem
+  MenuItem,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Button,
+  Snackbar,
+  Alert
 } from "@mui/material"
-import {getNode} from '../../services/apiservice'
+import {getNode, updateStatusNode} from '../../services/apiservice'
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import Iconify from "../../components/iconify/Iconify";
@@ -80,12 +88,45 @@ const HomeNode: React.FC = () => {
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [mac_address,setMac_address] = useState("");
+
+  const [openAlert, setOpenAlert] = useState(false);
+
+  const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const [dialog, setdialog] = React.useState({
+    header: "",
+    body: "",
+    id: 0,
+    status: 0,
+  });
+
+  const handleCloseAlert = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpenAlert(false);
+  };
+
   const handleGetNode= async() => {
     SetlistNode(await getNode("/Node/AllMACAddress"))
   }
 
-  const handleOpenMenu = (event:any) => {
-    setOpen(event.currentTarget);
+  const handleOpenMenu = (event:any,mac_address:string) => {
+    setMac_address(mac_address)
+    setOpenDialog(true)
+      setdialog({
+        header: "Disable",
+        body: `Are you sure want to disable ${mac_address}?`,
+        id: 0,
+        status: 0,
+      });
   };
 
   const handleCloseMenu = () => {
@@ -142,8 +183,24 @@ const HomeNode: React.FC = () => {
   
   const isNotFound = !filteredUsers.length && !!filterName;
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const Agree = async() => {
+    await updateStatusNode(`/Node/AllMACAddress/${mac_address}`)
+  }
+
   useEffect(() => {
     const item = localStorage.getItem("User");
+    if(window.history.state !== null){
+      const {open,message} = window.history.state;
+      if(open === 1) {
+        setMessagealert({message:message,color:"success"})
+        setOpenAlert(true);
+        window.history.replaceState({}, "", "");
+      }
+    }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
       handleGetNode();
@@ -197,9 +254,9 @@ const HomeNode: React.FC = () => {
 
                         <TableCell align="center">{status_node}</TableCell>
 
-                        <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={handleOpenMenu}>
-                            <Iconify icon={"eva:more-vertical-fill"}/>
+                        <TableCell align="center">
+                          <IconButton size="large" color="inherit" onClick={(event)=>handleOpenMenu(event,mac_address)}>
+                            <Iconify icon={"fe:disabled"}/>
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -250,34 +307,51 @@ const HomeNode: React.FC = () => {
           />
         </Card>
       </Container>
-      <Popover
-        open={Boolean(open)}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: {
-            p: 1,
-            width: 140,
-            '& .MuiMenuItem-root': {
-              px: 1,
-              typography: 'body2',
-              borderRadius: 0.75,
+      <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "500px",  // Set your width here
+              },
             },
-          },
-        }}
-      >
-        <MenuItem>
-          <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
-          Edit
-        </MenuItem>
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">{dialog.header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialog.body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button
+              onClick={Agree}
+              autoFocus
+            >
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
 
-        <MenuItem sx={{ color: 'error.main' }}>
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
-          Delete
-        </MenuItem>
-      </Popover>
+        <Snackbar
+          open={openAlert}
+          autoHideDuration={3000}
+          onClose={handleCloseAlert}
+        >
+          <Alert
+            onClose={handleCloseAlert}
+            variant="filled"
+            severity={messagealert.color}
+            sx={{ width: "100%" }}
+          >
+            {messagealert.message}!
+          </Alert>
+        </Snackbar>
     </>
   );
 };

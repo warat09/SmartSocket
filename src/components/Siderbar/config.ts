@@ -13,7 +13,7 @@ const navConfig = [
   },
   {
     title:'User',
-    path: '/app/admin/user/list',
+    path: '/app/admin/user',
     icon:'mdi:user-circle'
   },
   {
@@ -23,17 +23,17 @@ const navConfig = [
   },
   {
     title: 'Asset',
-    path: '/app/admin/asset/list',
+    path: '/app/admin/asset',
     icon: 'ri:plug-2-line',
   },
   {
     title: 'Match',
-    path: '/app/admin/match/list',
+    path: '/app/admin/match',
     icon: 'ph:plugs-connected-bold',
   },
   {
     title: 'Approve',
-    path: '/app/admin/approve/list',
+    path: '/app/admin/approve',
     icon: 'basil:user-clock-solid',
   },
   {
@@ -43,7 +43,7 @@ const navConfig = [
   },
   {
     title: 'Transaction',
-    path: '/app/admin/transaction/list',
+    path: '/app/admin/transaction',
     icon: 'icon-park-solid:transaction-order',
   },
   {

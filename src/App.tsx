@@ -16,25 +16,6 @@ const Router = lazy( () => {
 // const Router = lazy(() => import("./routes"));
 
 const App: React.FC =()=> {
-  // const [userData,setUserData] = useState<Object>({})
-  // useEffect(() => {
-  //   const item = localStorage.getItem("User");
-  //   if (item && item !== "undefined") {
-  //     const user = JSON.parse(item);
-  //     Checktoken("/User/CheckToken",user.token).then((response) => {
-  //       if (response.status === "ok") {
-  //         setUserData(response.data)
-  //         console.log(response.data)
-  //       } 
-  //       // else {
-  //       //   localStorage.clear();
-  //       // }
-  //     });
-  //   } 
-  //   // else {
-  //   //   navigate("/login");
-  //   // }
-  // }, []);
   return (
     
     <ThemeProvider>

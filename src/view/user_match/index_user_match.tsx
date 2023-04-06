@@ -43,6 +43,7 @@ import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import { Controller, useForm } from "react-hook-form";
+import formatTime from "../../components/caltime/millisectohms"
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
@@ -268,12 +269,14 @@ const ComponentUserMatch= async (token:string) => {
 }
 
   useEffect(() => {
-    const {open,message} = window.history.state
     const item = localStorage.getItem("User");
-    if(open === 1) {
-      setMessagealert({message:message,color:"success"})
-      setOpenAlert(true);
-      window.history.replaceState({}, "", "");
+    if(window.history.state !== null){
+      const {open,message} = window.history.state;
+      if(open === 1) {
+        setMessagealert({message:message,color:"success"})
+        setOpenAlert(true);
+        window.history.replaceState({}, "", "");
+      }
     }
     if (item && item !== "undefined") {
       const user = JSON.parse(item);
@@ -342,7 +345,7 @@ const ComponentUserMatch= async (token:string) => {
                             />
                         </TableCell>
 
-                        <TableCell align="center">{Match_sum_used_time}</TableCell>
+                        <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
 
                         <TableCell align="center">{UserMatch_status_user_match}</TableCell>
 

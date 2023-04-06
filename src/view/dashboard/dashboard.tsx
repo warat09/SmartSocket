@@ -131,7 +131,7 @@ const HomeDashboard: React.FC = () => {
             lg={6}
           >
             <TableRemainingtime
-              title={"Remaining time"}
+              title={"Maintenance is almost due"}
               orders={Remainingtime}
               sx={{ height: '100%' }}
             />
