@@ -8,13 +8,13 @@ import { User } from '../entity/User';
 import { Maintenance_Assets } from '../entity/Maintenance';
 
 const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) => {
-    const countasset = await AppDataSource.getRepository(Assets).createQueryBuilder('Asset').getCount();
-    const countnode = await AppDataSource.getRepository(Node).createQueryBuilder('Node').getCount();
-    const countmatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match').getCount();
+    const countasset = await AppDataSource.getRepository(Assets).createQueryBuilder('Asset').where(`Asset.status_assets = "Active"`).getCount();
+    const countnode = await AppDataSource.getRepository(Node).createQueryBuilder('Node').where(`Node.status_node = "Enable"`).getCount();
+    const countmatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where(`Match.status_match = "Enable"`).getCount();
     const countmatchapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Wait for Approve'}).getCount();
     const countapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Approve'}).getCount();
-    const countmatchrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status',{status:'Rent'}).getCount();
-    const countmatchnotrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status',{status:'Available'}).getCount();
+    const countmatchrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status AND Match.status_match = :status_match',{status:'Rent',status_match:'Enable'}).getCount();
+    const countmatchnotrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status AND Match.status_match = :status_match',{status:'Available',status_match:'Enable'}).getCount();
     // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').where({status_user	: "Active"}).getCount();
     const topic = ["Assets","Sockets","Matching","Wait for approve","Approve","rent","not_rent","people"]
@@ -30,8 +30,12 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
         array.push(attribute)
     })
     const remaining_time = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
-    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
-    const maintenance = await AppDataSource.getRepository(Assets).find()
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').where('Match.status_match = :status',{status:"Enable"}).getRawMany();
+    const maintenance = await AppDataSource.getRepository(Assets).find({
+        where:{
+            status_assets:"Active"
+        }
+    })
     const donut = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
     .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
     .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
@@ -69,7 +73,24 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
             }
         ]
     
-    return res.status(200).json({countall:array,remainingtime:remaining_time,maintenance:maintenance,totaldeparturerent:donut,totalchart:chart})
+    const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    .where(`Match.status_match = :status`, {status:"Enable"}).getRawMany();
+    const FilterMatch = []
+    AllMatching.map(async(v,i)=>{
+        const Match = AllMatching[i]
+        if((Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time <= 604800000){
+            const attribute = {
+                Asset_name_assets:Match.Asset_name_assets,
+                Match_mac_address:Match.Match_mac_address,
+                Match_status_rent:Match.Match_status_rent,
+                Match_sum_used_time:(Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time,
+            }
+            FilterMatch.push(attribute);
+        }
+    })
+    console.log("77",FilterMatch)
+    return res.status(200).json({countall:array,remainingtime:FilterMatch,maintenance:maintenance,totaldeparturerent:donut,totalchart:chart})
 }
 
 

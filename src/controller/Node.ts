@@ -33,10 +33,10 @@ const SelectMacAddressAsset = async (req: Request, res: Response, next: NextFunc
     if(id_assets !== ''){
         // console.log(id_assets)
         const MatchAsset = AppDataSource.getRepository(Match).createQueryBuilder()
-        .select("mac_address").where(`id_assets = ${id_assets}`).getQuery();
+        .select("mac_address").where(`id_assets = ${id_assets} AND status_match = "Enable"`).getQuery();
     
         const AllMacAddress = AppDataSource.getRepository(Node).createQueryBuilder()
-        .where("mac_address NOT IN (" + MatchAsset+ ")");
+        .where(`status_node = "Enable" AND mac_address NOT IN (${MatchAsset})`);
         // .where("node.mac_address NOT IN (:...mac_address)", { mac_address: ["12:13:14:15"] })
         // .where("node.mac_address NOT IN (SELECT mac_address FROM `match` m WHERE m.id_assets = "+id_assets+")");
         const results = await AllMacAddress.getRawMany();
@@ -44,9 +44,29 @@ const SelectMacAddressAsset = async (req: Request, res: Response, next: NextFunc
     }
 }
 
+const UpdateStatusMacAddress = async  (req: Request, res: Response, next: NextFunction) => {
+    const CheckMatchSocket =  await AppDataSource.getRepository(Match).createQueryBuilder(`Match`)
+    .where(`Match.mac_address = :mac_address AND Match.status_match = :status`,{mac_address:req.params.id,status:"Enable"}).getRawMany();
+    if(Object.values(CheckMatchSocket).length > 0){
+        return res.status(200).json({status:1,message: "Can't Delete this Socket has matching"});
+    }
+    await AppDataSource
+    .createQueryBuilder()
+    .update(Node)
+    .set({
+        status_node : "Disable"
+    })
+    .where("mac_address = :mac_address", { mac_address: req.params.id }).execute()
+    return res.status(200).json({status:1,message: "Disable Success"});
+}
+
 const GetAllMacAddress = async (req: Request, res: Response, next: NextFunction) => {
-    const AllMacAddress = await AppDataSource.getRepository(Node).find()
+    const AllMacAddress = await AppDataSource.getRepository(Node).find({
+        where:{
+            status_node:"Enable"
+        }
+    })
     res.json(AllMacAddress)
 }
 
-export default {AddMACAddress,GetAllMacAddress,SelectMacAddressAsset};
+export default {AddMACAddress,GetAllMacAddress,SelectMacAddressAsset,UpdateStatusMacAddress};

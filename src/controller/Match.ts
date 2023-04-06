@@ -34,6 +34,7 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
         where: {
             mac_address: mac_address,
             id_assets: id_assets,
+            status_match:"Enable"
         },
     });
     if(Object.values(CheckMatch).length === 0){
@@ -63,6 +64,34 @@ const GetAssetMaintenance = async (req: Request, res: Response, next: NextFuncti
     res.json(SelectMaintenance)     
 }
 
+const UpdateStatusMatching = async (req: Request, res: Response, next: NextFunction) => {
+    const SelectStatusRent =  await AppDataSource.getRepository(User_match).createQueryBuilder('Usermatch')
+    .where(`Usermatch.id_match = :id AND Usermatch.status_user_match = :status`,{id: req.params.id,status: "Wait for Approve"}).getRawMany();
+    const CheckAssetMaintenance = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    .where(`Match.id_match = :id AND Asset.maintenance = :maintenance`,{id: req.params.id,maintenance: 1}).getRawMany();
+    if(Object.values(CheckAssetMaintenance).length > 0){
+        return res.status(200).json({status:1,message: "Can't Delete Asset is maintenancing"});            
+    }
+    if(Object.values(SelectStatusRent).length > 0){
+        await AppDataSource
+        .createQueryBuilder()
+        .update(User_match)
+        .set({
+            status_user_match : "Reject"
+        })
+        .where("id_match = :id", { id: req.params.id }).execute()
+    }
+    await AppDataSource
+    .createQueryBuilder()
+    .update(Match)
+    .set({
+        status_match : "Disable"
+    })
+    .where("id_match = :id", { id: req.params.id }).execute()
+    return res.status(200).json({status:1,message: "Delete Success"});            
+}
+
 const UpdateMatching = async (req: Request, res: Response, next: NextFunction) => {
     const {node,room,floor} = req.body;
     await AppDataSource
@@ -79,7 +108,8 @@ const UpdateMatching = async (req: Request, res: Response, next: NextFunction) =
 
 const GetAllMatching = async (req: Request, res: Response, next: NextFunction) => {
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
-    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
+    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
+    .where(`Match.status_match = :status`, {status:"Enable"}).getRawMany();
     const FilterMatch = []
     AllMatching.map(async(v,i)=>{
         const Match = AllMatching[i]
@@ -123,4 +153,4 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
 };
 
 
-export default {MatchingAsset,GetRentMatch,GetAssetMaintenance,GetAllMatching,UpdateMatching};
+export default {MatchingAsset,GetRentMatch,GetAssetMaintenance,GetAllMatching,UpdateMatching, UpdateStatusMatching};

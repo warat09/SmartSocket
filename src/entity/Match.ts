@@ -8,7 +8,7 @@ export class Match{
     @PrimaryGeneratedColumn('increment')
     id_match : number
 
-    @OneToOne(() => Assets, (Assets) => Assets.id_assets)
+    @ManyToOne(() => Assets, (Assets) => Assets.id_assets)
     @JoinColumn({ name: 'id_assets' })
     id_assets: Assets
 

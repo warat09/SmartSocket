@@ -15,24 +15,25 @@ const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     assets.maintenance = false;
     assets.status_assets = "Active";
 
-    const CheckNameAsset = await AppDataSource.getRepository(Assets).findOneBy({
-        name_assets: name_assets,
+    const CheckNameAsset = await AppDataSource.getRepository(Assets).find({
+        where:{
+            name_assets: name_assets,
+            status_assets: "Active"
+        }
     })
-    if(CheckNameAsset === null){
+    if(Object.values(CheckNameAsset).length > 0){
+        return res.status(200).json({status:1,data:CheckNameAsset,message: "This Asset Name already exists"});
+    }else{
         const AddAsset = AppDataSource.getRepository(Assets).create(assets)
         const results = await AppDataSource.getRepository(Assets).save(AddAsset)
-        return res.status(200).json({status:1,data:results,message: "Insert Success"});
+        return res.status(200).json({status:1,data:results,message: "Insert Asset Success"});
     }
-    else{
-        AppDataSource.getRepository(Assets).merge(CheckNameAsset, assets)
-        const results = await AppDataSource.getRepository(Assets).save(CheckNameAsset)
-        return res.status(200).json({status:1,data:results,message: "Update Success"});
-    }
+
     
 };
 const GetMatchAsset = async(req:Request,  res: Response, next: NextFunction) => {
-    const SelectMatch = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('id_assets').getQuery();
-    const SelectIdAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').where(`Assets.id_assets NOT IN (${SelectMatch})`).getRawMany();
+    const SelectMatch = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('id_assets').where(`Match.status_match = "Enable"`).getQuery();
+    const SelectIdAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').where(`Assets.status_assets = "Active" AND Assets.id_assets NOT IN (${SelectMatch})`).getRawMany();
     res.json(SelectIdAsset)
 }
 const UpdateAsset = async(req:Request,  res: Response, next: NextFunction) => {
@@ -57,13 +58,34 @@ const UpdateAsset = async(req:Request,  res: Response, next: NextFunction) => {
     }
     
 }
+
+const UpdateStatusAsset = async(req:Request,  res: Response, next: NextFunction) => {
+    const CheckMatchAssets =  await AppDataSource.getRepository(Match).createQueryBuilder(`Match`)
+    .where(`Match.id_assets = :id_assets AND Match.status_match = :status`,{id_assets:req.params.id,status:"Enable"}).getRawMany();
+    console.log(CheckMatchAssets)
+    if(Object.values(CheckMatchAssets).length > 0){
+        return res.status(200).json({status:1,message: "Can't Delete this Asset has matching"});
+    }
+    await AppDataSource
+    .createQueryBuilder()
+    .update(Assets)
+    .set({
+        status_assets : "Deactive"
+    })
+    .where("id_assets = :id", { id: req.params.id }).execute()
+    return res.status(200).json({status:1,message: "Delete Success"});
+}
+
 const GetAllAsset = async(req:Request,  res: Response, next: NextFunction) => {
     const AllAssets = await AppDataSource.getRepository(Assets).find({
         relations: {
             rfid_address:true
+        },
+        where:{
+            status_assets:"Active"
         }
     })
     res.json(AllAssets)
 };
 
-export default {AddAsset,GetAllAsset,GetMatchAsset,UpdateAsset};
+export default {AddAsset,GetAllAsset,GetMatchAsset,UpdateAsset, UpdateStatusAsset};

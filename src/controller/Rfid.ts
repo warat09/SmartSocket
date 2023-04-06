@@ -28,7 +28,7 @@ const AddAddressRfid = async (req: Request, res: Response, next: NextFunction) =
 
 const GetRfidAsset = async (req: Request, res: Response, next: NextFunction) => {
     // const SelectRfidAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').innerJoinAndSelect(Rfid, 'Rfid', 'Asset.rfid_address = Rfid.rfid_address').getQuery();
-    const SelectRfidAsset = AppDataSource.getRepository(Assets).createQueryBuilder('Assets').select('rfid_address').getQuery();
+    const SelectRfidAsset = AppDataSource.getRepository(Assets).createQueryBuilder('Assets').select('rfid_address').where(`Assets.status_assets  = "Active"`).getQuery();
     const GetRfidAsset = await  AppDataSource.getRepository(Rfid).createQueryBuilder('Rfid')
     .where(`Rfid.rfid_address NOT IN (${SelectRfidAsset})`).getRawMany();
     res.json(GetRfidAsset);

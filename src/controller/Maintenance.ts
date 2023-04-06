@@ -15,7 +15,7 @@ const GetAllMaintenance = async (req: Request, res: Response, next: NextFunction
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
     // .innerJoinAndSelect(Maintenance_Assets, 'Maintenance', 'Asset.id_assets = Maintenance.id_assets')
-    .where('Asset.maintenance = 1')
+    .where('Asset.maintenance = 1 AND Match.status_match = "Enable"')
     .getRawMany();
     const StatusMaintenance = await AppDataSource.getRepository(Maintenance_Assets)
     .createQueryBuilder('Maintenance').orderBy('Maintenance.id_maintenance', 'DESC')
@@ -46,35 +46,36 @@ const AddStatusMaintenance = async (req: Request, res: Response, next: NextFunct
     const {status_maintenance,asset} = req.body
     let Date_maintenance = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
     const Maintenance = new Maintenance_Assets()
-    if(status_maintenance === "Success Maintenance"){
-        const CheckAssets = await AppDataSource.getRepository(Assets).findOneBy({
-            id_assets: asset
+    if(status_maintenance === "Request Accepted"){
+        await AppDataSource
+        .createQueryBuilder()
+        .update(Match)
+        .set({
+            status_rent : "Available"
         })
-        if(Object.values(CheckAssets).length !== 0){
-            const Asset = new Assets();
-            Asset.maintenance = false;
-            AppDataSource.getRepository(Assets).merge(CheckAssets, Asset)
-            const results = await AppDataSource.getRepository(Assets).save(CheckAssets)
-            if(Object.values(results).length !== 0){
-                const CheckMatchAssets = await AppDataSource.getRepository(Match).findOneBy({
-                    id_assets: asset
-                })
-                if(Object.values(CheckMatchAssets).length !== 0){
-                    const MatchAsset = new Match();
-                    MatchAsset.sum_used_time = 0;
-                     AppDataSource.getRepository(Match).merge(CheckMatchAssets, MatchAsset)
-                     await AppDataSource.getRepository(Match).save(CheckMatchAssets)
-                }
-            }
-            // return res.status(200).json({status:1,data:results,message: "Update Success"});
+        .where("id_assets = :id_assets AND status_match = :status", { id_assets: asset,status: "Enable" }).execute()
+    }
+    if(status_maintenance === "Success Maintenance"){
+        const CheckAssets = await AppDataSource.getRepository(Assets).find({
+            where: {
+                id_assets: asset,
+                status_assets: "Active"
+            },
         }
-        // const Updatemaintenance = await AppDataSource
-        //     .createQueryBuilder()
-        //     .update(Assets)
-        //     .set({
-        //         maintenance : 0
-        //     })
-        //     .where("id_assets = :id", { id: asset }).execute()
+        )
+        console.log(CheckAssets)
+        if(Object.values(CheckAssets).length !== 0){
+            await AppDataSource
+            .createQueryBuilder()
+            .update(Assets)
+            .set({
+                maintenance : false
+            })
+            .where("id_assets = :id_assets AND status_assets = :status", { id_assets: asset,status: "Active" }).execute()
+            await AppDataSource.createQueryBuilder().update(Match).set({
+                sum_used_time:0
+            }).where("id_assets = :id_assets AND status_match = :status", { id_assets: asset,status: "Enable" }).execute()
+        }
     }
     Maintenance.id_assets = asset;
     Maintenance.status_maintenance = status_maintenance;

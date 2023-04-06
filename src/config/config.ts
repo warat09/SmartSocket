@@ -23,10 +23,20 @@ const SERVER = {
     port: SERVER_PORT
 };
 
+const OAuth2 = {
+    CLIENT_ID:process.env.CLIENT_ID,
+    CLIENT_SECRET:process.env.CLIENT_SECRET,
+    REDIRECT_URI:process.env.REDIRECT_URI,
+    REFRESH_TOKEN:process.env.REFRESH_TOKEN
+}
+
 const config = {
     mysql: MYSQL,
     server: SERVER,
-    token:TOKEN_SECRET
+    token:TOKEN_SECRET,
+    gmail:OAuth2
 };
+
+
 
 export default config;

@@ -3,6 +3,7 @@ import http from 'http';
 import config from './config/config';
 import { AppDataSource } from "../src/data-source"
 import Login from './routes/Login';
+import ForgotPassword from './routes/Forgotpassword'
 import Node from './routes/Node';
 import Users from './routes/User';
 import Transaction from './routes/Transaction';
@@ -58,6 +59,7 @@ AppDataSource.initialize().then(async () => {
     var cors = require('cors')
     const router: Application = express();
     router.use(bodyParser.json())
+    router.set("view engine", "ejs");
     router.use(express.json({ limit: "100mb" }));
     router.use(express.urlencoded({ extended: true, limit: "100mb" }));
     router.use(cors())
@@ -74,6 +76,7 @@ AppDataSource.initialize().then(async () => {
         next();
       });
       router.use('/Login',Login)
+      router.use('/Forgotpassword',ForgotPassword)
       router.use('/Node', Node);
       router.use('/User',auth,Users);
       router.use('/Rfid',Rfid);
@@ -84,52 +87,10 @@ AppDataSource.initialize().then(async () => {
       router.use('/Usermatch',auth,Usermatch)
       router.use('/Dashboard',auth,Dashboard)
       router.get('/time',async(req:Request,res:Response)=>{
-        // let {Address} = req.body;
         let Date_time = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
-        return res.status(200).json({epoch:Date.now(),date:Date_time,message: `date time`});
+        return res.status(200).json({epoch:String(Date.now()),date:Date_time,message: `date time`});
       })
-      router.get('/time',async(req:Request,res:Response)=>{
-        // let {Address} = req.body;
-        let Date_time = new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' });
-        return res.status(200).json({epoch:Date.now(),date:Date_time,message: `date time`});
-      })
-      router.post('/email',async(req:Request,res:Response)=>{
-        const {google} = require('googleapis');
-        const CLIENT_ID =
-      "901872679791-l5ssb10p617vt6mo4q2b3u61dgn4tt2u.apps.googleusercontent.com";
-      const CLIENT_SECRET = "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";
-      const REDIRECT_URI = "https://developers.google.com/oauthplayground";
-      const REFRESH_TOKEN ="1//04zNGhLAs-v8TCgYIARAAGAQSNwF-L9IrFX06Q5U84zMDsJS96vmstZePoN1JU3lsggqqBP5k5XHJyRXCnRARjqlPU32bXoNPMWw";
-      const oAuth2Client = new google.auth.OAuth2(
-        CLIENT_ID,
-        CLIENT_SECRET,
-        REDIRECT_URI,
-        REFRESH_TOKEN
-      );
-      oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
-        let {email} = req.body 
-        const accessToken = await oAuth2Client.getAccessToken();
-                const transport = nodemailer.createTransport({
-                  service: "gmail",
-                  auth: {
-                    type: "OAuth2",
-                    user: "SmartSocket@gmail.com",
-                    clientId: CLIENT_ID,
-                    clientSecret: CLIENT_SECRET,
-                    refreshToken: REFRESH_TOKEN,
-                    accessToken: accessToken,
-                  },
-                });
-                const mailOptions = {
-                  from: "beebacorporation <beebacorporation@gmail.com>",
-                  to: email,
-                  subject: "มีการสมัครสมาชิกผ่านอีเมลของคุณ"}
-                  await transport.sendMail(mailOptions).then(
-                    res.json({
-                      message: "Email is sent please check you Email",
-                    })
-                  );
-      })
+
     http
     .createServer(router)
     .listen(config.server.port,() =>

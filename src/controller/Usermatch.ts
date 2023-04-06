@@ -54,6 +54,7 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
             .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
             .getRawMany();
+            console.log(RequestRent)
             return res.status(200).json(RequestRent);
     }
     else{

@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column , OneToOne , JoinColumn} from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column , ManyToOne , JoinColumn} from "typeorm"
 import { Rfid } from "./Rfid"
 
 @Entity()
@@ -7,7 +7,7 @@ export class Assets{
     @PrimaryGeneratedColumn('increment')
     id_assets : string
 
-    @OneToOne(() => Rfid, (Rfid) => Rfid.rfid_address)
+    @ManyToOne(() => Rfid, (Rfid) => Rfid.rfid_address)
     @JoinColumn({ name: 'rfid_address' })
     rfid_address: Rfid
 
