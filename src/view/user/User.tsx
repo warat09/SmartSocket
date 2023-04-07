@@ -361,7 +361,7 @@ const myHelper:any = {
             New User
           </Button>
         </Stack>
-        <hr />
+        <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           {/* <Scrollbar> */}

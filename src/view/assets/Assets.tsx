@@ -305,8 +305,7 @@ const handleOnEditSubmit=async(data:any)=>{
             New Asset
           </Button>
       </Stack>
-        <hr />
-        <br/>
+      <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>

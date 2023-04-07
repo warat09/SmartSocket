@@ -279,7 +279,7 @@ const HomeApprove: React.FC = () => {
           <title> Approve | SmartSocket </title>
       </Helmet>
       <Container>
-        <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
+        <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
           Approve
         </Typography>
         <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>

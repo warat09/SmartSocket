@@ -45,12 +45,7 @@ const navConfig = [
     title: 'Transaction',
     path: '/app/admin/transaction',
     icon: 'icon-park-solid:transaction-order',
-  },
-  {
-    title: 'Not found',
-    path: '/404',
-    // icon: icon('ic_disabled'),
-  },
+  }
 ];
 
 export default navConfig;

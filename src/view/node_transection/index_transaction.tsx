@@ -188,10 +188,10 @@ const HomeTransection: React.FC = () => {
             <title> Transaction | SmartSocket </title>
       </Helmet>
       <Container>
-        <Typography variant="h4" sx={{ mb: 3,mt:2 }}>
+        <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
           Transaction
         </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
+        <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
