@@ -10,10 +10,10 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
     let {Address,RfidAddress,on_date,off_date,time_used} = req.body;
     console.log(Address+"|"+RfidAddress+"|"+on_date+"|"+off_date+"|"+time_used)
     const CheckMatchingRent = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
-    .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`Asset.rfid_address = :rfid AND Match.mac_address = :address`, {rfid: RfidAddress,address:Address}).getRawMany();
-    console.log(CheckMatchingRent[0].Match_id_match)
-
+    .innerJoinAndSelect(Assets, 'Assets', 'Assets.id_assets = Match.id_assets')
+    .where(`Match.mac_address = :address AND Assets.rfid_address = :rfid AND Match.status_rent = "Rent" AND Match.status_match = "Enable"`, {address:Address,rfid:RfidAddress})
+    .getRawMany();
+    console.log(CheckMatchingRent)
    if(Object.values(CheckMatchingRent).length > 0){
         const Transaction = new Node_Transaction();
         Transaction.id_match = CheckMatchingRent[0].Match_id_match;
@@ -31,20 +31,11 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
             .createQueryBuilder()
             .update(Match)
             .set({
-                sum_used_time: () => `sum_used_time + ${Number(time_used)}`
+                sum_used_time: () => `sum_used_time + ${time_used}`
             })
             .where("id_match = :id", { id: CheckMatchingRent[0].Match_id_match }).execute()
             if(UpdateTimeUserMatch){
                 return res.status(200).json({status:1,data:UpdateTimeUserMatch,message: "Insert Success"});
-                // const UpdateTimeRemainMatch= AppDataSource
-                // .createQueryBuilder()
-                // .update(Match)
-                // .set({
-                    // remain_time: () => `remain_time - ${Number(time_used)}`
-                //     remain_time: Number(CheckMatchingRent[0].Asset_expire_hour*(1000*60*60))-Number(CheckUserMatchApprove.UserMatch_sum_used_time)
-                // })
-                // .where("id_match = :id", { id: CheckMatchingRent[0].Match_id_match }).execute()
-                // return res.status(200).json({status:1,data:UpdateTimeRemainMatch,message: "Insert Success"});
             }
         }
     }
