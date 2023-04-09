@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column ,ManyToOne , JoinColumn} from "typeorm"
 import {Match} from "./Match"
+import { User_match } from "./Usermatch"
 
 @Entity()
 export class Node_Transaction {
@@ -11,6 +12,11 @@ export class Node_Transaction {
     @JoinColumn({ name: 'id_match'})
     @Column()
     id_match: number
+
+    @ManyToOne(() => User_match, (User_match) => User_match.id_user_match)
+    @JoinColumn({ name: 'id_user_match'})
+    @Column()
+    id_user_match: number
 
     @Column({
         nullable:true

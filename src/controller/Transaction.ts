@@ -11,12 +11,13 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
     console.log(Address+"|"+RfidAddress+"|"+on_date+"|"+off_date+"|"+time_used)
     const CheckMatchingRent = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Assets', 'Assets.id_assets = Match.id_assets')
-    .where(`Match.mac_address = :address AND Assets.rfid_address = :rfid AND Match.status_rent = "Rent" AND Match.status_match = "Enable"`, {address:Address,rfid:RfidAddress})
+    .innerJoinAndSelect(User_match,'UserMatch','Match.id_match= UserMatch.id_match')
+    .where(`Match.mac_address = :address AND Assets.rfid_address = :rfid AND Match.status_rent = "Rent" AND UserMatch.status_user_match = "Approve" AND Match.status_match = "Enable"`, {address:Address,rfid:RfidAddress})
     .getRawMany();
-    console.log(CheckMatchingRent)
    if(Object.values(CheckMatchingRent).length > 0){
         const Transaction = new Node_Transaction();
         Transaction.id_match = CheckMatchingRent[0].Match_id_match;
+        Transaction.id_user_match = CheckMatchingRent[0].UserMatch_id_user_match
         Transaction.time_used = time_used
         Transaction.on_date = on_date
         Transaction.off_date = off_date

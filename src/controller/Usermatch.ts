@@ -4,6 +4,7 @@ import { User_match } from '../entity/Usermatch';
 import {Match} from '../entity/Match'
 import {Assets} from '../entity/Asset'
 import { User } from '../entity/User';
+import {Node_Transaction} from '../entity/Transaction';
 
 const AddUsermatch = async (req: Request, res: Response, next: NextFunction) => {
     let {id_match,room,floor,description} = req.body;
@@ -54,7 +55,16 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
             .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
             .getRawMany();
-            console.log(RequestRent)
+            // const cleandata = []
+            // RequestRent.map(async(v,i)=>{
+            //     const TotalSum = await AppDataSource.getRepository(Node_Transaction).createQueryBuilder('Transaction').select('SUM(Transaction.time_used) AS totaltime')
+            //     .where(`Transaction.id_user_match  = :id_user_match`, {id_user_match: 1}).getRawMany();
+            //     const obj = {
+            //         Total:TotalSum
+            //     }
+            //     cleandata.push(obj)
+            // })
+            // console.log(cleandata)
             return res.status(200).json(RequestRent);
     }
     else{
