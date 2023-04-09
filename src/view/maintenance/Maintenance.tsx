@@ -71,8 +71,8 @@ import { StepIconProps } from "@mui/material/StepIcon";
   }
 
   const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
-    { id: '', label: '', alignRight: false  },
-    { id: 'Asset_name', label: 'AssetName', alignRight: false },
+    { id: 'opendiv', label: '', alignRight: false  },
+    { id: 'Asset_name', label: 'Assets', alignRight: false },
     { id: 'Asset_expire_hour', label: 'ExpireHour', alignRight: false },
     { id: 'Match_remain_time', label: 'TimeUse', alignRight: false },
     { id: '', label: 'Action', alignRight: false  },
@@ -132,6 +132,8 @@ const HomeMaintenance: React.FC=()=>{
 
   const [messagealert, setMessagealert]:any = useState({message:"",color:""});
 
+  const [Disable,setdisable] = useState("");
+
     const ComponentUser = async(token:string) => {
         setlistUser(await getUsers("/Maintenance/AllMaintenance",token))
         setlistMaintenance(await SelectAssetMaintenance("/Match/SelectMaintenance",token))
@@ -186,7 +188,7 @@ const HomeMaintenance: React.FC=()=>{
       //------------------------------//
       function Row(props:any) {
         const { row }:any = props;
-        const { Match_id_match,Asset_name,Asset_expire_hour,Match_sum_used_time,History }:any = row;
+        const { Match_status_rent,Asset_name,Asset_expire_hour,Match_sum_used_time,History }:any = row;
         const [openTable, setOpenTable] = useState(false);
         const [rowsPage, setPerPage] = useState(4);
         const [pageTable, setPageTable] = useState(0);
@@ -321,7 +323,7 @@ const HomeMaintenance: React.FC=()=>{
 
           <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
           <TableCell align="center">
-            <Box>
+            {Match_status_rent === "Available" &&
               <Button
               variant="contained"
               size="small"
@@ -329,8 +331,20 @@ const HomeMaintenance: React.FC=()=>{
               onClick={()=>handleAddStatus(stepbutton[statusstep],row.History[0].Maintenance_id_assets)}
               >
                 {stepbutton[statusstep]}
-              </Button>
-            </Box>
+              </Button>       
+            }
+            {Match_status_rent !== "Available" &&
+              <Button
+              disabled
+              variant="contained"
+              size="small"
+              color="success"
+              onClick={()=>handleAddStatus(stepbutton[statusstep],row.History[0].Maintenance_id_assets)}
+              >
+                {stepbutton[statusstep]}
+              </Button>       
+            }
+              
           </TableCell>
 
        </TableRow>

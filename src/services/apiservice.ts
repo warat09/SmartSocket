@@ -2,7 +2,7 @@ import axios from 'axios';
 import Nav from '../components/Siderbar/NewSidebar';
 import path from 'path';
 
-const api = "http://mistersigz.thddns.net:7572";
+const api = "http://localhost:9090";
 
 export const login = async(path:string,email:string,password:string) => {
   try{
@@ -498,6 +498,25 @@ export const updateUsermatch = async (path:string,token:string,room:string,floor
       return null;
   }
 }
+export const returnAsset = async(path:string,token:string,id_match:string) => {
+  try{
+    console.log(path,token,id_match)
+    const response = await axios.put(api+path,{id_match},{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    } )
+    window.history.pushState({open:1,message:response.data.message},"Success","/app/personnel/borrow");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+    localStorage.clear();
+    window.history.pushState({},"Error","/login");
+    window.location.reload();
+    return null;
+}
+}
 //Node
 export const getNode = async (path:string):Promise<any> => {
   try{
@@ -543,7 +562,7 @@ export const ApproveUserMatch = async (path:string,token:string,status_Approve:s
         Authorization: `Bearer ${token}`
       }
     })
-    window.history.pushState({open:1,message:response.data.message},"Success","/app/admin/approve");
+    window.history.pushState({open:1,message:response.data.message},"Success","");
     window.location.reload();
     return response.data;
   }

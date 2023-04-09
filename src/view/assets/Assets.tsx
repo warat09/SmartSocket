@@ -48,9 +48,9 @@ import { Controller, useForm } from "react-hook-form";
 
 const TABLE_HEAD = [
   { id: 'name_assets', label: 'Assets', alignRight: false },
+  { id: 'rfid_address', label: 'Rfid Address', alignRight: false },
   { id: 'expire_hour', label: 'Expired', alignRight: false },
   { id: 'date_assets', label: 'Date', alignRight: false },
-  { id: 'status_assets', label: 'Status', alignRight: false },
   { id: 'maintenance', label: 'Maintenance', alignRight: false },
   { id: '' },
 ];
@@ -328,26 +328,19 @@ const handleOnEditSubmit=async(data:any)=>{
 
                     return (
                       <TableRow hover key={id_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
-                        {/* <TableCell padding="checkbox">
-                          <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name_assets)} />
-                        </TableCell> */}
 
                         <TableCell align="center">{name_assets}</TableCell>
+
+                        <TableCell align="center">{rfid_address}</TableCell>
 
                         <TableCell align="center">{expire_hour} Hour</TableCell>
 
                         <TableCell align="center">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{status_assets}</TableCell>
-
                         <TableCell align="center">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell>
 
-                        {/* <TableCell align="left">
-                          <Label color={(status === 'banned' && 'error') || 'success'}>{sentenceCase(status)}</Label>
-                        </TableCell> */}
-
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_assets,name_assets,expire_hour,rfid_address.rfid_address)}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_assets,name_assets,expire_hour,rfid_address)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>

@@ -17,7 +17,7 @@ export default function formatTime (milliseconds:number) {
 
     console.log(milliseconds,totalHours)
 
-      if (hours >= 0) {
+      if (totalHours > 0) {
         if(minutes === 0 && seconds === 0){
           time = `${status} ${totalHours} Hours`;
         }

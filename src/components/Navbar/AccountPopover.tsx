@@ -2,6 +2,7 @@ import { useState } from 'react';
 // @mui
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
+import Iconify from '../iconify';
 // mocks_
 
 // ----------------------------------------------------------------------
@@ -30,10 +31,12 @@ export default function AccountPopover(props:any) {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
-    localStorage.clear()
-    window.location.reload()
-    // setOpen(null);
+  const handleClose = (menu:number) => {
+    setOpen(null);
+    if(menu === 0){
+      localStorage.clear()
+      window.location.reload()
+    }
   };
 
   return (
@@ -105,9 +108,10 @@ export default function AccountPopover(props:any) {
 
         <Divider sx={{ borderStyle: 'dashed' }} /> */}
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
-          Logout
-        </MenuItem>
+        <MenuItem sx={{ color: 'error.main',m: 1 }} onClick={()=>handleClose(0)}>
+          <Iconify icon={'ant-design:logout-outlined'} sx={{ width:15,height:15,mr: 2 }} />
+            Logout
+          </MenuItem>
       </Popover>
     </>
   );

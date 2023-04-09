@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import {Assets, MatchRentSelection, RfidAssets, UserMatch} from '../../model/model'
-import {addUserMatching, getAssets, getRentMatch, getRequestRent, getRfidAssets, updateAsset, updateUsermatch} from "../../services/apiservice"
+import {ApproveUserMatch, addUserMatching, getAssets, getRentMatch, getRequestRent, getRfidAssets, returnAsset, updateUsermatch} from "../../services/apiservice"
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -37,7 +37,9 @@ import {
   Select,
   FormHelperText,
   Snackbar,
-  Alert
+  Alert,
+  DialogContentText,
+  DialogActions
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
@@ -51,8 +53,8 @@ const TABLE_HEAD = [
   { id: 'UserMatch_floor', label: 'Floor', alignRight: false },
   { id: 'UserMatch_description', label: 'Description', alignRight: false },
   { id: 'Match_sum_used_time', label: 'Usetime', alignRight: false },
-  { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
   { id: 'UserMatch_datetime', label: 'Date', alignRight: false },
+  { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
   { id: '' },
 ];
 
@@ -93,13 +95,13 @@ const CreateUserMatch: React.FC = () => {
 
   // const [listassets, SetDataassetslist] = useState<Assets[]>([]);
 
-  const [ RfidAssets,SetRfidAssets ] = useState<RfidAssets[]>([]);
-
   const [listassets, setlistassets] = useState<MatchRentSelection[]>([]);
 
   const [listusermatch, setlistusermatch] = useState<UserMatch[]>([]);
 
   const [token, setToken] = useState("");
+
+  const [UserMatchReturn,setReturn] = useState({});
 
   const [open, setOpen] = useState(null);
 
@@ -124,6 +126,15 @@ const CreateUserMatch: React.FC = () => {
   const [openAlert, setOpenAlert] = useState(false);
 
   const [messagealert, setMessagealert]:any = useState({message:"",color:""});
+
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const [dialog, setdialog] = React.useState({
+    header: "",
+    body: "",
+    id: 0,
+    status: 0,
+  });
 
   const { control, handleSubmit, watch, reset } = useForm({
     reValidateMode: "onBlur"
@@ -160,6 +171,10 @@ const CreateUserMatch: React.FC = () => {
     setOpen(event.currentTarget);
   };
 
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
   const handleCloseMenu = () => {
     setOpen(null);
   };
@@ -179,21 +194,23 @@ const CreateUserMatch: React.FC = () => {
     setSelected([]);
   };
 
-  const handleClick = (event:any, name:any) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected:any = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(selected.slice(0, selectedIndex), selected.slice(selectedIndex + 1));
-    }
-    setSelected(newSelected);
-  };
+  const Agree = async() => {
+    // console.log(Usermatch.id_usermatch,Usermatch.id_match)
+    await returnAsset(`/Usermatch/ReturnAssets/${Usermatch.id_usermatch}`,token,Usermatch.id_match)
+  }
 
+  const handleClickstate = (id_usermatch:string,id_match:string) => {
+    setOpenDialog(true)
+    setUsermatch({id_usermatch:id_usermatch,id_match:id_match});
+      setdialog({
+        header: "Return",
+        body: `Are you sure want to Return Asset?`,
+        id: 0,
+        status: 0,
+      });
+
+  };
+  
   const handleChangePage = (event:any, newPage:any) => {
     setPage(newPage);
   };
@@ -240,7 +257,7 @@ const CreateUserMatch: React.FC = () => {
       setOpenEditDialog(true)
     }
     else{
-      console.log(2)
+      await ApproveUserMatch(`/UserMatch/Approve/${Usermatch.UserMatch_id_user_match}`,token, "Cancel")
     //   setOpenDialog(true)
     //   setdialog({
     //     header: "Delete",
@@ -265,7 +282,6 @@ const handleOnEditSubmit=async(data:any)=>{
 const ComponentUserMatch= async (token:string) => {
   setlistusermatch(await getRequestRent("/Usermatch/GetRequestRent",token));
   setlistassets(await getRentMatch("/Match/SelectRentMatch",token));
-  console.log(await getRequestRent("/Usermatch/GetRequestRent",token))
 }
 
   useEffect(() => {
@@ -321,7 +337,7 @@ const ComponentUserMatch= async (token:string) => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Match_sum_used_time, UserMatch_datetime, UserMatch_status_user_match }:any = row;
+                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Match_sum_used_time, UserMatch_datetime, UserMatch_status_user_match,Match_id_match,Asset_expire_hour }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
 
                     return (
@@ -345,20 +361,47 @@ const ComponentUserMatch= async (token:string) => {
                             />
                         </TableCell>
 
-                        <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
+                        <TableCell align="center">{formatTime((Asset_expire_hour*(1000*60*60))-Match_sum_used_time)}</TableCell>
+
+                        <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
                         <TableCell align="center">{UserMatch_status_user_match}</TableCell>
 
-                        <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
-                        {UserMatch_status_user_match !== "Reject" &&
+                        {UserMatch_status_user_match === "Wait for Approve" &&
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
                         }
+                        {UserMatch_status_user_match === "Approve" &&
+                        <TableCell align="left">
+                          <Button variant="contained" size="small" onClick={()=>handleClickstate(UserMatch_id_user_match,Match_id_match)}>
+                            Return Asset
+                          </Button>
+                        </TableCell>
+                        }
                         {UserMatch_status_user_match === "Reject" &&
-                        <TableCell align="right"/>
+                        <TableCell align="left">
+                          <Box sx={{marginLeft:4}}>
+                           <Iconify  sx={{width:35,height:35,color:'red'}} icon={"material-symbols:cancel-outline-rounded"}/>
+                          </Box>
+                        </TableCell>
+                        }
+                        {UserMatch_status_user_match === "Return" &&
+                        <TableCell align="left">
+                          <Box sx={{marginLeft:4}}>
+                          <Iconify sx={{width:35,height:35,color:'green'}} icon={"line-md:circle-to-confirm-circle-transition"}/>
+                          </Box>
+                        </TableCell>
+                        }
+                        {UserMatch_status_user_match === "Cancel" &&
+                        <TableCell align="left">
+                          <Box sx={{marginLeft:4}}>
+                          <Iconify sx={{width:35,height:35,color:'red'}} icon={"material-symbols:cancel-schedule-send-outline-rounded"}/>
+                          </Box>
+                        </TableCell>
+
                         }
                         
                       </TableRow>
@@ -432,10 +475,9 @@ const ComponentUserMatch= async (token:string) => {
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
         </MenuItem>
-
         <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
-          Delete
+          <Iconify icon={"material-symbols:cancel-schedule-send-outline-rounded"} sx={{ mr: 2 }}/>
+          Cancel
         </MenuItem>
       </Popover>
 
@@ -688,6 +730,37 @@ const ComponentUserMatch= async (token:string) => {
              </CardActions>
             </Box>
           </DialogContent>
+        </Dialog>
+
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+          sx={{
+            "& .MuiDialog-container": {
+              "& .MuiPaper-root": {
+                width: "100%",
+                maxWidth: "500px",  // Set your width here
+              },
+            },
+          }}
+        >
+          <DialogTitle id="alert-dialog-title">{dialog.header}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {dialog.body}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button
+              onClick={Agree}
+              autoFocus
+            >
+              Return
+            </Button>
+          </DialogActions>
         </Dialog>
 
         <Snackbar

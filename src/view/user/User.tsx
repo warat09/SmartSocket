@@ -295,12 +295,6 @@ const myHelper:any = {
     if(menu === 1){
       reset({})
       setOpenEditDialog(true)
-      // setdialog({
-      //   header: "Approve",
-      //   body: `Do you want Delete User?`,
-      //   id: 0,
-      //   status: 0,
-      // });
     }
     else{
       setOpenDialog(true)
