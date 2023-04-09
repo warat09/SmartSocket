@@ -9,6 +9,7 @@ router.get('/GetRequestRent', controller.GetRequestRent);
 router.get('/GetApprove', controller.GetApprove);
 router.get('/AllUsermatch', controller.GetAllUsermatch);
 router.put('/AllUsermatch/:id',controller.UpdateUsermatch)
+router.put('/ReturnAssets/:id',controller.ReturnAssets)
 router.patch('/Approve/:id',controller.UpdateStatusApprove);
 
 export = router;

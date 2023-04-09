@@ -6,6 +6,7 @@ import {Maintenance_Assets} from "../entity/Maintenance"
 
 interface Maintenance{
     Match_id_match:number,
+    Match_status_rent:string,
     Asset_name:string,
     Asset_expire_hour: number,
     Match_sum_used_time:number
@@ -31,6 +32,7 @@ const GetAllMaintenance = async (req: Request, res: Response, next: NextFunction
         });
         let obj:Maintenance = {
             Match_id_match: AllMatching[index].Match_id_match,
+            Match_status_rent: AllMatching[index].Match_status_rent,
             Asset_name:AllMatching[index].Asset_name_assets,
             Asset_expire_hour: Number(AllMatching[index].Asset_expire_hour*(36*(10**5))),
             Match_sum_used_time:(AllMatching[index].Asset_expire_hour*(1000*60*60))-AllMatching[index].Match_sum_used_time,

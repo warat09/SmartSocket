@@ -53,7 +53,7 @@ const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => 
     // const SelectDistanceRent = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('mac_address').distinct(true).where('Match.status_rent = :status', {status:"Rent"}).getQuery();
     const GetRentMatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Match.id_match NOT IN (${SelectIdMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
+    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Asset.maintenance = 0 AND Match.id_match NOT IN (${SelectIdMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
     res.json(GetRentMatch)
 };
 

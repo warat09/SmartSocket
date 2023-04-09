@@ -77,6 +77,7 @@ const GetAllUsermatch = async(req:Request,  res: Response, next: NextFunction) =
             id_match:true
         }
     })
+    console.log(AllUser)
     return res.status(200).json({status:1,data: AllUser});
 }
 
@@ -136,4 +137,23 @@ const UpdateUsermatch = async(req:Request,  res: Response, next: NextFunction) =
     return res.status(200).json({status:1,message: "Update Success"});        
 }
 
-export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove,UpdateUsermatch};
+const ReturnAssets = async(req:Request,res: Response, next: NextFunction) => {
+    await AppDataSource
+    .createQueryBuilder()
+    .update(Match)
+    .set({
+        status_rent : "Available"
+    })
+    .where("id_match = :id", { id: req.body.id_match }).execute().finally(async()=>{
+        AppDataSource
+        .createQueryBuilder()
+        .update(User_match)
+        .set({
+            status_user_match : "Return"
+        })
+        .where("id_user_match = :id", { id: req.params.id }).execute()
+    })
+    return res.status(200).json({status:1,message:"Return Asset Success"})
+}
+
+export default {AddUsermatch,GetAllUsermatch,GetRequestRent,GetApprove,UpdateStatusApprove,UpdateUsermatch,ReturnAssets};

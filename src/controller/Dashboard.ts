@@ -40,7 +40,7 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
     .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
     .select(['departure','COUNT(departure) AS total'])
-    .where(`Match.status_rent = :status_rent`, {status_rent: "Rent"})
+    .where(`Match.status_rent = :status_rent AND Usermatch.status_user_match = :status_user_match`, {status_rent: "Rent",status_user_match:"Approve"})
     .groupBy('departure').getRawMany();
 
     const mountmaintenancing = await AppDataSource.getRepository(Maintenance_Assets).createQueryBuilder('Maintenance')

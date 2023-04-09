@@ -77,6 +77,7 @@ const UpdateStatusAsset = async(req:Request,  res: Response, next: NextFunction)
 }
 
 const GetAllAsset = async(req:Request,  res: Response, next: NextFunction) => {
+    const cleandata = [];
     const AllAssets = await AppDataSource.getRepository(Assets).find({
         relations: {
             rfid_address:true
@@ -85,7 +86,19 @@ const GetAllAsset = async(req:Request,  res: Response, next: NextFunction) => {
             status_assets:"Active"
         }
     })
-    res.json(AllAssets)
+    AllAssets.map((value)=>{
+        const obj = {
+            id_assets:value.id_assets,
+            name_assets:value.name_assets,
+            expire_hour:value.expire_hour,
+            status_assets:value.status_assets,
+            maintenance:value.maintenance,
+            date_assets:value.date_assets,
+            rfid_address:value.rfid_address.rfid_address
+        }
+        cleandata.push(obj)
+    })
+    res.json(cleandata)
 };
 
 export default {AddAsset,GetAllAsset,GetMatchAsset,UpdateAsset, UpdateStatusAsset};
