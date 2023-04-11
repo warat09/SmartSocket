@@ -53,7 +53,7 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
         const RequestRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
-            .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
+            .where(`UserMa  tch.id_user = :id_user`, {id_user: Userdata[0].id_user})
             .getRawMany();
             // const cleandata = []
             // RequestRent.map(async(v,i)=>{
