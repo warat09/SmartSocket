@@ -55,17 +55,48 @@ const GetRequestRent =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Assets, 'Asset', 'Match.id_assets = Asset.id_assets')
             .where(`UserMatch.id_user = :id_user`, {id_user: Userdata[0].id_user})
             .getRawMany();
-            // const cleandata = []
-            // RequestRent.map(async(v,i)=>{
-            //     const TotalSum = await AppDataSource.getRepository(Node_Transaction).createQueryBuilder('Transaction').select('SUM(Transaction.time_used) AS totaltime')
-            //     .where(`Transaction.id_user_match  = :id_user_match`, {id_user_match: 1}).getRawMany();
-            //     const obj = {
-            //         Total:TotalSum
-            //     }
-            //     cleandata.push(obj)
-            // })
-            // console.log(cleandata)
-            return res.status(200).json(RequestRent);
+        const SumTransaction = await AppDataSource.getRepository(Node_Transaction).createQueryBuilder('Transaction')
+            .select('Transaction.id_user_match')
+            .addSelect('SUM(Transaction.time_used)','TotalTime')
+            .innerJoinAndSelect(User_match,'UserMatch','UserMatch.id_user_match = Transaction.id_user_match')
+            .groupBy('Transaction.id_user_match').getRawMany();
+        console.log("RRRRRRRRRRRRRRRRR",RequestRent)
+        console.log("ssssssssssssssssssss",SumTransaction)
+            const cleandata = []
+            RequestRent.map((v,i)=>{
+                let obj = {}
+                const findobj = SumTransaction.find(o => o.Transaction_id_user_match === v.UserMatch_id_user_match)
+                if(findobj === undefined){
+                    obj = {
+                        UserMatch_id_user_match : v.UserMatch_id_user_match,
+                        Asset_name_assets : v.Asset_name_assets,
+                        UserMatch_room: v.UserMatch_room ,
+                        UserMatch_floor: v.UserMatch_floor, 
+                        UserMatch_description:v.UserMatch_description, 
+                        UserMatch_datetime: v.UserMatch_datetime, 
+                        UserMatch_status_user_match: v.UserMatch_status_user_match,
+                        Match_id_match: v.Match_id_match,
+                        Asset_expire_hour:v.Asset_expire_hour,
+                        TotalTime:0
+                    }
+                }
+                else{
+                    obj = {
+                        UserMatch_id_user_match : v.UserMatch_id_user_match,
+                        Asset_name_assets : v.Asset_name_assets,
+                        UserMatch_room: v.UserMatch_room ,
+                        UserMatch_floor: v.UserMatch_floor, 
+                        UserMatch_description:v.UserMatch_description, 
+                        UserMatch_datetime: v.UserMatch_datetime, 
+                        UserMatch_status_user_match: v.UserMatch_status_user_match,
+                        Match_id_match: v.Match_id_match,
+                        Asset_expire_hour:v.Asset_expire_hour,
+                        Totaltime:findobj.TotalTime
+                    }
+                }
+            cleandata.push(obj)    
+            })
+            return res.status(200).json(cleandata);
     }
     else{
         return res.status(404).json({status:0,message: "This User Not Found"});
@@ -76,7 +107,7 @@ const GetApprove =async(req:Request, res:Response, next:NextFunction)=>{
             .innerJoinAndSelect(Match, 'Match', 'UserMatch.id_match = Match.id_match')
             .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
             .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-            .where(`UserMatch.status_user_match = :status`, {status: "Wait for Approve"}).getRawMany();   
+            .where(`UserMatch.status_user_match = :status OR UserMatch.status_user_match = :status_rent`, {status: "Wait for Approve",status_rent:"Wait for Approve Return"}).getRawMany();   
             console.log("checkApprove:",RequestRent)    
             return res.status(200).json(RequestRent);
 }
