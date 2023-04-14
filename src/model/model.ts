@@ -84,6 +84,7 @@ export interface Assets {
     Match_sum_used_time?: string;
     UserMatch_datetime?:string;
     UserMatch_status_user_match?:string;
+    total_time_used?:number;
   }
   export interface MatchRentSelection {
     Asset_name_assets?: string;

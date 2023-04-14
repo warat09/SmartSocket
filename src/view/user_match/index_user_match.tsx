@@ -337,7 +337,7 @@ const ComponentUserMatch= async (token:string) => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Match_sum_used_time, UserMatch_datetime, UserMatch_status_user_match,Match_id_match,Asset_expire_hour }:any = row;
+                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Totaltime, UserMatch_datetime, UserMatch_status_user_match,Match_id_match,Asset_expire_hour }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
 
                     return (
@@ -361,7 +361,7 @@ const ComponentUserMatch= async (token:string) => {
                             />
                         </TableCell>
 
-                        <TableCell align="center">{formatTime((Asset_expire_hour*(1000*60*60))-Match_sum_used_time)}</TableCell>
+                        <TableCell align="center">{formatTime(Number(Totaltime))}</TableCell>
 
                         <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 

@@ -2,7 +2,7 @@ import axios from 'axios';
 import Nav from '../components/Siderbar/NewSidebar';
 import path from 'path';
 
-const api = "http://localhost:9090";
+const api = "http://mistersigz.thddns.net:7572";
 
 export const login = async(path:string,email:string,password:string) => {
   try{
