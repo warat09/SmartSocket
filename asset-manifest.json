@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.js": "/SmartSocket/static/js/main.aa9fd66b.js",
-    "static/js/844.e220e506.chunk.js": "/SmartSocket/static/js/844.e220e506.chunk.js",
+    "main.js": "/SmartSocket/static/js/main.83c727f7.js",
+    "static/js/844.087b2aad.chunk.js": "/SmartSocket/static/js/844.087b2aad.chunk.js",
     "static/js/787.c94b16bf.chunk.js": "/SmartSocket/static/js/787.c94b16bf.chunk.js",
     "static/js/292.83eedae2.chunk.js": "/SmartSocket/static/js/292.83eedae2.chunk.js",
     "static/js/845.46e67164.chunk.js": "/SmartSocket/static/js/845.46e67164.chunk.js",
@@ -17,8 +17,8 @@
     "static/js/436.b64e446b.chunk.js": "/SmartSocket/static/js/436.b64e446b.chunk.js",
     "static/js/857.40713657.chunk.js": "/SmartSocket/static/js/857.40713657.chunk.js",
     "index.html": "/SmartSocket/index.html",
-    "main.aa9fd66b.js.map": "/SmartSocket/static/js/main.aa9fd66b.js.map",
-    "844.e220e506.chunk.js.map": "/SmartSocket/static/js/844.e220e506.chunk.js.map",
+    "main.83c727f7.js.map": "/SmartSocket/static/js/main.83c727f7.js.map",
+    "844.087b2aad.chunk.js.map": "/SmartSocket/static/js/844.087b2aad.chunk.js.map",
     "787.c94b16bf.chunk.js.map": "/SmartSocket/static/js/787.c94b16bf.chunk.js.map",
     "292.83eedae2.chunk.js.map": "/SmartSocket/static/js/292.83eedae2.chunk.js.map",
     "845.46e67164.chunk.js.map": "/SmartSocket/static/js/845.46e67164.chunk.js.map",
@@ -35,6 +35,6 @@
     "857.40713657.chunk.js.map": "/SmartSocket/static/js/857.40713657.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/main.aa9fd66b.js"
+    "static/js/main.83c727f7.js"
   ]
 }
