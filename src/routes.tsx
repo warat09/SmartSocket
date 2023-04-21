@@ -1,5 +1,5 @@
-import {Suspense,lazy,useEffect,useState} from 'react';
-import { Navigate, useRoutes, Route, Routes } from 'react-router-dom';
+import {Suspense,lazy} from 'react';
+import { Navigate, useRoutes } from 'react-router-dom';
 import LayoutAdmin from './layouts/app/adminlayout';
 import LayoutUser from './layouts/app/userlayout';
 import NotFoundLayout from './layouts/404/index'
@@ -51,7 +51,7 @@ const Router: React.FC =()=> {
             index:true
         },
         {
-            path: '/app/admin',
+            path: 'app/admin',
             element: <LayoutAdmin />,
             children: [
               { path: 'dashboard',element: 
@@ -123,8 +123,8 @@ const Router: React.FC =()=> {
               }
             ],
           },
-          { path: '/app/personnel', 
-            element: <LayoutUser /> ,
+          { path: 'app/personnel', 
+            element: <LayoutUser /> , 
             children: [
               { element: <Navigate to="/app/personnel/borrow" />, index: true },
               { path: 'borrow', element: 

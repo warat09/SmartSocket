@@ -15,7 +15,7 @@ const Home: React.FC = () => {
       const user = JSON.parse(item);
       Checktoken("/User/CheckToken",user.token).then((response) => {
         if(response.data.role === "admin"){
-          navigate("/app/admin/dashboard")
+          navigate("/SmartSocket/app/admin/dashboard")
         }
         else{
           navigate("/app/personnel")

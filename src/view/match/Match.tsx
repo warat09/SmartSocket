@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { useNavigate } from "react-router-dom";
 import { MatchAsset, Matching, NodeSelection ,Node } from "../../model/model";
-import { SelectMatchNode, addMatching, getMatchAssets, getMatching, getNode, updateMatching, updateStatusMatch } from "../../services/apiservice";
+import { SelectMatchNode, addMatching, getMatchAssets, getMatching, getNode, updateMatching, updateStatusMatch, AddMatchMaintenance } from "../../services/apiservice";
 import Iconify from "../../components/iconify/Iconify";
 import {
   Typography,
@@ -151,13 +151,14 @@ const HomeMatch: React.FC = () => {
     }
   };
 
-  const handleOpenMenu = (event:any,Match_id_match:string,Asset_name_assets:string,Match_mac_address:string,Match_room:string,Match_floor:string) => {
+  const handleOpenMenu = (event:any,Match_id_match:string,Asset_name_assets:string,Match_mac_address:string,Match_room:string,Match_floor:string,Match_status_rent:string) => {
     setMatching({
       Match_id_match:Match_id_match,
       Asset_name_assets:Asset_name_assets,
       Match_mac_address:Match_mac_address,
       Match_room:Match_room,
-      Match_floor:Match_floor
+      Match_floor:Match_floor,
+      Match_status_rent:Match_status_rent
     })
     setOpen(event.currentTarget);
   };
@@ -245,6 +246,15 @@ const HomeMatch: React.FC = () => {
       reset({})
       setOpenEditDialog(true)
     }
+    else if(menu === 2){
+      setOpenDialog(true)
+      setdialog({
+        header: "Maintenance",
+        body: `Are you sure send asset to maintenance?`,
+        id: 1,
+        status: 0,
+      });
+    }
     else{
       console.log(2)
       setOpenDialog(true)
@@ -258,7 +268,12 @@ const HomeMatch: React.FC = () => {
   };
 
   const Agree = async() => {
-    await updateStatusMatch(`/Match/AllMatching/${Matching.Match_id_match}`,Token);
+    if(dialog.id === 0){
+      await updateStatusMatch(`/Match/AllMatching/${Matching.Match_id_match}`,Token);
+    }else{
+      await AddMatchMaintenance(`/Maintenance/AddMatchMaintenance`,Token,Matching.Match_id_match);
+      // console.log(dialog.id,Matching.Match_id_match)
+    }
   }
 
   const ComponentMatch= async (token:string) => {
@@ -354,7 +369,7 @@ const HomeMatch: React.FC = () => {
                         <TableCell align="center">{Match_status_rent}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,Match_id_match,Asset_name_assets,Match_mac_address,Match_room,Match_floor)}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,Match_id_match,Asset_name_assets,Match_mac_address,Match_room,Match_floor,Match_status_rent)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -395,19 +410,7 @@ const HomeMatch: React.FC = () => {
             </TableContainer>
           </Scrollbar>
 
-          <TablePagination
-            rowsPerPageOptions={[5, 10, 25]}
-            component="div"
-            count={listmatching.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onPageChange={handleChangePage}
-            onRowsPerPageChange={handleChangeRowsPerPage}
-          />
-        </Card>
-      </Container>
-
-      <Popover
+          <Popover
         open={Boolean(open)}
         anchorEl={open}
         onClose={handleCloseMenu}
@@ -425,6 +428,12 @@ const HomeMatch: React.FC = () => {
           },
         }}
       >
+        {Matching.Match_status_rent === "Available" &&
+          <MenuItem onClick={()=>handlemenu(2)} sx={{ color: 'warning.main' }}>
+            <Iconify icon={"wpf:maintenance"} sx={{ mr: 1 }}/>
+            Maintenance
+          </MenuItem>
+        }
         <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
@@ -435,6 +444,20 @@ const HomeMatch: React.FC = () => {
           Delete
         </MenuItem>
       </Popover>
+
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={listmatching.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Card>
+      </Container>
+
+      
 
       <Dialog
           open={openDialog}

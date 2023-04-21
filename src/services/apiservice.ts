@@ -593,6 +593,25 @@ export const AddStatusMaintenance = async(path:string,token:string,status_mainte
       // return null;
   }
 }
+export const AddMatchMaintenance = async(path:string,token:string,id_match:string)=>{
+  try{
+    const attibute_matchnode = {id_match};
+    const response = await axios.post(api+path,attibute_matchnode,{
+      headers:{
+        Authorization: `Bearer ${token}`
+      }
+    })
+    window.history.pushState({open:1,message:response.data.message},"Success","/app/admin/maintenance");
+    window.location.reload();
+    return response.data;
+  }
+  catch(err){
+      // localStorage.clear();
+      // window.history.pushState({},"Error","/login");
+      // window.location.reload();
+      // return null;
+  }
+}
 //Transaction
 export const getTransaction =async(path:string,token:string)=> {
   try{
