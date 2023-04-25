@@ -4,6 +4,7 @@ import { Checktoken } from './services/apiservice';
 import Loading from './components/Loading';
 import { Helmet } from 'react-helmet-async';
 import ThemeProvider from './theme';
+import { HashRouter } from 'react-router-dom';
 
 const Router = lazy( () => {
   return Promise.all([
@@ -20,7 +21,7 @@ const App: React.FC =()=> {
     
     <ThemeProvider>
       <Helmet>
-        <style>{"body { background-color: #F5F6F8; }"}</style>
+        <style>{"body { background-color: #f2f5f9; }"}</style>
       </Helmet>
       <Suspense fallback={<Loading/>}>
         <Router />

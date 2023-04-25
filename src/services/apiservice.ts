@@ -1,6 +1,4 @@
 import axios from 'axios';
-import Nav from '../components/Siderbar/NewSidebar';
-import path from 'path';
 
 const api = "http://mistersigz.thddns.net:7572";
 
@@ -19,7 +17,7 @@ export const login = async(path:string,email:string,password:string) => {
   }
   catch(err){
     localStorage.clear();
-    window.history.pushState({open:1,message:"Email or passwort incorrect",status:"error"},"Error","/login");
+    window.history.pushState({open:1,message:"Email or password incorrect",status:"error"},"Error","/login");
     window.location.reload();
     return null;
   }
@@ -365,9 +363,9 @@ export const getRentMatch = async (path:string,token:string):Promise<any> => {
   }
 };
 
-export const addMatching=async (path:string,token:string,id_assets:string,mac_address:string,room:string,floor:string)=>{
+export const addMatching=async (path:string,token:string,id_assets:string,mac_address:string)=>{
   try{
-    const attibute_match = { id_assets, mac_address ,room ,floor };
+    const attibute_match = { id_assets, mac_address};
     const response = await axios.post(api+path,attibute_match,{
       headers:{
         Authorization: `Bearer ${token}`
@@ -437,14 +435,13 @@ export const updateStatusMatch = async (path:string,token:string) =>{
       return null;
   }
 }
-export const updateMatching = async (path:string,token:string,asset:string,node:string,room:string,floor:string) => {
+export const updateMatching = async (path:string,token:string,asset:string,node:string) => {
   try{
-    const response = await axios.put(api+path,{asset,node,room,floor}
-      ,{
-      headers:{
-        Authorization: `Bearer ${token}`
+    const response = await axios.put(api+path,{asset,node},{
+        headers:{
+          Authorization: `Bearer ${token}`
+        }
       }
-    }
     )
     window.history.pushState({open:1,message:response.data.message},"Success","/app/admin/match");
     window.location.reload();
@@ -554,9 +551,8 @@ export const getApprove = async (path:string,token:any) => {
   }
 };
 
-export const ApproveUserMatch = async (path:string,token:string,status_Approve:string) => {
+export const ApproveUserMatch = async (path:string,token:string,attibute_approveuser_match:object) => {
   try{
-    const attibute_approveuser_match={UserMatch_status_user_match:status_Approve}
     const response = await axios.patch(api+path,attibute_approveuser_match,{
       headers:{
         Authorization: `Bearer ${token}`

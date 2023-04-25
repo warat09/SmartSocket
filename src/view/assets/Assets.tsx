@@ -39,19 +39,21 @@ import {
   Snackbar,
   Alert,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Avatar
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import { Controller, useForm } from "react-hook-form";
+import PageTitleWrapper from "../../components/PageTitleWrapper"
 
 const TABLE_HEAD = [
-  { id: 'name_assets', label: 'Assets', alignRight: false },
-  { id: 'rfid_address', label: 'Rfid Address', alignRight: false },
-  { id: 'expire_hour', label: 'Expired', alignRight: false },
-  { id: 'date_assets', label: 'Date', alignRight: false },
-  { id: 'maintenance', label: 'Maintenance', alignRight: false },
+  { id: 'name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
+  { id: 'rfid_address', label: 'แอดเดรสอาร์เอฟไอดี', alignRight: false },
+  { id: 'expire_hour', label: 'เวลาบำรุงรักษา(ชั่วโมง)', alignRight: false },
+  { id: 'date_assets', label: 'วันที่-เวลา', alignRight: false },
+  // { id: 'maintenance', label: 'Maintenance', alignRight: false },
   { id: '' },
 ];
 
@@ -249,8 +251,8 @@ const HomeAsset: React.FC = () => {
     else{
       setOpenDialog(true)
       setdialog({
-        header: "Delete",
-        body: `Are you sure want to delete?`,
+        header: "ปิดการใช้งาน",
+        body: `คุณแน่ใจว่าจะปิดการใช้งานอุปกรณ์ ${Asset.name_assets}?`,
         id: 0,
         status: 0,
       });
@@ -296,16 +298,33 @@ const handleOnEditSubmit=async(data:any)=>{
       <Helmet>
           <title> Asset: List | SmartSocket </title>
       </Helmet>
+      
       <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
-          <Typography variant="h4" gutterBottom>
-            Asset List
-          </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
-            New Asset
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"ri:plug-2-line"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              อุปกรณ์
+            </Typography>
+            <Typography variant="subtitle2">
+              สร้างอุปกรณ์และกำหนดเวลาบำรุงรักษา
+            </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            sx={{ mt: { xs: 2, md: 0 } }}
+            variant="contained"
+            startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>}
+            onClick={() => setOpenNewDialog(true)}
+          >
+            เพิ่มอุปกรณ์
           </Button>
-      </Stack>
-      <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -333,11 +352,11 @@ const handleOnEditSubmit=async(data:any)=>{
 
                         <TableCell align="center">{rfid_address}</TableCell>
 
-                        <TableCell align="center">{expire_hour} Hour</TableCell>
+                        <TableCell align="center">{expire_hour} ชั่วโมง</TableCell>
 
                         <TableCell align="center">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell>
+                        {/* <TableCell align="center">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell> */}
 
                         <TableCell align="right">
                           <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,id_assets,name_assets,expire_hour,rfid_address)}>
@@ -413,12 +432,12 @@ const handleOnEditSubmit=async(data:any)=>{
       >
         <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
-          Edit
+          แก้ไข
         </MenuItem>
 
         <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
-          Delete
+          <Iconify icon={"fe:disabled"} sx={{ mr: 2 }}/>
+          ปิดใช้งาน
         </MenuItem>
       </Popover>
 
@@ -443,12 +462,12 @@ const handleOnEditSubmit=async(data:any)=>{
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
               onClick={Agree}
               autoFocus
             >
-              Agree
+              ปิดการใช้งาน
             </Button>
           </DialogActions>
         </Dialog>
@@ -469,8 +488,8 @@ const handleOnEditSubmit=async(data:any)=>{
           }}
         >
           <DialogTitle id="form-dialog-title">
-            <Typography variant="h3" gutterBottom>
-                Create a Asset
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+            สร้างอุปกรณ์
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -489,7 +508,7 @@ const handleOnEditSubmit=async(data:any)=>{
               render={({ field, fieldState: { error } }) => (
                 <TextField
                 {...field}
-                label="Name Assets"
+                label="ชื่ออุปกรณ์"
                 type="text"
                 error={error !== undefined}
                 helperText={error ? myHelper.asset[error.type] : ""}
@@ -506,12 +525,12 @@ const handleOnEditSubmit=async(data:any)=>{
               }}
               render={({ field, fieldState: { error } }) => (
                 <FormControl error={error !== undefined} fullWidth>
-                <InputLabel id="demo-simple-select-label">Rfid</InputLabel>
+                <InputLabel  id="demo-simple-select-label">แอดเดรสอาร์เอฟไอดี</InputLabel>
                   <Select 
                   {...field}
                   fullWidth
                   labelId="demo-simple-select-label"
-                  label="Rfid"
+                  label="แอดเดรสอาร์เอฟไอดี"
                   error={error !== undefined}
                    >
                     <MenuItem
@@ -535,7 +554,7 @@ const handleOnEditSubmit=async(data:any)=>{
               )}
             />
 
-          <Controller
+          {/* <Controller
               control={control}
               name="expirehour"
               defaultValue=""
@@ -547,10 +566,63 @@ const handleOnEditSubmit=async(data:any)=>{
                   {...field}
                   type="number"
                   fullWidth
-                  label="Expiration time"
+                  label="เวลาบำรุงรักษา"
                   error={error !== undefined}
                   helperText={error ? myHelper.expiration[error.type] : ""}
                 />
+              )}
+            /> */}
+            <Controller
+              control={control}
+              name="expirehour"
+              defaultValue=""
+              rules={{
+                required: true
+              }}
+              render={({ field, fieldState: { error } }) => (
+                <FormControl error={error !== undefined} fullWidth>
+                <InputLabel  id="demo-simple-select-label">เวลาบำรุงรักษา</InputLabel>
+                  <Select 
+                  {...field}
+                  fullWidth
+                  labelId="demo-simple-select-label"
+                  label="เวลาบำรุงรักษา"
+                  error={error !== undefined}
+                   >
+                    <MenuItem
+                      value=""
+                    >
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem
+                      value="8760"
+                    >
+                      <p>1 ปี</p>
+                    </MenuItem>
+                    <MenuItem
+                      value="17520"
+                    >
+                      <p>2 ปี</p>
+                    </MenuItem>
+                    <MenuItem
+                      value="26280"
+                    >
+                      <p>3 ปี</p>
+                    </MenuItem>
+                    <MenuItem
+                      value="35040"
+                    >
+                      <p>4 ปี</p>
+                    </MenuItem>
+                    <MenuItem
+                      value="43800"
+                    >
+                      <p>5 ปี</p>
+                    </MenuItem>
+                
+                   </Select>
+                <FormHelperText>{error ? myHelper.expiration[error.type] : ""}</FormHelperText>
+                </FormControl>
               )}
             />
           </Stack>
@@ -559,7 +631,7 @@ const handleOnEditSubmit=async(data:any)=>{
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Create a new user
+                  สร้างอุปกรณ์
                 </Button>
              </CardActions>
             </Box>
@@ -584,7 +656,7 @@ const handleOnEditSubmit=async(data:any)=>{
         >
           <DialogTitle id="form-dialog-title">
             <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
-                Edit Asset
+                แก้ไขอุปกรณ์
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -604,7 +676,7 @@ const handleOnEditSubmit=async(data:any)=>{
                           defaultValue={Asset.name}
                           type="text"
                           fullWidth
-                          label="Name Assets"
+                          label="ชื่ออุปกรณ์"
                           error={error !== undefined}
                           helperText={error ? myHelper.assets[error.type] : ""}
                           {...field}
@@ -624,7 +696,7 @@ const handleOnEditSubmit=async(data:any)=>{
                           defaultValue={Asset.expire_hour}
                           type="text"
                           fullWidth
-                          label="Expiration time (hr)"
+                          label="เวลาบำรุงรักษา (ชั่วโมง)"
                           error={error !== undefined}
                           helperText={error ? myHelper.expiration[error.type] : ""}
                           {...field}
@@ -641,12 +713,12 @@ const handleOnEditSubmit=async(data:any)=>{
               }}
               render={({ field, fieldState: { error } }) => (
                 <FormControl error={error !== undefined} fullWidth>
-                <InputLabel id="demo-simple-select-label">Rfid</InputLabel>
+                <InputLabel id="demo-simple-select-label">แอดเดรสอาร์เอฟไอดี</InputLabel>
                   <Select 
                   {...field}
                   fullWidth
                   labelId="demo-simple-select-label"
-                  label="Rfid"
+                  label="แอดเดรสอาร์เอฟไอดี"
                   defaultValue={Asset.rfid_address}
                   error={error !== undefined}
                    >
@@ -682,7 +754,7 @@ const handleOnEditSubmit=async(data:any)=>{
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Save Changes
+                บันทึกการเปลี่ยนแปลง
                 </Button>
              </CardActions>
             </Box>

@@ -24,18 +24,20 @@ import {Table,TableBody,
   DialogActions,
   Button,
   Snackbar,
-  Alert
+  Alert,
+  Avatar,
+  Grid
 } from "@mui/material"
 import {getNode, updateStatusNode} from '../../services/apiservice'
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import Iconify from "../../components/iconify/Iconify";
+import PageTitleWrapper from "../../components/PageTitleWrapper";
 
 const TABLE_HEAD = [
-  { id: 'mac_address', label: 'M.A.C Addreess', alignRight: false },
-  { id: 'ip', label: 'i.p.', alignRight: false },
-  { id: 'date_node', label: 'Date', alignRight: false },
-  { id: 'status_node', label: 'status_node', alignRight: false },
+  { id: 'mac_address', label: 'แอดเดรสเต้าเสียบ', alignRight: false },
+  { id: 'date_node', label: 'วันที่-เวลา', alignRight: false },
+  { id: 'status_node', label: 'สถาณะ', alignRight: false },
   { id: '' },
 ];
 
@@ -122,8 +124,8 @@ const HomeNode: React.FC = () => {
     setMac_address(mac_address)
     setOpenDialog(true)
       setdialog({
-        header: "Disable",
-        body: `Are you sure want to disable ${mac_address}?`,
+        header: "ปิดการใช้งาน",
+        body: `คุณแน่ใจว่าจะปิดการใช้งาน ${mac_address}?`,
         id: 0,
         status: 0,
       });
@@ -213,13 +215,24 @@ const HomeNode: React.FC = () => {
   return (
     <>
       <Helmet>
-            <title> Node | SmartSocket </title>
+            <title> Socket | SmartSocket </title>
       </Helmet>
       <Container>
-        <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
-          Socket List
-        </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"mdi:plug-socket-au"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              เต้าเสียบ
+            </Typography>
+            <Typography variant="subtitle2">
+              ข้อมูลทุกๆเต้าเสียบที่มีการใช้งาน
+            </Typography>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -247,16 +260,14 @@ const HomeNode: React.FC = () => {
                         </TableCell> */}
 
                         <TableCell align="center">{mac_address}</TableCell>
-
-                        <TableCell align="center">{ip}</TableCell>
                         
                         <TableCell align="center">{new Date(date_node).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{status_node}</TableCell>
+                        <TableCell align="center">{status_node === "Enable" && "เปิดใช้งาน"}</TableCell>
 
                         <TableCell align="center">
                           <IconButton size="large" color="inherit" onClick={(event)=>handleOpenMenu(event,mac_address)}>
-                            <Iconify icon={"fe:disabled"}/>
+                            <Iconify icon={"fe:disabled"} sx={{color:'red'}}/>
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -328,12 +339,12 @@ const HomeNode: React.FC = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
               onClick={Agree}
               autoFocus
             >
-              Agree
+              ปิดการใช้งาน
             </Button>
           </DialogActions>
         </Dialog>

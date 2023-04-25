@@ -8,6 +8,7 @@ import {
     CardActions,
     CardHeader,
     Divider,
+    Paper,
     SvgIcon,
     Table,
     TableBody,
@@ -37,13 +38,13 @@ import formatTime from '../../caltime/millisectohms';
               <TableHead>
                 <TableRow>
                   <TableCell>
-                    Assets
+                    ชื่ออุปกรณ์
                   </TableCell>
                   <TableCell>
-                    Remaining time
+                    เวลาที่เหลือในการบำรุงรักษา
                   </TableCell>
                   <TableCell sortDirection="desc">
-                    Date
+                    วันที่-เวลา
                   </TableCell>
                   {/* <TableCell>
                     Status
@@ -75,6 +76,24 @@ import formatTime from '../../caltime/millisectohms';
                   );
                 })}
               </TableBody>
+              {Object.values(orders).length === 0 && (
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="center" colSpan={3}>
+                        <Paper
+                          sx={{
+                            textAlign: 'center',
+                            display:"flex",
+                            justifyContent:"center",
+                            alignItems:"center",
+                          }}
+                        >
+                          <img src="/assets/illustrations/illustration_empty_content.svg"  height={300} width={300} />
+                        </Paper>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                )}
             </Table>
           </Box>
         {/* </Scrollbar> */}

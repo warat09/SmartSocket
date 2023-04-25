@@ -73,18 +73,18 @@ const useChartOptions = () => {
         show: true
       },
       categories: [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec'
+        'ม.ค.',
+        'ก.พ.',
+        'มี.ค.',
+        'เม.ย.',
+        'พ.ค.',
+        'มิ.ย.',
+        'ก.ค',
+        'ส.ค.',
+        'ก.ย.',
+        'ต.ค.',
+        '	พ.ย.',
+        '	ธ.ค.'
       ],
       labels: {
         offsetY: 5,
@@ -95,7 +95,7 @@ const useChartOptions = () => {
     },
     yaxis: {
       labels: {
-        formatter: (value:any) => (value > 0 ? `${value} Assets` : `${value}`),
+        formatter: (value:any) => (value > 0 ? `${value} อุปกรณ์` : `${value}`),
         offsetX: -10,
         style: {
           colors: theme.palette.text.secondary
@@ -113,7 +113,7 @@ export default function OverviewSales (props:any) {
   return (
     <Card sx={sx}>
       <CardHeader
-        title="Month Maintenance"
+        title="บำรุงรักษาประจำปี"
       />
       <CardContent>
         <Chart

@@ -39,22 +39,24 @@ import {
   Snackbar,
   Alert,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Avatar
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import { Controller, useForm } from "react-hook-form";
 import formatTime from "../../components/caltime/millisectohms"
+import PageTitleWrapper from "../../components/PageTitleWrapper";
 
 const TABLE_HEAD = [
-  { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
-  { id: 'UserMatch_room', label: 'Room', alignRight: false },
-  { id: 'UserMatch_floor', label: 'Floor', alignRight: false },
-  { id: 'UserMatch_description', label: 'Description', alignRight: false },
-  { id: 'Match_sum_used_time', label: 'Usetime', alignRight: false },
-  { id: 'UserMatch_datetime', label: 'Date', alignRight: false },
-  { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
+  { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
+  { id: 'UserMatch_room', label: 'ห้อง', alignRight: false },
+  { id: 'UserMatch_floor', label: 'ชั้น', alignRight: false },
+  { id: 'UserMatch_description', label: 'คำอธิบาย', alignRight: false },
+  { id: 'Match_sum_used_time', label: 'เวลาที่ใช้อุปกรณ์', alignRight: false },
+  { id: 'UserMatch_datetime', label: 'วันที่-เวลา', alignRight: false },
+  { id: 'UserMatch_status_user_match', label: 'สถาณะ', alignRight: false },
   { id: '' },
 ];
 
@@ -203,8 +205,8 @@ const CreateUserMatch: React.FC = () => {
     setOpenDialog(true)
     setUsermatch({id_usermatch:id_usermatch,id_match:id_match});
       setdialog({
-        header: "Return",
-        body: `Are you sure want to Return Asset?`,
+        header: "คืนอุปกรณ์",
+        body: `คุณแน่ใจว่าจะส่งมอบคืออุปกรณ์?`,
         id: 0,
         status: 0,
       });
@@ -257,7 +259,7 @@ const CreateUserMatch: React.FC = () => {
       setOpenEditDialog(true)
     }
     else{
-      await ApproveUserMatch(`/UserMatch/Approve/${Usermatch.UserMatch_id_user_match}`,token, "Cancel")
+      await ApproveUserMatch(`/UserMatch/Approve/${Usermatch.UserMatch_id_user_match}`,token, {status_Approve:"Cancel",status_user_match:"Wait for Approve"})
     //   setOpenDialog(true)
     //   setdialog({
     //     header: "Delete",
@@ -308,19 +310,42 @@ const ComponentUserMatch= async (token:string) => {
   return (
     <>
       <Helmet>
-          <title> User: List | SmartSocket </title>
+          <title> User | SmartSocket </title>
       </Helmet>
       <Container>
-      <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
+      {/* <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
           <Typography variant="h4" gutterBottom>
             UserMatch
           </Typography>
           <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
             Rent
           </Button>
-      </Stack>
-        <hr />
-        <br/>
+      </Stack> */}
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"icon-park-outline:add-computer"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              เบิกยืมอุปกรณ์
+            </Typography>
+            <Typography variant="subtitle2">
+              ทุกแง่มุมที่เกี่ยวข้องกับการเบิกยืมอุปกรณ์สามารถจัดการได้จากหน้านี้
+            </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            sx={{ mt: { xs: 2, md: 0 } }}
+            variant="contained"
+            startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>}
+            onClick={() => setOpenNewDialog(true)}
+          >
+            ยืมอุปกรณ์
+          </Button>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -337,7 +362,7 @@ const ComponentUserMatch= async (token:string) => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Totaltime, UserMatch_datetime, UserMatch_status_user_match,Match_id_match,Asset_expire_hour }:any = row;
+                    const { UserMatch_id_user_match,Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, Totaltime, UserMatch_datetime, UserMatch_status_user_match,Match_id_match }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
 
                     return (
@@ -357,7 +382,7 @@ const ComponentUserMatch= async (token:string) => {
                               type="text"
                               multiline
                               rows={2}
-                              defaultValue={UserMatch_description ? UserMatch_description : 'No Description'}
+                              defaultValue={UserMatch_description ? UserMatch_description : 'ไม่มีคำอธิบาย'}
                             />
                         </TableCell>
 
@@ -365,7 +390,23 @@ const ComponentUserMatch= async (token:string) => {
 
                         <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{UserMatch_status_user_match}</TableCell>
+                        <TableCell align="center">
+                          {UserMatch_status_user_match === "Wait for Approve" &&
+                            "รอการอนุมัติ"
+                          }
+                          {UserMatch_status_user_match === "Approve" &&
+                            "อนุมัติ"
+                          }
+                          {UserMatch_status_user_match === "Cancel" &&
+                            "ยกเลิกคำขอ"
+                          }
+                          {UserMatch_status_user_match === "Wait for Approve Return" &&
+                            "รอการอนุมัติส่งคืน"
+                          }
+                          {UserMatch_status_user_match === "Return" &&
+                            "ส่งคืนอุปกรณ์เรียบร้อย"
+                          }
+                        </TableCell>
 
                         {UserMatch_status_user_match === "Wait for Approve" &&
                         <TableCell align="right">
@@ -374,10 +415,14 @@ const ComponentUserMatch= async (token:string) => {
                           </IconButton>
                         </TableCell>
                         }
+                        {UserMatch_status_user_match === "Wait for Approve Return" &&
+                        <TableCell align="right">
+                        </TableCell>
+                        }
                         {UserMatch_status_user_match === "Approve" &&
                         <TableCell align="left">
                           <Button variant="contained" size="small" onClick={()=>handleClickstate(UserMatch_id_user_match,Match_id_match)}>
-                            Return Asset
+                            คืนอุปกรณ์
                           </Button>
                         </TableCell>
                         }
@@ -471,13 +516,13 @@ const ComponentUserMatch= async (token:string) => {
           },
         }}
       >
-        <MenuItem onClick={()=>handlemenu(1)}>
+        {/* <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
           Edit
-        </MenuItem>
+        </MenuItem> */}
         <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
           <Iconify icon={"material-symbols:cancel-schedule-send-outline-rounded"} sx={{ mr: 2 }}/>
-          Cancel
+          ยกเลิกคำขอ
         </MenuItem>
       </Popover>
 
@@ -498,7 +543,7 @@ const ComponentUserMatch= async (token:string) => {
         >
           <DialogTitle id="form-dialog-title">
             <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
-               Rent Asset
+               เบิกยืมอุปกรณ์
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -517,12 +562,12 @@ const ComponentUserMatch= async (token:string) => {
               }}
               render={({ field, fieldState: { error } }) => (
                 <FormControl error={error !== undefined} fullWidth>
-                <InputLabel id="demo-simple-select-label">Asset</InputLabel>
+                <InputLabel id="demo-simple-select-label">อุปกรณ์</InputLabel>
                   <Select 
                   {...field}
                   fullWidth
                   labelId="demo-simple-select-label"
-                  label="Asset"
+                  label="อุปกรณ์"
                   error={error !== undefined}
                    >
                     <MenuItem
@@ -558,7 +603,7 @@ const ComponentUserMatch= async (token:string) => {
                   {...field}
                   type="text"
                   fullWidth
-                  label="Room"
+                  label="ห้อง"
                   error={error !== undefined}
                   helperText={error ? myHelper.expiration[error.type] : ""}
                 />
@@ -577,7 +622,7 @@ const ComponentUserMatch= async (token:string) => {
                   {...field}
                   type="text"
                   fullWidth
-                  label="Floor"
+                  label="ชั้น"
                   error={error !== undefined}
                   helperText={error ? myHelper.expiration[error.type] : ""}
                 />
@@ -593,7 +638,7 @@ const ComponentUserMatch= async (token:string) => {
                   {...field}
                   type="text"
                   fullWidth
-                  label="Description"
+                  label="คำอธิบาย"
                   multiline
                   rows={4}
                 />
@@ -606,7 +651,7 @@ const ComponentUserMatch= async (token:string) => {
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                  Send Request
+                  ส่งคำขอ
                 </Button>
              </CardActions>
             </Box>
@@ -753,12 +798,12 @@ const ComponentUserMatch= async (token:string) => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
               onClick={Agree}
               autoFocus
             >
-              Return
+              ส่งคืน
             </Button>
           </DialogActions>
         </Dialog>

@@ -28,8 +28,7 @@ const Item = styled(Paper)(({ theme }) => ({
   height: 60,
   lineHeight: '60px',
 }));
-const darkTheme = createTheme({ palette: { mode: 'dark' } });
-const lightTheme = createTheme({ palette: { mode: 'light' } });
+
 
 const HomeDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -46,21 +45,6 @@ const HomeDashboard: React.FC = () => {
     SetMaintenance(Alldashboards.maintenance)
     SetDepartureRent(Alldashboards.totaldeparturerent)
     SetChart(Alldashboards.totalchart)
-    console.log("ddddddddd",DepartureRent)
-    // await Alldashboards.totaldeparturerent.map((key:any) => {
-      
-    //   DepartureRent.push(key.departure)
-    //   TotalRent.push(Number(key.total))
-      
-    // });
-    // console.log("dsdsdsd",TotalRent)
-    // let departure = []
-    // let total = []
-    // departure.push(key.departure)
-    // total.push(val.to)
-
-    // SetDashboard(await getDashboard("/Dashboard/AllDashboard",token));
-    // console.log(ConDashboard)
   };
 
   useEffect(() => {
@@ -131,7 +115,7 @@ const HomeDashboard: React.FC = () => {
             lg={6}
           >
             <TableRemainingtime
-              title={"Maintenance is almost due"}
+              title={"ใกล้ถึงเวลาบำรุงรักษา"}
               orders={Remainingtime}
               sx={{ height: '100%' }}
             />
@@ -142,7 +126,7 @@ const HomeDashboard: React.FC = () => {
             lg={6}
           >
             <TableMaintenance
-              title={"Maintenance"}
+              title={"การซ่อมบำรุงรักษาของอุปกรณ์"}
               orders={Maintenance}
               sx={{ height: '100%' }}
             />

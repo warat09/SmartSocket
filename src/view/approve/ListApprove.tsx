@@ -37,23 +37,26 @@ import {
   DialogContentText,
   DialogTitle,Snackbar,
   Popover,
-  TextField
+  TextField,
+  Grid,
+  Avatar
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
+import PageTitleWrapper from "../../components/PageTitleWrapper";
 
 const TABLE_HEAD = [
-  { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
-  { id: 'UserMatch_room', label: 'Room', alignRight: false },
-  { id: 'UserMatch_floor', label: 'Floor', alignRight: false },
-  { id: 'UserMatch_description', label: 'Description', alignRight: false },
-  { id: 'UserMatch_datetime', label: 'DateTime', alignRight: false },
-  { id: 'User_Name', label: 'Name', alignRight: false },
-  { id: 'UserMatch_status_user_match', label: 'Status', alignRight: false },
-  { id: 'User_action', label: 'Action', alignRight: false }
+  { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
+  { id: 'UserMatch_room', label: 'ห้อง', alignRight: false },
+  { id: 'UserMatch_floor', label: 'ชั้น', alignRight: false },
+  { id: 'UserMatch_description', label: 'คำอธิบาย', alignRight: false },
+  { id: 'UserMatch_datetime', label: 'วันที่-เวลา', alignRight: false },
+  { id: 'User_Name', label: 'ชื่อผู้ใช้', alignRight: false },
+  { id: 'UserMatch_status_user_match', label: 'สถาณะ', alignRight: false },
+  { id: 'User_action', label: '', alignRight: false }
 ];
 
 // ----------------------------------------------------------------------
@@ -107,6 +110,7 @@ const HomeApprove: React.FC = () => {
     body: "",
     id: 0,
     status: 0,
+    status_user_match:""
   });
 
   const [openAlert, setOpenAlert] = useState(false);
@@ -133,21 +137,23 @@ const HomeApprove: React.FC = () => {
     setlistapprove(await getApprove("/UserMatch/GetApprove",token));
   };
 
-  const handleClickOpen = (id: number, status: number, asset: string) => {
+  const handleClickOpen = (id: number, status: number, asset: string,status_user_match:string) => {
     setOpenDialog(true);
     if (status == 1) {
       setdialog({
-        header: "Approve?",
-        body: `Do you want approve asset ${asset}`,
+        header: "อนุมัติ",
+        body: `คุณแน่ใจว่าจะอนุมัติอุปกรณ์ ${asset}?`,
         id: id,
         status: status,
+        status_user_match:status_user_match
       });
     } else {
       setdialog({
-        header: "Reject?",
-        body: `Do you want reject asset ${asset}`,
+        header: "ปฏิเศษ",
+        body: `คุณแน่ใจว่าจะปฏิเศษอุปกรณ์ ${asset}`,
         id: id,
         status: status,
+        status_user_match:status_user_match
       });
     }
   };
@@ -171,29 +177,14 @@ const HomeApprove: React.FC = () => {
     setOpenAlert(false);
   };
 
-  const Checkapprove = async (id: number, status: number) => {
-    console.log(id, status);
-    let status_Approve=""
-    
+  const Checkapprove = async (id: number, status: number,status_user_match:string) => {
+    let status_Approve=""    
     if (status === 1) {
-      console.log("1")
-      // handleCloseDialog();
-      // handleClickDialog()
-      // handleClickOpen(status,asset)
-
-      // console.log(listapprove);
-      // console.log("approve");
       status_Approve="Approve"
-     
     } else {
-      // handleClickOpen(status,asset)
-      console.log("2")
-      // handleCloseDialog();
-      // handleClickDialog()
       status_Approve="Reject"
-      // console.log("reject");
     }
-    await ApproveUserMatch(`/UserMatch/Approve/${id}`,token, status_Approve)
+    await ApproveUserMatch(`/UserMatch/Approve/${id}`,token, {status_Approve,status_user_match})
   };
 
   const handleOpenMenu = (event:any) => {
@@ -279,10 +270,21 @@ const HomeApprove: React.FC = () => {
           <title> Approve | SmartSocket </title>
       </Helmet>
       <Container>
-        <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
-          Approve
-        </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"basil:user-clock-solid"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              อนุมัติ
+            </Typography>
+            <Typography variant="subtitle2">
+              อนุมัติการใช้งานอุปกรณ์และการส่งคืนอุปกรณ์
+            </Typography>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -299,10 +301,15 @@ const HomeApprove: React.FC = () => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    console.log(row)
-                    
-                    const { Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, UserMatch_datetime, User_name, User_surname, User_username, UserMatch_status_user_match }:any = row;
+                    let change_UserMatch_status_user_match
+                    const { Asset_name_assets, UserMatch_room, UserMatch_floor, UserMatch_description, UserMatch_datetime, User_name, User_surname, UserMatch_status_user_match }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
+                    if(UserMatch_status_user_match === "Wait for Approve"){
+                      change_UserMatch_status_user_match = "รออนุมัติการยืม"
+                    }
+                    if(UserMatch_status_user_match === "Wait for Approve Return"){
+                      change_UserMatch_status_user_match = "รออนุมัติการส่งคืน"
+                    }
 
                     return (
                       <TableRow hover key={Asset_name_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
@@ -325,7 +332,7 @@ const HomeApprove: React.FC = () => {
                               type="text"
                               multiline
                               rows={2}
-                              defaultValue={UserMatch_description ? UserMatch_description : 'No Description'}
+                              defaultValue={UserMatch_description ? UserMatch_description : 'ไม่มีคำอธิบาย'}
                             />
                         </TableCell>
 
@@ -333,7 +340,7 @@ const HomeApprove: React.FC = () => {
 
                         <TableCell align="center">{User_name+" "+User_surname}</TableCell>
 
-                        <TableCell align="center">{UserMatch_status_user_match}</TableCell>
+                        <TableCell align="center">{change_UserMatch_status_user_match}</TableCell>
                 
                         <TableCell align="center">
                           <Box sx={{display:'flex',justifyContent:'center'}}>
@@ -345,13 +352,15 @@ const HomeApprove: React.FC = () => {
                               handleClickOpen(
                                 row.UserMatch_id_user_match,
                                 1,
-                                row.Asset_name_assets
+                                Asset_name_assets,
+                                UserMatch_status_user_match
                               )
                             }
                           >
-                            Approve
+                            อนุมัติ
                           </Button>
                           &nbsp;
+                          {UserMatch_status_user_match === "Wait for Approve" &&
                           <Button
                             variant="contained"
                             size="small"
@@ -360,12 +369,16 @@ const HomeApprove: React.FC = () => {
                               handleClickOpen(
                                 row.UserMatch_id_user_match,
                                 0,
-                                row.Asset_name_assets
+                                Asset_name_assets,
+                                UserMatch_status_user_match
                               )
                             }
                           >
-                            Reject
+                            ปฎิเศษ
                           </Button>
+
+                          }
+                          
                           </Box>
                          </TableCell>
 
@@ -464,12 +477,12 @@ const HomeApprove: React.FC = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
-              onClick={() => Checkapprove(dialog.id, dialog.status)}
+              onClick={() => Checkapprove(dialog.id, dialog.status,dialog.status_user_match)}
               autoFocus
             >
-              Agree
+              ยืนยัน
             </Button>
           </DialogActions>
         </Dialog>

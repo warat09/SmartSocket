@@ -7,42 +7,42 @@ import SvgColor from '../svg-color';
 
 const navConfig = [
   {
-    title: 'Dashboard',
+    title: 'แผงควบคุม',
     path: '/app/admin/dashboard',
     icon:'ant-design:dashboard-filled',
   },
   {
-    title:'User',
+    title:'ผู้ใช้',
     path: '/app/admin/user',
     icon:'mdi:user-circle'
   },
   {
-    title: 'Socket',
+    title: 'เต้าเสียบ',
     path: '/app/admin/socket',
     icon: 'mdi:plug-socket-au',
   },
   {
-    title: 'Asset',
+    title: 'อุปกรณ์',
     path: '/app/admin/asset',
     icon: 'ri:plug-2-line',
   },
   {
-    title: 'Match',
+    title: 'จับคู่อุปกรณ์',
     path: '/app/admin/match',
     icon: 'ph:plugs-connected-bold',
   },
   {
-    title: 'Approve',
+    title: 'อนุมัติ',
     path: '/app/admin/approve',
     icon: 'basil:user-clock-solid',
   },
   {
-    title: 'Maintenance',
+    title: 'บำรุงรักษา',
     path: '/app/admin/maintenance',
     icon: 'wpf:maintenance',
   },
   {
-    title: 'Transaction',
+    title: 'ธุรกรรม',
     path: '/app/admin/transaction',
     icon: 'icon-park-solid:transaction-order',
   }

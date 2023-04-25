@@ -37,10 +37,10 @@ import {
   FormHelperText,
   CardHeader,
   CardContent,
-  Unstable_Grid2 as Grid,
+  Unstable_Grid2 as Grid2,
   CardActions,
   Divider,
-  Input
+  Grid
 } from "@mui/material";
 import Iconify from "../../components/iconify/Iconify";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
@@ -49,6 +49,8 @@ import { getUsers,updateUser,updateUserStatus,register } from "../../services/ap
 import { User } from "../../model/model";
 import { IMaskInput } from 'react-imask';
 import { Controller,useForm } from 'react-hook-form';
+import PageTitleWrapper from "../../components/PageTitleWrapper";
+import { Icon } from "@iconify/react";
 
 interface CustomProps {
   onChange: (event: { target: { name: string; value: string } }) => void;
@@ -77,12 +79,12 @@ const TextMaskCustom = forwardRef<HTMLElement, CustomProps>(
 );
 
 const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
-  { id: 'fullname', label: 'Name', alignRight: false },
-  { id: 'email', label: 'Email', alignRight: false },
-  { id: 'id_card', label: 'ID card', alignRight: false },
-  { id: 'departure', label: 'Departure', alignRight: false },
-  { id: 'role', label: 'Role', alignRight: false },
-  { id: 'status_user', label: 'Status_user', alignRight: false },
+  { id: 'fullname', label: 'ชื่อ-นามสกุล', alignRight: false },
+  { id: 'email', label: 'อีเมล', alignRight: false },
+  { id: 'id_card', label: 'รหัสประจำตัว', alignRight: false },
+  { id: 'departure', label: 'แผนก', alignRight: false },
+  { id: 'role', label: 'การกำหนดสิทธิ์', alignRight: false },
+  { id: 'status_user', label: 'สถาณะ', alignRight: false },
   { id: '', label: '', alignRight: false  },
 ];
 
@@ -299,8 +301,8 @@ const myHelper:any = {
     else{
       setOpenDialog(true)
       setdialog({
-        header: "Delete",
-        body: `Are you sure want to delete?`,
+        header: "ปิดการใช้งาน",
+        body: `คุณแน่ใจว่าจะปิดการใช่งานบัญชีนี้จริงใช้ไหม?`,
         id: 0,
         status: 0,
       });
@@ -346,16 +348,31 @@ const myHelper:any = {
           <title> User: List | SmartSocket </title>
       </Helmet>
       <Container >
-        
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
-          <Typography variant="h4" gutterBottom>
-            User List
-          </Typography>
-          <Button variant="contained" startIcon={<Iconify icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
-            New User
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"mdi:user-group-outline"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              ผู้ใช้
+            </Typography>
+            <Typography variant="subtitle2">
+              ทุกแง่มุมที่เกี่ยวข้องกับผู้ใช้แอปสามารถจัดการได้จากหน้านี้
+            </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            sx={{ mt: { xs: 2, md: 0 } }}
+            variant="contained"
+            startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>}
+            onClick={() => setOpenNewDialog(true)}
+          >
+            เพิ่มผู้ใช้
           </Button>
-        </Stack>
-        <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           {/* <Scrollbar> */}
@@ -400,9 +417,16 @@ const myHelper:any = {
 
                         <TableCell align="center">{departure}</TableCell>
 
-                        <TableCell align="center">{role}</TableCell>
+                        <TableCell align="center">
+                          {role === "admin" &&
+                          "ผู้ดูแล"
+                          }
+                          {role === "user" &&
+                          "ผู้ใช้งาน"
+                          }
+                        </TableCell>
 
-                        <TableCell align="center">{status_user}</TableCell>
+                        <TableCell align="center">{status_user === "Active" && "เปิดใช้งาน"}</TableCell>
                         {
                           id_user !== 1 &&
                           <TableCell align="right">
@@ -434,17 +458,14 @@ const myHelper:any = {
                         <Paper
                           sx={{
                             textAlign: 'center',
+                            display:"flex",
+                            justifyContent:"center",
+                            alignItems:"center",
                           }}
                         >
-                          <Typography variant="h6" paragraph>
-                            Not found
-                          </Typography>
-
-                          <Typography variant="body2">
-                            No results found for &nbsp;
-                            <strong>&quot;{filterName}&quot;</strong>.
-                            <br /> Try checking for typos or using complete words.
-                          </Typography>
+                          <Box>
+                            <img src="/assets/illustrations/illustration_empty_content.svg"  height={300} width={300} />
+                          </Box>
                         </Paper>
                       </TableCell>
                     </TableRow>
@@ -486,11 +507,11 @@ const myHelper:any = {
       >
         <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={'eva:edit-fill'} sx={{ mr: 2 }} />
-              Edit
+              แก้ไข
         </MenuItem>
         <MenuItem sx={{ color: 'error.main' }} onClick={()=>handlemenu(0)}>
-          <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
-              Delete
+          <Iconify icon={'fe:disabled'} sx={{ mr: 2 }} />
+              ปิดการใช้งาน
         </MenuItem>
       </Popover>                  
         <Dialog
@@ -514,12 +535,12 @@ const myHelper:any = {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
               onClick={Agree}
               autoFocus
             >
-              Agree
+              ปิดการใช้งาน
             </Button>
           </DialogActions>
         </Dialog>
@@ -540,8 +561,8 @@ const myHelper:any = {
           }}
         >
           <DialogTitle id="form-dialog-title">
-            <Typography variant="h3" gutterBottom>
-                Create a new user
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+            สร้างผู้ใช้งาน
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -549,8 +570,8 @@ const myHelper:any = {
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
             <CardContent sx={{pt:4}}>
               <Box sx={{ m: -1.5 }}>
-                <Grid container spacing={2} pl={2} pr={2}>
-                <Grid
+                <Grid2 container spacing={2} pl={2} pr={2}>
+                <Grid2
                     xs={12}
                     md={6}
                   >
@@ -565,16 +586,16 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Name"
+                          label="ชื่อ"
                           defaultValue=""
                           error={error !== undefined}
                           helperText={error ? myHelper.name[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -590,15 +611,15 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Surname"
+                          label="นามสกุล"
                           error={error !== undefined}
                           helperText={error ? myHelper.surname[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -615,15 +636,15 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Email"
+                          label="อีเมล"
                           error={error !== undefined}
                           helperText={error ? myHelper.email[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -641,7 +662,7 @@ const myHelper:any = {
                         {...field}
                           type="text"
                           fullWidth
-                          label="ID Card"
+                          label="รหัสประจำตัว"
                           InputProps={{
                             inputComponent: TextMaskCustom as any
                           }}
@@ -652,9 +673,9 @@ const myHelper:any = {
                                                 
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -667,7 +688,7 @@ const myHelper:any = {
               }}
               render={({ field, fieldState: { error } }) => (
                 <FormControl error={error !== undefined} fullWidth>
-                <InputLabel id="demo-simple-select-label">Role</InputLabel>
+                <InputLabel id="demo-simple-select-label">สิทธิ์</InputLabel>
                   <Select 
                   {...field}
                   fullWidth
@@ -679,21 +700,21 @@ const myHelper:any = {
                     <MenuItem
                       value="admin"
                     >
-                      Admin
+                      ผู้ดูแลระบบ
                     </MenuItem>
                     <MenuItem
                       value="user"
                     >
-                      User
+                      ผู้ใช้งาน
                     </MenuItem>
                    </Select>
                 <FormHelperText>{error ? myHelper.role[error.type] : ""}</FormHelperText>
                 </FormControl>
               )}
             />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -709,14 +730,14 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Departure"
+                          label="แผนก"
                           error={error !== undefined}
                           helperText={error ? myHelper.departure[error.type] : ""}
                         />
                       )}
                     />  
-                  </Grid>
-                  <Grid
+                  </Grid2>
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -732,15 +753,15 @@ const myHelper:any = {
                           {...field}
                           type="password"
                           fullWidth
-                          label="Password"
+                          label="รหัสผ่าน"
                           error={error !== undefined}
                           helperText={error ? myHelper.password[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -761,20 +782,20 @@ const myHelper:any = {
                           {...field}
                           type="password"
                           fullWidth
-                          label="ConfirmPassword"
+                          label="ยืนยันรหัสผ่าน"
                           error={error !== undefined}
                           helperText={error ? myHelper.confirmpassword[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
-                </Grid>   
+                  </Grid2>
+                </Grid2>   
               </Box> 
             </CardContent>
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Create a new user
+                สร้างผู้ใช้งาน
                 </Button>
              </CardActions>
             </Box>
@@ -799,7 +820,7 @@ const myHelper:any = {
         >
           <DialogTitle id="form-dialog-title">
             <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
-                Edit User {UserId.name}
+                แก้ไขผู้ใช้งาน {UserId.name}
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -807,8 +828,8 @@ const myHelper:any = {
           <Box component="form" onSubmit={handleSubmit(handleOnEditSubmit)}>
             <CardContent sx={{pt:4}}>
               <Box sx={{ m: -1.5 }}>
-                <Grid container spacing={2} pl={2} pr={2}>
-                <Grid
+                <Grid2 container spacing={2} pl={2} pr={2}>
+                <Grid2
                     xs={12}
                     md={6}
                   >
@@ -824,7 +845,7 @@ const myHelper:any = {
                           defaultValue={UserId.name}
                           type="text"
                           fullWidth
-                          label="Name"
+                          label="ชื่อ"
                           error={error !== undefined}
                           helperText={error ? myHelper.name[error.type] : ""}
                           {...field}
@@ -836,9 +857,9 @@ const myHelper:any = {
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -854,15 +875,15 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Surname"
+                          label="นามสกุล"
                           error={error !== undefined}
                           helperText={error ? myHelper.surname[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -879,15 +900,15 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Email"
+                          label="อีเมล"
                           error={error !== undefined}
                           helperText={error ? myHelper.email[error.type] : ""}
                         />
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -905,7 +926,7 @@ const myHelper:any = {
                         {...field}
                           type="text"
                           fullWidth
-                          label="ID Card"
+                          label="รหัสประจำตัว"
                           InputProps={{
                             inputComponent: TextMaskCustom as any
                           }}
@@ -915,9 +936,9 @@ const myHelper:any = {
                       />                    
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -929,19 +950,34 @@ const myHelper:any = {
                         required: true
                       }}
                       render={({ field, fieldState: { error } }) => (
-                        <TextField
+                        <FormControl error={error !== undefined} fullWidth>
+                        <InputLabel id="demo-simple-select-label">สิทธิ์</InputLabel>
+                          <Select 
                           {...field}
-                          type="text"
                           fullWidth
-                          label="Role"
+                          labelId="demo-simple-select-label"
+                          label="สิทธ์"
                           error={error !== undefined}
-                          helperText={error ? myHelper.role[error.type] : ""}
-                        />
+                          >
+                            
+                            <MenuItem
+                              value="admin"
+                            >
+                              ผู้ดูแลระบบ
+                            </MenuItem>
+                            <MenuItem
+                              value="user"
+                            >
+                              ผู้ใช้งาน
+                            </MenuItem>
+                          </Select>
+                        <FormHelperText>{error ? myHelper.role[error.type] : ""}</FormHelperText>
+                        </FormControl>
                       )}
                     />
-                  </Grid>
+                  </Grid2>
 
-                  <Grid
+                  <Grid2
                     xs={12}
                     md={6}
                   >
@@ -957,21 +993,21 @@ const myHelper:any = {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Departure"
+                          label="แผนก"
                           error={error !== undefined}
                           helperText={error ? myHelper.departure[error.type] : ""}
                           defaultValue={UserId.departure}
                         />
                       )}
                     />  
-                  </Grid>
-                </Grid>   
+                  </Grid2>
+                </Grid2>   
               </Box> 
             </CardContent>
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Save Changes
+                บันทึกการเปลี่ยนแปลง
                 </Button>
              </CardActions>
             </Box>

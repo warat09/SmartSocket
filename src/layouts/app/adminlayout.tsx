@@ -1,6 +1,5 @@
-import {Dispatch,SetStateAction,useState,useEffect} from 'react';
+import {Dispatch,SetStateAction,useState,useEffect,FC, ReactNode} from 'react';
 import { Outlet , useNavigate} from 'react-router-dom';
-// import Sidebar from '../../components/Siderbar/Sidebar';
 import TestSidebar from '../../components/Siderbar/TestSidebar'
 import Navbar from '../../components/Navbar/Navbar'
 import NavbarUser from '../../components/Navbar/NavbarUser'
@@ -9,16 +8,17 @@ import ContentHolder from "./contentholder";
 import Nav from '../../components/Navbar/Navbar'
 import Sidebar from '../../components/Siderbar/NewSidebar';
 import { styled } from '@mui/material/styles';
-import {
-  Box,
-  Toolbar
-} from "@mui/material";
 import { Checktoken } from "../../services/apiservice";
+import { Box, alpha, lighten, useTheme } from '@mui/material';
+
 
 
 export interface ComponentLayoutApp {
     drawer:JSX.Element
     setDrawer:Dispatch<React.SetStateAction<JSX.Element>>
+}
+interface SidebarLayoutProps {
+  children?: ReactNode;
 }
 
 const APP_BAR_MOBILE = 64;
@@ -42,7 +42,9 @@ const Main = styled('div')(({ theme }) => ({
     paddingRight: theme.spacing(2),
   },
 }));
-function AppLayout() {
+const AppLayout:FC<SidebarLayoutProps>=() => {
+
+  const theme = useTheme();
 
   const navigate = useNavigate();
 
@@ -70,53 +72,14 @@ function AppLayout() {
     } 
   }, []);
 
-  // const [userData,setUserDate] = useState<Object>({})
-  
-
-  // useEffect(() => {
-  //   const item = localStorage.getItem("User");
-  //   if (item && item !== "undefined") {
-  //     const user = JSON.parse(item);
-  //     Checktoken(user.token).then((response)=>{
-  //       const dataresponse = response.data[0]
-  //       if (response.status === "ok") {
-  //         setUserDate({
-  //           fullname:dataresponse.fullname,username:dataresponse.username,
-  //           email:dataresponse.email,role:dataresponse.role,departure:dataresponse.departure
-  //         })
-  //       } else {
-  //         localStorage.clear();
-  //       }
-  //     })
-  //   } 
-  // }, []);
-
   return (
     <StyledRoot>
-      <Nav UserData={userData} onOpenNav={() => setOpen(true)} />
-      <Sidebar UserData={userData} openNav={open} onCloseNav={() => setOpen(false)} />
-      <Main>
-        <Outlet />
-      </Main>
+        <Nav UserData={userData} onOpenNav={() => setOpen(true)} />
+        <Sidebar UserData={userData} openNav={open} onCloseNav={() => setOpen(false)} />
+        <Main>
+          <Outlet />
+        </Main>
     </StyledRoot>
-    // <StyledRoot>
-    // {role === "admin" &&
-    // // <ContentHolder>
-    //   <>
-    //     <TestNavbar Outlet={outlet} drawer={menuDrawer}/>
-    //       {/* <Navbar Outlet={Outlet}  drawer={menuDrawer} setDrawer={setMenuDrawer}/>
-    //       <Sidebar drawer={drawer} drawerWidth={220}/>
-    //       <Outlet/> */}
-    //   </>
-    //   // </ContentHolder>
-    //   }
-    //   {role === "user" &&
-    //     <>
-    //         <NavbarUser  drawer={menuDrawer} setDrawer={setMenuDrawer}/>
-    //         <Outlet/>
-    //     </>
-    //   }
-    // </StyledRoot>
   );
 }
 

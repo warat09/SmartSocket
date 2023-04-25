@@ -58,9 +58,6 @@ export default function CardDashboard(props:any) {
               }}
             >
               <Iconify icon={icon} sx={{width: 40, height: 40 }}/>
-              {/* <SvgIcon>
-                <CurrencyDollarIcon />
-              </SvgIcon> */}
             </Avatar>
           </Stack>
         </CardContent>

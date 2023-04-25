@@ -8,12 +8,14 @@ import {
   CardActions,
   CardHeader,
   Divider,
+  Paper,
   SvgIcon,
   Table,
   TableBody,
   TableCell,
   TableHead,
-  TableRow
+  TableRow,
+  Typography
 } from '@mui/material';
 import formatTime from '../../caltime/millisectohms';
 import Scrollbar from "../../../components/scrollbar";
@@ -38,20 +40,14 @@ export default function OverviewLatestOrders (props:any) {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Assets
+                  ชื่ออุปกรณ์
                 </TableCell>
                 <TableCell>
-                  Socket
+                  เต้าเสียบ
                 </TableCell>
                 <TableCell sortDirection="asc" >
-                  Remaining time
+                  เวลาที่เหลือในการบำรุงรักษา
                 </TableCell>
-                <TableCell>
-                  Status Rent
-                </TableCell>
-                {/* <TableCell>
-                  Status
-                </TableCell> */}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -72,13 +68,28 @@ export default function OverviewLatestOrders (props:any) {
                     <TableCell>
                       {formatTime(order.Match_sum_used_time)}
                     </TableCell>
-                    <TableCell>
-                      {order.Match_status_rent}
-                    </TableCell>
                   </TableRow>
                 );
               })}
             </TableBody>
+            {Object.values(orders).length === 0 && (
+                  <TableBody>
+                    <TableRow>
+                      <TableCell align="center" colSpan={3}>
+                        <Paper
+                          sx={{
+                            textAlign: 'center',
+                            display:"flex",
+                            justifyContent:"center",
+                            alignItems:"center",
+                          }}
+                        >
+                          <img src="/assets/illustrations/illustration_empty_content.svg"  height={300} width={300} />
+                        </Paper>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                )}
           </Table>
         </Box>
       {/* </Scrollbar> */}

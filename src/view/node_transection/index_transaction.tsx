@@ -17,7 +17,9 @@ import {
   TablePagination,
   IconButton,
   Popover,
-  MenuItem
+  MenuItem,
+  Grid,
+  Avatar
 } from "@mui/material";
 import {Transaction} from '../../model/model';
 import {getTransaction,Checktoken} from "../../services/apiservice"
@@ -25,15 +27,16 @@ import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import Iconify from "../../components/iconify/Iconify";
+import PageTitleWrapper from "../../components/PageTitleWrapper";
+import formatTime from '../../components/caltime/millisectohms' 
 
 const TABLE_HEAD = [
-  { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
-  { id: 'Match_mac_address', label: 'MacAddress', alignRight: false },
-  { id: 'Transaction_status_transaction', label: 'StatusTransaction', alignRight: false },
-  { id: 'Transaction_time_used', label: 'TimeUsed', alignRight: false },
-  { id: 'Transaction_time_update', label: 'TimeUpdate', alignRight: false },
-  { id: 'Transaction_on_date', label: 'On_Date', alignRight: false },
-  { id: 'Transaction_off_date', label: 'Off_Date', alignRight: false },
+  { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
+  { id: 'Match_mac_address', label: 'แอดเดรสเต้าเสียบ', alignRight: false },
+  { id: 'Transaction_time_used', label: 'เวลาที่ใช้', alignRight: false },
+  { id: 'Transaction_time_update', label: 'เวลาอัพเดท', alignRight: false },
+  { id: 'Transaction_on_date', label: 'เวลาที่เปิด', alignRight: false },
+  { id: 'Transaction_off_date', label: 'เวลาที่ปิด', alignRight: false },
 ];
 
 function descendingComparator(a:any, b:any, orderBy:any) {
@@ -84,30 +87,6 @@ const HomeTransection: React.FC = () => {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
-  const formatTime = (milliseconds:number) => {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const totalMinutes = Math.floor(totalSeconds / 60);
-  const totalHours = Math.floor(totalMinutes / 60);
-  // const days = Math.floor(totalHours / 24);
-
-  const seconds = totalSeconds % 60;
-  const minutes = totalMinutes % 60;
-  const hours = totalHours % 24;
-
-  let time = '1s';
-  // if (days > 0) {
-  //   time = `${days}Day ${hours}Hours ${minutes}Minutes ${seconds} Seconds`;
-  // } else 
-  if (hours > 0) {
-    time = `${totalHours} Hours ${minutes}Minutes ${seconds} Seconds`;
-  } else if (minutes > 0) {
-    time = `${minutes} Minutes ${seconds} Seconds`;
-  } else if (seconds > 0) {
-    time = `${seconds} Seconds`;
-  }
-  return time;
-}
 
   const handleGetTransection=async(token:string)=>{
     SetDataassetslist(await getTransaction("/Transaction/AllTransaction",token));
@@ -188,10 +167,21 @@ const HomeTransection: React.FC = () => {
             <title> Transaction | SmartSocket </title>
       </Helmet>
       <Container>
-        <Typography variant="h4" sx={{ mb: 5,mt:2 }}>
-          Transaction
-        </Typography>
-        <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"icon-park-solid:transaction-order"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              ธุรกรรม
+            </Typography>
+            <Typography variant="subtitle2">
+              ทุกแง่มุมที่เกี่ยวข้องกับธุรกรรมของการเปิด/ปิดของเต้าเสียบ
+            </Typography>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -209,7 +199,7 @@ const HomeTransection: React.FC = () => {
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
                     console.log(row)
-                    const { Transaction_id_txn,Asset_name_assets, Match_mac_address, Transaction_status_transaction, Transaction_time_used, Transaction_time_update, Transaction_on_date,Transaction_off_date  }:any = row;
+                    const { Transaction_id_txn,Asset_name_assets, Match_mac_address, Transaction_time_used, Transaction_time_update, Transaction_on_date,Transaction_off_date  }:any = row;
                     const selectedUser = selected.indexOf(Transaction_id_txn) !== -1;
 
                     return (
@@ -221,8 +211,6 @@ const HomeTransection: React.FC = () => {
                         <TableCell align="center">{Asset_name_assets}</TableCell>
 
                         <TableCell align="center">{Match_mac_address}</TableCell>
-
-                        <TableCell align="center">{Transaction_status_transaction}</TableCell>
 
                         <TableCell align="center">{formatTime(Transaction_time_used)}</TableCell>
                         

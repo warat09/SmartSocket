@@ -13,29 +13,29 @@ export default function formatTime (milliseconds:number) {
     const minutes = totalMinutes % 60;
     const hours = totalHours % 24;
   
-    let time = 'Not use';
+    let time = 'ยังไม่มีการใช้';
 
     console.log(milliseconds,totalHours)
 
       if (totalHours > 0) {
         if(minutes === 0 && seconds === 0){
-          time = `${status} ${totalHours} Hours`;
+          time = `${status} ${totalHours} ชั่วโมง`;
         }
         else if(seconds === 0){
-          time = `${status} ${totalHours} Hours ${minutes} Minutes`;
+          time = `${status} ${totalHours} ชั่วโมง ${minutes} นาที`;
         }
         else{
-          time = `${status} ${totalHours} Hours ${minutes} Minutes ${seconds} Seconds`;
+          time = `${status} ${totalHours} ชั่วโมง ${minutes} นาที ${seconds} วินาที`;
         }
       } else if (minutes > 0) {
         if(seconds === 0){
-          time = `${status} ${minutes} Minutes`;
+          time = `${status} ${minutes} นาที`;
         }
         else{
-          time = `${status} ${minutes} Minutes ${seconds} Seconds`;
+          time = `${status} ${minutes} นาที ${seconds} วินาที`;
         }
       } else if (seconds > 0) {
-        time = `${status} ${seconds} Seconds`;
+        time = `${status} ${seconds} วินาที`;
       }
     return time;
   }

@@ -3,7 +3,7 @@
 // import DeviceTabletIcon from '@heroicons/react/24/solid/DeviceTabletIcon';
 // import PhoneIcon from '@heroicons/react/24/solid/PhoneIcon';
 import { useTheme, styled } from '@mui/material/styles';
-import { Card, CardHeader } from '@mui/material';
+import { Box, Card, CardHeader, Paper, Typography } from '@mui/material';
 
 import useChart  from '../../chart/useChart';
 import Chart  from 'react-apexcharts';
@@ -140,9 +140,26 @@ export default function OverviewTraffic (props:any) {
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Total Departure Rent" />
+      <CardHeader title="จำนวนแผนกทั้งหมดที่ยืมอุปกรณ์" />
       <StyledChartWrapper dir="ltr">
+        {Object.values(chartLabels).length > 0 &&
         <Chart type="donut" series={chartSeries} options={chartOptions} height={280} />
+        }
+        {Object.values(chartLabels).length === 0 &&
+        <Paper
+        sx={{
+          textAlign: 'center',
+          display:"flex",
+          justifyContent:"center",
+          alignItems:"center",
+        }}
+      >
+        <Box sx={{alignItems:'center'}}>
+            <img src="/assets/illustrations/illustration_empty_content.svg"  height={300} width={300} />
+        </Box>
+        
+      </Paper>
+        }
       </StyledChartWrapper>
     </Card>
   );

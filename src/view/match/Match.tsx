@@ -37,22 +37,26 @@ import {
   Snackbar,
   Alert,
   DialogContentText,
-  DialogActions
+  DialogActions,
+  Grid,
+  Avatar
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import formatTime from '../../components/caltime/millisectohms'
 import { Controller, useForm } from "react-hook-form";
+import PageTitleWrapper from "../../components/PageTitleWrapper";
 
 const TABLE_HEAD = [
-  { id: 'Asset_name_assets', label: 'Assets', alignRight: false },
-  { id: 'Match_mac_address', label: 'MacAddress', alignRight: false },
-  { id: 'Match_room', label: 'Room', alignRight: false },
-  { id: 'Match_floor', label: 'Floor', alignRight: false },
-  { id: 'Match_sum_used_time', label: 'RemainTime', alignRight: false },
-  { id: 'Match_active_datetime', label: 'Date', alignRight: false },
-  { id: 'Match_status_rent', label: 'Status', alignRight: false },
+  { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
+  { id: 'Match_mac_address', label: 'แอสเดรสเต้าเสียบ', alignRight: false },
+  { id: 'Match_room', label: 'ห้อง', alignRight: false },
+  { id: 'Match_floor', label: 'ชั้น', alignRight: false },
+  { id: 'Match_sum_used_time', label: 'เวลาที่เหลือในการบำรุงรักษา', alignRight: false },
+  { id: 'Match_active_datetime', label: 'วันที่-เวลา', alignRight: false },
+  { id: 'Match_status_rent', label: 'สถาณะการยืม', alignRight: false },
+  { id: 'Asset_maintenance', label: 'สถาณะบำรุงรักษา', alignRight: false },
   { id: '' },
 ];
 
@@ -151,14 +155,15 @@ const HomeMatch: React.FC = () => {
     }
   };
 
-  const handleOpenMenu = (event:any,Match_id_match:string,Asset_name_assets:string,Match_mac_address:string,Match_room:string,Match_floor:string,Match_status_rent:string) => {
+  const handleOpenMenu = (event:any,Match_id_match:string,Asset_name_assets:string,Match_mac_address:string,Match_room:string,Match_floor:string,Match_status_rent:string,Asset_maintenance:boolean) => {
     setMatching({
       Match_id_match:Match_id_match,
       Asset_name_assets:Asset_name_assets,
       Match_mac_address:Match_mac_address,
       Match_room:Match_room,
       Match_floor:Match_floor,
-      Match_status_rent:Match_status_rent
+      Match_status_rent:Match_status_rent,
+      Asset_maintenance:Asset_maintenance
     })
     setOpen(event.currentTarget);
   };
@@ -249,8 +254,8 @@ const HomeMatch: React.FC = () => {
     else if(menu === 2){
       setOpenDialog(true)
       setdialog({
-        header: "Maintenance",
-        body: `Are you sure send asset to maintenance?`,
+        header: "ส่งบำรุงรักษา",
+        body: `คุณแน่ใจไหมว่าจะส่งอุปกรณ์ไปบำรุงรักษา?`,
         id: 1,
         status: 0,
       });
@@ -259,8 +264,8 @@ const HomeMatch: React.FC = () => {
       console.log(2)
       setOpenDialog(true)
       setdialog({
-        header: "Delete",
-        body: `Are you sure want to delete?`,
+        header: "เลิกจับคู่อุปกรณ์",
+        body: `คุณแน่ใจว่าจะเลิกจับคู้อุปกรณ์ ${Matching.Asset_name_assets}?`,
         id: 0,
         status: 0,
       });
@@ -287,13 +292,13 @@ const HomeMatch: React.FC = () => {
   };
 
   const handleOnSubmit=async(data:any)=>{
-    const {asset,node, room, floor} = data
-    await addMatching("/Match/MatchingAssets",Token,asset,node, room, floor)
+    const {asset,node} = data
+    await addMatching("/Match/MatchingAssets",Token,asset,node)
   }  
 
   const handleOnEditSubmit=async(data:any)=>{
-    const {editasset,editnode,editroom,editfloor} = data;
-    await updateMatching(`/Match/AllMatching/${Matching.Match_id_match}`,Token, editasset, editnode, editroom, editfloor);
+    const {editasset,editnode} = data;
+    await updateMatching(`/Match/AllMatching/${Matching.Match_id_match}`,Token, editasset, editnode);
   }
 
   useEffect(() => {
@@ -321,16 +326,32 @@ const HomeMatch: React.FC = () => {
       <Helmet>
           <title> Matching: List | SmartSocket </title>
       </Helmet>
-      <Container>
-        <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
-          <Typography variant="h4" gutterBottom>
-            Match List
-          </Typography>
-          <Button variant="contained" startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>} onClick={() => setOpenNewDialog(true)}>
-            New Matching
+      <Container maxWidth="xl">
+      <PageTitleWrapper>
+        <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+          <Iconify icon={"ph:plugs-connected-bold"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+        </Avatar>
+        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid item>
+            <Typography variant="h3" component="h3" gutterBottom>
+              จับคู่อุปกรณ์
+            </Typography>
+            <Typography variant="subtitle2">
+              สร้างการจับคู่ระหว่างอุปกรณ์กับเต้าเสียบและตรวจสอบเวลาที่เหลือของอุปกรณ์ที่จับคู่
+            </Typography>
+        </Grid>
+        <Grid item>
+          <Button
+            sx={{ mt: { xs: 2, md: 0 } }}
+            variant="contained"
+            startIcon={<Box component={Icon} icon={"eva:plus-fill"}/>}
+            onClick={() => setOpenNewDialog(true)}
+          >
+            เพิ่มการจับคู่อุปกรณ์
           </Button>
-        </Stack>
-        <Divider sx={{borderBottomWidth: 3,mb:2,borderColor:"black",borderRadius:1}}/>
+        </Grid>
+      </Grid>
+      </PageTitleWrapper>
         <Card>
           <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
           <Scrollbar>
@@ -347,9 +368,15 @@ const HomeMatch: React.FC = () => {
                 />
                 <TableBody>
                   {filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row:any) => {
-                    console.log(row)
-                    const { Match_id_match,Asset_name_assets, Match_mac_address, Match_status_rent, Match_sum_used_time, Match_active_datetime, Match_room,Match_floor  }:any = row;
+                    let change_Match_status
+                    const { Match_id_match,Asset_name_assets, Match_mac_address, Match_status_rent, Match_sum_used_time, Match_active_datetime, Match_room,Match_floor,Asset_maintenance,User_rent  }:any = row;
                     const selectedUser = selected.indexOf(Asset_name_assets) !== -1;
+                    if(Match_status_rent === "Available"){
+                      change_Match_status = "ว่าง"
+                    }
+                    if(Match_status_rent === "Rent"){
+                      change_Match_status = `ถูกยืมโดย ${User_rent}`
+                    }
 
                     return (
                       <TableRow hover key={Asset_name_assets} tabIndex={-1} role="checkbox" selected={selectedUser}>
@@ -366,10 +393,24 @@ const HomeMatch: React.FC = () => {
 
                         <TableCell align="center">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
 
-                        <TableCell align="center">{Match_status_rent}</TableCell>
+                        <TableCell align="center">
+                          {Match_status_rent === "Available" &&
+                            "ว่าง"
+                          }
+                          {Match_status_rent === "Rent" &&
+                             (
+                              <>
+                                <p>ถูกยืมโดย</p>
+                                <p>{User_rent}</p>
+                              </>
+                             ) 
+                          }
+                        </TableCell>
+
+                        <TableCell align="center">{Asset_maintenance ? 'ส่งซ่อมบำรุงรักษา' : 'ยังไม่ส่งซ่อมบำรุงรักษา'}</TableCell>
 
                         <TableCell align="right">
-                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,Match_id_match,Asset_name_assets,Match_mac_address,Match_room,Match_floor,Match_status_rent)}>
+                          <IconButton size="large" color="inherit" onClick={(event) => handleOpenMenu(event,Match_id_match,Asset_name_assets,Match_mac_address,Match_room,Match_floor,Match_status_rent,Asset_maintenance)}>
                             <Iconify icon={"eva:more-vertical-fill"}/>
                           </IconButton>
                         </TableCell>
@@ -428,20 +469,20 @@ const HomeMatch: React.FC = () => {
           },
         }}
       >
-        {Matching.Match_status_rent === "Available" &&
+        {Matching.Match_status_rent === "Available" && Matching.Asset_maintenance === 0 &&
           <MenuItem onClick={()=>handlemenu(2)} sx={{ color: 'warning.main' }}>
             <Iconify icon={"wpf:maintenance"} sx={{ mr: 1 }}/>
-            Maintenance
+            ส่งซ่อมบำรุง
           </MenuItem>
         }
         <MenuItem onClick={()=>handlemenu(1)}>
           <Iconify icon={"eva:edit-fill"} sx={{ mr: 2 }}/>
-          Edit
+          แก้ไข
         </MenuItem>
 
         <MenuItem onClick={()=>handlemenu(0)} sx={{ color: 'error.main' }}>
-          <Iconify icon={"eva:trash-2-outline"} sx={{ mr: 2 }}/>
-          Delete
+          <Iconify icon={"ph:plugs-duotone"} sx={{ mr: 2 }}/>
+          เลิกจับคู่
         </MenuItem>
       </Popover>
 
@@ -480,12 +521,17 @@ const HomeMatch: React.FC = () => {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleCloseDialog}>Disagree</Button>
+            <Button onClick={handleCloseDialog}>ยกเลิก</Button>
             <Button
               onClick={Agree}
               autoFocus
             >
-              Agree
+              {dialog.id === 0 &&
+                "เลิกจับคู่"
+              }
+              {dialog.id === 1 &&
+                "ส่งบำรุงรักษา"
+              }
             </Button>
           </DialogActions>
         </Dialog>
@@ -506,8 +552,8 @@ const HomeMatch: React.FC = () => {
           }}
         >
           <DialogTitle id="form-dialog-title">
-            <Typography variant="h3" gutterBottom>
-                Create a Matching
+            <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
+                สร้างการจับคู่อุปกรณ์
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -526,11 +572,11 @@ const HomeMatch: React.FC = () => {
                     }}
                     render={({ field, fieldState: { error } }) => (
                       <FormControl error={error !== undefined} fullWidth>
-                      <InputLabel id="demo-simple-select-label">Assets</InputLabel>
+                      <InputLabel id="demo-simple-select-label">อุปกรณ์</InputLabel>
                         <Select 
                         fullWidth
                         labelId="demo-simple-select-label"
-                        label="Assets"
+                        label="อุปกรณ์"
                         {...field}
                         onChange={(e) => {
                           field.onChange(parseInt(e.target.value))
@@ -568,13 +614,13 @@ const HomeMatch: React.FC = () => {
                     }}
                     render={({ field, fieldState: { error } }) => (
                       <FormControl error={error !== undefined} fullWidth>
-                      <InputLabel id="demo-simple-select-label">Node</InputLabel>
+                      <InputLabel id="demo-simple-select-label">เต้าเสียบ</InputLabel>
                         <Select 
                         {...field}
                         fullWidth
                         labelId="demo-simple-select-label"
                         // value={inputnode}
-                        label="Node"
+                        label="เต้าเสียบ"
                         // onChange={handleChangeNode} 
                         error={error !== undefined}
                         >
@@ -598,57 +644,13 @@ const HomeMatch: React.FC = () => {
                       </FormControl>
                     )}
                   />
-
-                <Controller
-                    control={control}
-                    name="room"
-                    defaultValue=""
-                    rules={{
-                      required: true
-                    }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                      {...field}
-                      label="Room"
-                      type="text"
-                      // onChange={(e) => {
-                      //   SetRoom(e.target.value);
-                      // }}
-                      error={error !== undefined}
-                      helperText={error ? myHelper.room[error.type] : ""}
-                    />
-                    )}
-                  />
-
-                <Controller
-                    control={control}
-                    name="floor"
-                    defaultValue=""
-                    rules={{
-                      required: true
-                    }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                        {...field}
-                        type="text"
-                        fullWidth
-                        label="Floor"
-                        // onChange={(e) => {
-                        //   SetFloor(e.target.value);
-                        // }}
-                        error={error !== undefined}
-                        helperText={error ? myHelper.floor[error.type] : ""}
-                      />
-                    )}
-                  />
-          
               </Stack>
               </Box> 
             </CardContent>
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Create a new user
+                 สร้างการจับคู่
                 </Button>
              </CardActions>
             </Box>
@@ -673,7 +675,7 @@ const HomeMatch: React.FC = () => {
         >
           <DialogTitle id="form-dialog-title">
             <Typography sx={{paddingLeft:'30px',paddingTop:'10px'}} variant="h4" gutterBottom>
-                Edit Matching
+                แก้ไขการจับคู่
             </Typography>
           </DialogTitle>
           <DialogContent>
@@ -694,7 +696,7 @@ const HomeMatch: React.FC = () => {
                       {...field}
                       type="text"
                       fullWidth
-                      label="Asset Name"
+                      label="ชื่ออุปกรณ์"
                       defaultValue={Matching.Asset_name_assets}
                       InputProps={{
                         readOnly: true,
@@ -714,13 +716,13 @@ const HomeMatch: React.FC = () => {
                     }}
                     render={({ field, fieldState: { error } }) => (
                       <FormControl error={error !== undefined} fullWidth>
-                      <InputLabel id="demo-simple-select-label">Node</InputLabel>
+                      <InputLabel id="demo-simple-select-label">เต้าเสียบ</InputLabel>
                         <Select 
                         {...field}
                         fullWidth
                         labelId="demo-simple-select-label"
                         // value={inputnode}
-                        label="Node"
+                        label="เต้าเสียบ"
                         defaultValue={Matching.Match_mac_address}
                         error={error !== undefined}
                         >
@@ -744,56 +746,13 @@ const HomeMatch: React.FC = () => {
                       </FormControl>
                     )}
                   />
-
-                <Controller
-                    control={control}
-                    name="editroom"
-                    defaultValue={Matching.Match_room}
-                    rules={{
-                      required: true
-                    }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                      {...field}
-                      label="Room"
-                      type="text"
-                      // onChange={(e) => {
-                      //   SetRoom(e.target.value);
-                      // }}
-                      error={error !== undefined}
-                      defaultValue={Matching.Match_room}
-                      helperText={error ? myHelper.room[error.type] : ""}
-                    />
-                    )}
-                  />
-
-                <Controller
-                    control={control}
-                    name="editfloor"
-                    defaultValue={Matching.Match_floor}
-                    rules={{
-                      required: true
-                    }}
-                    render={({ field, fieldState: { error } }) => (
-                      <TextField
-                        {...field}
-                        type="text"
-                        fullWidth
-                        label="Floor"
-                        defaultValue={Matching.Match_floor}
-                        error={error !== undefined}
-                        helperText={error ? myHelper.floor[error.type] : ""}
-                      />
-                    )}
-                  />
-
               </Stack>
               </Box> 
             </CardContent>
             <Divider />
             <CardActions>
                <Button fullWidth variant="text" type="submit">
-                Save Changes
+                  บันทึกการเปลี่ยนแปลง
                 </Button>
              </CardActions>
             </Box>

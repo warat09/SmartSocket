@@ -38,9 +38,9 @@ import {
   FormHelperText,
   CardHeader,
   CardContent,
-  Unstable_Grid2 as Grid,
   CardActions,
-  Input
+  Input,
+  Grid
   } from "@mui/material";
   import Iconify from "../../components/iconify/Iconify";
   import Scrollbar from "../../components/scrollbar/Scrollbar";
@@ -65,6 +65,7 @@ import CheckCircleTwoToneIcon from '@mui/icons-material/CheckCircleTwoTone';
 import HourglassTopTwoToneIcon from '@mui/icons-material/HourglassTopTwoTone';
 import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 import { StepIconProps } from "@mui/material/StepIcon";
+import PageTitleWrapper from "../../components/PageTitleWrapper";
   interface LocalStorage {
     username: string;
     token: string;
@@ -72,10 +73,10 @@ import { StepIconProps } from "@mui/material/StepIcon";
 
   const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
     { id: 'opendiv', label: '', alignRight: false  },
-    { id: 'Asset_name', label: 'Assets', alignRight: false },
-    { id: 'Asset_expire_hour', label: 'ExpireHour', alignRight: false },
-    { id: 'Match_remain_time', label: 'TimeUse', alignRight: false },
-    { id: '', label: 'Action', alignRight: false  },
+    { id: 'Asset_name', label: 'ชื่ออุปกรณ๋', alignRight: false },
+    { id: 'Asset_expire_hour', label: 'เวลาที่เหลือในการบำรุงรักษา', alignRight: false },
+    { id: 'Match_remain_time', label: 'เวลาที่ใช้', alignRight: false },
+    { id: '', label: '', alignRight: false  },
   ];
 
   function descendingComparator(a:any, b:any, orderBy:any) {
@@ -271,30 +272,28 @@ const HomeMaintenance: React.FC=()=>{
         }
         let statusstep = 0;
         const steps = [
-          "Waiting for Delivery",
-          "Request Accepted",
-          "Maintenancing",
-          "Success Maintenance"
+          "รับเรื่อง",
+          "กำลังซ่อมบำรุงรักษา",
+          "ซ่อมบำรุงรักษาเสร็จสิ้น"
         ];
         const stepbutton = [
-          "Request Accepted",
           "Maintenancing",
           "Success Maintenance"
         ]
+        const step_button = [
+          "กำลังซ่อมบำรุงรักษา",
+          "ซ่อมบำรุงรักษาเสร็จสิ้น"
+        ]
         switch(History[0].Maintenance_status_maintenance) {
-          case  "Waiting for Delivery":
-            // code block
-            break;
           case "Request Accepted":
             // code block
-            statusstep = statusstep+1;
             break;
           case "Maintenancing":
-            statusstep = statusstep+2;
+            statusstep = statusstep+1;
             break;
           case "Success Maintenance":
-            statusstep = statusstep+3;
-            stepbutton[3] = "success"
+            statusstep = statusstep+2;
+            stepbutton[2] = "success"
             // setCompleted(true)
             break;
           default:
@@ -330,7 +329,7 @@ const HomeMaintenance: React.FC=()=>{
               color="success"
               onClick={()=>handleAddStatus(stepbutton[statusstep],row.History[0].Maintenance_id_assets)}
               >
-                {stepbutton[statusstep]}
+                {step_button[statusstep]}
               </Button>       
             }
             {Match_status_rent !== "Available" &&
@@ -341,10 +340,9 @@ const HomeMaintenance: React.FC=()=>{
               color="success"
               onClick={()=>handleAddStatus(stepbutton[statusstep],row.History[0].Maintenance_id_assets)}
               >
-                {stepbutton[statusstep]}
+                {step_button[statusstep]}
               </Button>       
             }
-              
           </TableCell>
 
        </TableRow>
@@ -371,15 +369,23 @@ const HomeMaintenance: React.FC=()=>{
               <Table size="small" aria-label="purchases">
                 <TableHead>
                   <TableRow>
-                    <TableCell align="center">Status</TableCell>
-                    <TableCell align="center">Date</TableCell>
+                    <TableCell align="center">สถานะซ่อมบำรุงรักษา</TableCell>
+                    <TableCell align="center">วันที่ซ่อมบำรุงรักษา</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {History.slice(pageTable * rowsPage, pageTable * rowsPage + rowsPage).map((historyRow:any) => (
                     <TableRow key={historyRow.Maintenance_id_maintenance}>
                       <TableCell component="th" scope="row" align="center">
-                        {historyRow.Maintenance_status_maintenance}
+                        {historyRow.Maintenance_status_maintenance === "Maintenancing" &&
+                          "กำลังซ่อมบำรุงรักษา"
+                        }
+                        {historyRow.Maintenance_status_maintenance === "Success Maintenance" &&
+                          "ซ่อมบำรุงรักษาเสร็จสิ้น"
+                        }
+                        {historyRow.Maintenance_status_maintenance === "Request Accepted" &&
+                          "รับเรื่อง"
+                        }
                       </TableCell>
                       <TableCell align="center">{new Date(historyRow.Maintenance_date_maintenance).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
                     </TableRow>
@@ -431,15 +437,24 @@ const HomeMaintenance: React.FC=()=>{
     return(
         <>
             <Helmet>
-                <title> Maintenance: List | SmartSocket </title>
+                <title> Maintenance | SmartSocket </title>
             </Helmet>
             <Container>
-            <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ mb: 5,mt:2 }}>
-                <Typography variant="h4" gutterBottom>
-                    Maintenance
-                </Typography>
-            </Stack>
-            <Divider sx={{borderBottomWidth: 3,mb:3,borderColor:"black",borderRadius:1}}/>
+            <PageTitleWrapper>
+              <Avatar sx={{backgroundColor: 'rgba(255, 255, 255, 1)',marginRight:3,width: 70, height: 70,borderRadius: 2,boxShadow:6}}>
+                <Iconify icon={"wpf:maintenance"} sx={{width: 40, height: 40,color:"rgb(85, 105, 255);"}}/>
+              </Avatar>
+              <Grid container justifyContent="space-between" alignItems="center">
+                <Grid item>
+                  <Typography variant="h3" component="h3" gutterBottom>
+                    บำรุงรักษา
+                  </Typography>
+                  <Typography variant="subtitle2">
+                    เมื่ออุปกรณ์ถึงเวลาบำรุงรักษาและบ่งบอกสถาณะบำรุงรักษาของอุปกรณ์
+                  </Typography>
+              </Grid>
+            </Grid>
+            </PageTitleWrapper>
             <Card>
                 <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
                 <Scrollbar>
