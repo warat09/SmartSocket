@@ -41,7 +41,7 @@ const SendTransaction = async (req: Request, res: Response, next: NextFunction) 
         }
     }
     else{
-        return res.status(200).json({status:1,message: `Adress ${Address} not match`});
+        return res.status(200).json({status:1,message: `Address ${Address} not match`});
     }
 };
 const GetAllTransaction = async (req: Request, res: Response, next: NextFunction) => {

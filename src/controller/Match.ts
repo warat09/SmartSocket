@@ -4,32 +4,11 @@ import { Assets } from '../entity/Asset';
 import {Match} from "../entity/Match"
 import {User_match} from "../entity/Usermatch"
 import { Maintenance_Assets } from '../entity/Maintenance';
+import { User } from '../entity/User';
 
 const MatchingAsset = async (req: Request, res: Response, next: NextFunction) => {
-    let {mac_address,id_assets,room,floor} = req.body
+    let {mac_address,id_assets,} = req.body
     let Datetime = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
-    console.log(id_assets)
-    // const MatchAsset = await AppDataSource.getRepository(Match).createQueryBuilder()
-    // .select("mac_address").where(`id_assets = ${id_assets}`).getQuery();
-
-    const InputRemainTime= await AppDataSource
-    .getRepository(Assets)
-    .createQueryBuilder()
-    .select("expire_hour")
-    .where(`id_assets=${id_assets}`)
-    .getRawOne()
-
-    const match = new Match()
-    match.id_assets = id_assets;
-    match.mac_address = mac_address;
-    match.status_match = "Enable";
-    // match.remain_time = InputRemainTime.expire_hour*(1000*60*60)//ดึง asset expire_hour no apiinput
-    match.sum_used_time = 0
-    match.active_datetime = Datetime;
-    match.room = room;
-    match.floor = floor;
-    match.status_rent = "Available";
-
     const CheckMatch = await AppDataSource.getRepository(Match).find({
         where: {
             mac_address: mac_address,
@@ -38,6 +17,15 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
         },
     });
     if(Object.values(CheckMatch).length === 0){
+        const match = new Match()
+        match.id_assets = id_assets;
+        match.mac_address = mac_address;
+        match.status_match = "Enable";
+        match.sum_used_time = 0
+        match.active_datetime = Datetime;
+        match.room = "-";
+        match.floor = "-";
+        match.status_rent = "Available";
         const AddMatch = AppDataSource.getRepository(Match).create(match)
         const results = await AppDataSource.getRepository(Match).save(AddMatch)
         return res.status(200).json({status:1,data:results,message: "Insert Success"});
@@ -49,18 +37,17 @@ const MatchingAsset = async (req: Request, res: Response, next: NextFunction) =>
 
 const GetRentMatch = async (req: Request, res: Response, next: NextFunction) => {
     // const SelectUserMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').getQuery();
-    const SelectIdMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').where(`UserMatch.status_user_match IN ("Wait for Approve","Approve")`).getQuery();
+    // const SelectIdMatch = AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').select('id_match').where(`UserMatch.status_user_match IN ("Wait for Approve","Approve")`).getQuery();
     // const SelectDistanceRent = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('mac_address').distinct(true).where('Match.status_rent = :status', {status:"Rent"}).getQuery();
     const GetRentMatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
-    .where(`Match.status_rent = :status_rent AND Match.status_match = :status AND Asset.maintenance = 0 AND Match.id_match NOT IN (${SelectIdMatch})`, {status_rent: "Available",status:"Enable"}).getRawMany();
+    .where(`Asset.maintenance = 0 AND Match.status_rent != :status_rent AND Match.status_match = :status_match`, {status_rent: "Rent",status_match:"Enable"}).getRawMany();
     res.json(GetRentMatch)
 };
 
 const GetAssetMaintenance = async (req: Request, res: Response, next: NextFunction) => {
     const SelectMaintenance = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').where(`Asset.maintenance = :status_maintenanace`,{status_maintenanace:1}).getRawMany();
-    console.log(SelectMaintenance)
     res.json(SelectMaintenance)     
 }
 
@@ -93,14 +80,12 @@ const UpdateStatusMatching = async (req: Request, res: Response, next: NextFunct
 }
 
 const UpdateMatching = async (req: Request, res: Response, next: NextFunction) => {
-    const {node,room,floor} = req.body;
+    const {node} = req.body;
     await AppDataSource
             .createQueryBuilder()
             .update(Match)
             .set({
-                mac_address : node,
-                room : room,
-                floor : floor,
+                mac_address : node
             })
             .where("id_match = :id", { id: req.params.id }).execute()
     return res.status(200).json({status:1,message: "Update Success"});
@@ -110,7 +95,11 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
     const AllMatching = await AppDataSource.getRepository(Match).createQueryBuilder('Match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets')
     .where(`Match.status_match = :status`, {status:"Enable"}).getRawMany();
+    
+    console.log("AllMatching",AllMatching)
     const FilterMatch = []
+    const Id_Match = []
+    const cleandata = []
     AllMatching.map(async(v,i)=>{
         const Match = AllMatching[i]
         const attribute = {
@@ -122,9 +111,10 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
             Match_sum_used_time:(Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time,
             Match_active_datetime:Match.Match_active_datetime,
             Match_room:Match.Match_room,
-            Match_floor:Match.Match_floor
+            Match_floor:Match.Match_floor,
+            Asset_maintenance:Match.Asset_maintenance
         }
-
+        Id_Match.push(Match.Match_id_match);
         FilterMatch.push(attribute);
         if((Match.Asset_expire_hour*(1000*60*60))-Match.Match_sum_used_time < 0){
             const a = await AppDataSource.getRepository(Assets).createQueryBuilder('Asset').where('Asset.maintenance = 0 AND Asset.id_assets = :id',{id:Match.Asset_id_assets}).getRawMany();
@@ -142,14 +132,55 @@ const GetAllMatching = async (req: Request, res: Response, next: NextFunction) =
                     const Maintenance = new Maintenance_Assets();
                     Maintenance.id_assets = Match.Asset_id_assets;
                     Maintenance.date_maintenance = new Date(Date_maintenance);
-                    Maintenance.status_maintenance = "Wait for Delivery"
+                    Maintenance.status_maintenance = "Request Accepted"
                     const AddMaintenance = AppDataSource.getRepository(Maintenance_Assets).create(Maintenance)
                     await AppDataSource.getRepository(Maintenance_Assets).save(AddMaintenance)   
                 }
             }
         }
     })
-    res.json(FilterMatch)
+    const CheckUserRent = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch')
+    .innerJoinAndSelect(User, 'User', 'User.id_user = UserMatch.id_user')
+    .where(`UserMatch.id_match IN (:id_match) AND (UserMatch.status_user_match = :status OR UserMatch.status_user_match = :status2)`, {id_match:Id_Match,status:"Approve",status2:"Wait for Approve Return"}).getRawMany();
+    
+    FilterMatch.map((v,i)=>{
+        let obj = {}
+        const findobj = CheckUserRent.find(o => o.UserMatch_id_match === v.Match_id_match)
+        if(findobj === undefined){
+            obj = {
+                Match_id_match:v.Match_id_match,
+                Asset_name_assets:v.Asset_name_assets,
+                Match_mac_address:v.Match_mac_address,
+                Match_status_match:v.Match_status_match,
+                Match_status_rent:v.Match_status_rent,
+                Match_sum_used_time:v.Match_sum_used_time,
+                Match_active_datetime:v.Match_active_datetime,
+                Match_room:v.Match_room,
+                Match_floor:v.Match_floor,
+                Asset_maintenance:v.Asset_maintenance,
+                User_rent:""
+            }
+        }
+        else{
+            obj = {
+                Match_id_match:v.Match_id_match,
+                Asset_name_assets:v.Asset_name_assets,
+                Match_mac_address:v.Match_mac_address,
+                Match_status_match:v.Match_status_match,
+                Match_status_rent:v.Match_status_rent,
+                Match_sum_used_time:v.Match_sum_used_time,
+                Match_active_datetime:v.Match_active_datetime,
+                Match_room:v.Match_room,
+                Match_floor:v.Match_floor,
+                Asset_maintenance:v.Asset_maintenance,
+                User_rent:findobj.User_name+" "+findobj.User_surname
+            }
+        }
+    cleandata.push(obj)    
+    })
+    console.log("cleandata",CheckUserRent)
+
+    res.json(cleandata)
 };
 
 

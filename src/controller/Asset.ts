@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { AppDataSource } from "../data-source"
 import { Assets } from '../entity/Asset';
 import { Match } from '../entity/Match';
+
 const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
     let {name_assets , rfid_address , expire_hour} = req.body
     console.log(name_assets , rfid_address , expire_hour)
@@ -28,8 +29,6 @@ const AddAsset = async (req: Request, res: Response, next: NextFunction) => {
         const results = await AppDataSource.getRepository(Assets).save(AddAsset)
         return res.status(200).json({status:1,data:results,message: "Insert Asset Success"});
     }
-
-    
 };
 const GetMatchAsset = async(req:Request,  res: Response, next: NextFunction) => {
     const SelectMatch = AppDataSource.getRepository(Match).createQueryBuilder('Match').select('id_assets').where(`Match.status_match = "Enable"`).getQuery();

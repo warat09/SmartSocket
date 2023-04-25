@@ -44,7 +44,6 @@ const UpdateUser = async(req:Request,  res: Response, next: NextFunction) => {
     const  {name,surname,email,role,departure,id_card} = req.body;
     const Checkpk = await AppDataSource.getRepository(User).createQueryBuilder('User')
     .where(`User.id_user != ${id} AND (User.email = :email OR User.id_card = :id_card) AND User.status_user = :status`, {email:email,id_card:id_card,status:"Active"}).getRawMany();
-    console.log(Checkpk)
     if(Object.values(Checkpk).length === 0){
         const CheckUser = await AppDataSource.getRepository(User).find({
             where: {

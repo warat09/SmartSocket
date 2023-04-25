@@ -11,13 +11,12 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     const countasset = await AppDataSource.getRepository(Assets).createQueryBuilder('Asset').where(`Asset.status_assets = "Active"`).getCount();
     const countnode = await AppDataSource.getRepository(Node).createQueryBuilder('Node').where(`Node.status_node = "Enable"`).getCount();
     const countmatch = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where(`Match.status_match = "Enable"`).getCount();
-    const countmatchapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Wait for Approve'}).getCount();
+    const countmatchapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status OR UserMatch.status_user_match = :status_return',{status:'Wait for Approve',status_return:'Wait for Approve Return'}).getCount();
     const countapprove = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status_user_match = :status',{status:'Approve'}).getCount();
     const countmatchrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status AND Match.status_match = :status_match',{status:'Rent',status_match:'Enable'}).getCount();
     const countmatchnotrent = await AppDataSource.getRepository(Match).createQueryBuilder('Match').where('Match.status_rent = :status AND Match.status_match = :status_match',{status:'Available',status_match:'Enable'}).getCount();
-    // const countmaintenance = await AppDataSource.getRepository(User_match).createQueryBuilder('UserMatch').where('UserMatch.status = notrent').getCount();
     const countuser = await AppDataSource.getRepository(User).createQueryBuilder('User').where({status_user	: "Active"}).getCount();
-    const topic = ["Assets","Sockets","Matching","Wait for approve","Approve","rent","not_rent","people"]
+    const topic = ["อุปกรณ์","เต้าเสียบ","จับคู่อุปกรณ์","รอการอนุมัติ","อนุมัติ","อุปกรณ์ที่ถูกยืม","อุปกรณ์ที่ยังไม่ถูกยืม","จำนวนผู้ใช้"]
     const amount = [countasset,countnode,countmatch,countmatchapprove,countapprove,countmatchrent,countmatchnotrent,countuser]
     const icon = ["ri:plug-2-line","mdi:plug-socket-au","ph:plugs-bold","material-symbols:nest-clock-farsight-analog-outline-rounded","line-md:circle-to-confirm-circle-transition","fa6-solid:plug-circle-bolt","fa6-solid:plug-circle-plus","mdi:user-group-outline"]
     const array = []
@@ -53,7 +52,6 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
     .where(`Maintenance.status_maintenance = :status_maintenance`, {status_maintenance: "success maintenance"})
     .groupBy('MONTH(Maintenance.date_maintenance)').getRawMany();
     console.log(mountmaintenancing.length)
-    // if(mountmaintenancing){
         let chartmaintenancing = [0,0,0,0,0,0,0,0,0,0,0,0]
         let chartsuccessmaintenance = [0,0,0,0,0,0,0,0,0,0,0,0]
         for(let i = 1 ;i <= mountmaintenancing.length;i++){
@@ -64,11 +62,11 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
         }
         let chart = [
             {
-                name:'maintenance',
+                name:'ส่งบำรุงรักษา',
                 data:chartmaintenancing
             },
             {
-                name:'success maintenance',
+                name:'บำรุงรักษาเสร็จสิ้น',
                 data:chartsuccessmaintenance
             }
         ]
@@ -89,7 +87,6 @@ const GetAllDashboard = async (req: Request, res: Response, next: NextFunction) 
             FilterMatch.push(attribute);
         }
     })
-    console.log("77",FilterMatch)
     return res.status(200).json({countall:array,remainingtime:FilterMatch,maintenance:maintenance,totaldeparturerent:donut,totalchart:chart})
 }
 

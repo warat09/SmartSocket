@@ -24,37 +24,7 @@ var bodyParser = require('body-parser')
 
 
 AppDataSource.initialize().then(async () => {
-
-  bycript.hash("admin",10,async(error:any,hashpassword:string)=>{
-    if(error){
-        return;
-    }
-    else{
-        const user = new User();
-        user.name = "admin";
-        user.surname = "admin";
-        user.password = hashpassword;
-        user.email = "ytitle7797@gmail.com";
-        user.id_card = "-";
-        user.role = "admin";
-        user.departure = "-";
-        user.status_user = 'Active';
-        const CheckUser = await AppDataSource.getRepository(User).find({
-          where: [
-              { email: "ytitle7797@gmail.com" }
-          ]
-        });
-      if(Object.values(CheckUser).length === 0){
-          const AddUser = AppDataSource.getRepository(User).create(user)
-          await AppDataSource.getRepository(User).save(AddUser)
-          return
-      }
-      else{
-          return
-      }
-    }
-})
-
+  
     // create express app
     var cors = require('cors')
     const router: Application = express();

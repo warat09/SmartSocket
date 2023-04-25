@@ -5,7 +5,6 @@ import { Assets } from '../entity/Asset';
 
 const AddAddressRfid = async (req: Request, res: Response, next: NextFunction) => {
     let {RfidAddress} = req.body
-    // var new_txt = RfidAddress.replace(/ |_/g, ':');
     console.log("RfidAddress",RfidAddress)
     let Date_rfid = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
     const rfid = new Rfid()
@@ -27,7 +26,6 @@ const AddAddressRfid = async (req: Request, res: Response, next: NextFunction) =
 };
 
 const GetRfidAsset = async (req: Request, res: Response, next: NextFunction) => {
-    // const SelectRfidAsset = await AppDataSource.getRepository(Assets).createQueryBuilder('Assets').innerJoinAndSelect(Rfid, 'Rfid', 'Asset.rfid_address = Rfid.rfid_address').getQuery();
     const SelectRfidAsset = AppDataSource.getRepository(Assets).createQueryBuilder('Assets').select('rfid_address').where(`Assets.status_assets  = "Active"`).getQuery();
     const GetRfidAsset = await  AppDataSource.getRepository(Rfid).createQueryBuilder('Rfid')
     .where(`Rfid.rfid_address NOT IN (${SelectRfidAsset})`).getRawMany();
