@@ -43,10 +43,9 @@ import {
 } from "@mui/material";
 import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
-import { Icon } from '@iconify/react';
-
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import PageTitleWrapper from "../../components/PageTitleWrapper";
+import formatDate from "../../components/caltime/caldate"
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
@@ -336,7 +335,7 @@ const HomeApprove: React.FC = () => {
                             />
                         </TableCell>
 
-                        <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(UserMatch_datetime)}</TableCell>
 
                         <TableCell align="center">{User_name+" "+User_surname}</TableCell>
 

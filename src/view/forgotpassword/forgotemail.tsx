@@ -1,8 +1,9 @@
-import { useState,useEffect } from 'react';
+import { useState,useEffect,useContext } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 // @mui
 import { styled } from '@mui/material/styles';
+
 import { Link, Container, Typography, Divider, Stack, Button, TextField, InputAdornment, IconButton,Checkbox, Box, Snackbar, Alert } from '@mui/material';
 // hooks
 import useResponsive from '../../hooks/useResponsive';
@@ -15,7 +16,11 @@ import { LoadingButton } from '@mui/lab';
 import Iconify from '../../components/iconify';
 
 import { Controller, useForm } from 'react-hook-form';
+
 import { forgotpassword } from '../../services/apiservice';
+
+import { RecoveryContext } from "./forgotpassword";
+
 // // sections
 // import { LoginForm } from '../sections/auth/login';
 
@@ -50,6 +55,8 @@ const StyledContent = styled('div')(({ theme }) => ({
 // ----------------------------------------------------------------------
 
 export default function ForgotPage() {
+  const { setEmail, setPage, email, setOTP } = useContext(RecoveryContext);
+
   const mdUp = useResponsive('up', 'md','');
 
   const { control, handleSubmit } = useForm({
@@ -81,10 +88,30 @@ export default function ForgotPage() {
   };
 
   const handleOnSubmit=async(data:any)=>{
+    const nagigateToOtp = () => {
+        if (email) {
+          const OTP = Math.floor(Math.random() * 9000 + 1000);
+          console.log(OTP);
+          setOTP(OTP);
+    
+        //   axios
+        //     .post("http://localhost:5000/send_recovery_email", {
+        //       OTP,
+        //       recipient_email: email,
+        //     })
+        //     .then(() => setPage("otp"))
+        //     .catch(console.log);
+          return;
+        }
+        return alert("Please enter your email");
+      }
     setLoad(true)
     const {email} = data
     setTimeout(async()=>{
-        await forgotpassword("/Forgotpassword",email)
+        setPage("otp")
+        setEmail(email)
+        nagigateToOtp()
+        // await forgotpassword("/Forgotpassword",email)
     }
     , 2000);
   }

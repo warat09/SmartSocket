@@ -55,6 +55,7 @@ import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import formatTime from '../../components/caltime/millisectohms'
+import formatDate from "../../components/caltime/caldate"
 import StepConnector, {
   stepConnectorClasses
 } from "@mui/material/StepConnector";
@@ -387,7 +388,7 @@ const HomeMaintenance: React.FC=()=>{
                           "รับเรื่อง"
                         }
                       </TableCell>
-                      <TableCell align="center">{new Date(historyRow.Maintenance_date_maintenance).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                      <TableCell align="center">{formatDate(historyRow.Maintenance_date_maintenance)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -33,6 +33,7 @@ import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import Iconify from "../../components/iconify/Iconify";
 import PageTitleWrapper from "../../components/PageTitleWrapper";
+import formatDate from "../../components/caltime/caldate"
 
 const TABLE_HEAD = [
   { id: 'mac_address', label: 'แอดเดรสเต้าเสียบ', alignRight: false },
@@ -261,7 +262,7 @@ const HomeNode: React.FC = () => {
 
                         <TableCell align="center">{mac_address}</TableCell>
                         
-                        <TableCell align="center">{new Date(date_node).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(date_node)}</TableCell>
 
                         <TableCell align="center">{status_node === "Enable" && "เปิดใช้งาน"}</TableCell>
 

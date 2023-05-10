@@ -47,6 +47,7 @@ import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import { Controller, useForm } from "react-hook-form";
 import formatTime from "../../components/caltime/millisectohms"
+import formatDate from "../../components/caltime/caldate"
 import PageTitleWrapper from "../../components/PageTitleWrapper";
 
 const TABLE_HEAD = [
@@ -388,7 +389,7 @@ const ComponentUserMatch= async (token:string) => {
 
                         <TableCell align="center">{formatTime(Number(Totaltime))}</TableCell>
 
-                        <TableCell align="center">{new Date(UserMatch_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(UserMatch_datetime)}</TableCell>
 
                         <TableCell align="center">
                           {UserMatch_status_user_match === "Wait for Approve" &&

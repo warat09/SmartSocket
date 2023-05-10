@@ -29,6 +29,7 @@ import { Icon } from '@iconify/react';
 import Iconify from "../../components/iconify/Iconify";
 import PageTitleWrapper from "../../components/PageTitleWrapper";
 import formatTime from '../../components/caltime/millisectohms' 
+import formatDate from "../../components/caltime/caldate"
 
 const TABLE_HEAD = [
   { id: 'Asset_name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
@@ -214,11 +215,11 @@ const HomeTransection: React.FC = () => {
 
                         <TableCell align="center">{formatTime(Transaction_time_used)}</TableCell>
                         
-                        <TableCell align="center">{new Date(Transaction_time_update).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(Transaction_time_update)}</TableCell>
 
-                        <TableCell align="center">{Transaction_on_date}</TableCell>
+                        <TableCell align="center">{formatDate(Transaction_on_date)}</TableCell>
 
-                        <TableCell align="center">{Transaction_off_date}</TableCell>
+                        <TableCell align="center">{formatDate(Transaction_off_date)}</TableCell>
 
                       </TableRow>
                     );

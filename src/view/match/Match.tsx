@@ -45,6 +45,7 @@ import Scrollbar from "../../components/scrollbar/Scrollbar";
 import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import formatTime from '../../components/caltime/millisectohms'
+import formatDate from "../../components/caltime/caldate"
 import { Controller, useForm } from "react-hook-form";
 import PageTitleWrapper from "../../components/PageTitleWrapper";
 
@@ -391,7 +392,7 @@ const HomeMatch: React.FC = () => {
 
                         <TableCell align="center">{formatTime(Match_sum_used_time)}</TableCell>
 
-                        <TableCell align="center">{new Date(Match_active_datetime).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(Match_active_datetime)}</TableCell>
 
                         <TableCell align="center">
                           {Match_status_rent === "Available" &&

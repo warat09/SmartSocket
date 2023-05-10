@@ -24,7 +24,7 @@ export function responsiveFontSizes({ sm, md, lg }:any) {
 
 // ----------------------------------------------------------------------
 
-const FONT_PRIMARY = 'Public Sans, sans-serif'; // Google Font
+const FONT_PRIMARY = 'Public Sans, sans-serif,Noto Sans Thai Looped'; // Google Font
 // const FONT_SECONDARY = 'CircularStd, sans-serif'; // Local Font
 
 const typography = {

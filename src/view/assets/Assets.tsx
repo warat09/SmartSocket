@@ -47,6 +47,7 @@ import { UserListHead,UserListToolbar } from '../../components/user';
 import { Icon } from '@iconify/react';
 import { Controller, useForm } from "react-hook-form";
 import PageTitleWrapper from "../../components/PageTitleWrapper"
+import formatDate from "../../components/caltime/caldate"
 
 const TABLE_HEAD = [
   { id: 'name_assets', label: 'ชื่ออุปกรณ์', alignRight: false },
@@ -354,7 +355,7 @@ const handleOnEditSubmit=async(data:any)=>{
 
                         <TableCell align="center">{expire_hour} ชั่วโมง</TableCell>
 
-                        <TableCell align="center">{new Date(date_assets).toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' })}</TableCell>
+                        <TableCell align="center">{formatDate(date_assets)}</TableCell>
 
                         {/* <TableCell align="center">{maintenance ? 'ควรส่งซ่อม' : 'ยังไม่ซ่อม'}</TableCell> */}
 
