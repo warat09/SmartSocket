@@ -48,7 +48,6 @@ const GetAllTransaction = async (req: Request, res: Response, next: NextFunction
     const AllTransection = await AppDataSource.getRepository(Node_Transaction).createQueryBuilder('Transaction')
     .innerJoinAndSelect(Match, 'Match', 'Transaction.id_match = Match.id_match')
     .innerJoinAndSelect(Assets, 'Asset', 'Asset.id_assets = Match.id_assets').getRawMany();
-    console.log(AllTransection)
     return res.status(200).json(AllTransection)
 };
 

@@ -6,7 +6,7 @@ import { Match } from '../entity/Match';
 const AddMACAddress = async (req: Request, res: Response, next: NextFunction) => {
     let {Address,LocalIP} = req.body
     console.log("MACAddress",req.body)
-    let Date_node = new Date(new Date().toLocaleString('sv-SE', { timeZone: 'Asia/Bangkok' }));
+    let Date_node = new Date(new Date().toLocaleString('sv-SE', {  timeZone: 'Asia/Bangkok' }));
     const node = new Node()
     node.mac_address = Address
     node.ip = LocalIP
@@ -66,6 +66,16 @@ const GetAllMacAddress = async (req: Request, res: Response, next: NextFunction)
             status_node:"Enable"
         }
     })
+    // console.log(new Date().toLocaleDateString('th-TH', {
+    //     year: '2-digit',
+    //     month: 'short',
+    //     day: 'numeric',
+    //     hour: 'numeric',
+    //     minute:'numeric',
+    //     second:'numeric',
+    //     timeZone: 'Asia/Bangkok'
+    //   }))
+
     res.json(AllMacAddress)
 }
 
