@@ -90,7 +90,7 @@ export default function ForgotPage() {
   const handleOnSubmit=async(data:any)=>{
     const nagigateToOtp = () => {
         if (email) {
-          const OTP = Math.floor(Math.random() * 9000 + 1000);
+          const OTP = Math.floor(Math.random() * 900000 + 100000);
           console.log(OTP);
           setOTP(OTP);
     
