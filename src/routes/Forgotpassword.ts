@@ -5,7 +5,6 @@ import controller from '../controller/Forgotpassword';
 const router = express.Router();
 
 router.post('/', controller.ForgotPassword);
-router.post("/resetpassword/:token", controller.Presetpassword);
-router.get("/resetpassword/:token", controller.tokensendemail);
+router.post("/send_recovery_email", controller.RecoveryEmail);
 
 export = router;

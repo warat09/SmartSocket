@@ -30,11 +30,17 @@ const OAuth2 = {
     REFRESH_TOKEN:process.env.REFRESH_TOKEN
 }
 
+const Emailhost = {
+    EMAIL_HOST:process.env.EMAIL_HOST,
+    PASSCODE_HOST:process.env.PASSCODE_HOST
+}
+
 const config = {
     mysql: MYSQL,
     server: SERVER,
     token:TOKEN_SECRET,
-    gmail:OAuth2
+    gmail:OAuth2,
+    host:Emailhost
 };
 
 
