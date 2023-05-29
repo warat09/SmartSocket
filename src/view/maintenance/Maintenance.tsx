@@ -74,7 +74,7 @@ import PageTitleWrapper from "../../components/PageTitleWrapper";
 
   const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
     { id: 'opendiv', label: '', alignRight: false  },
-    { id: 'Asset_name', label: 'ชื่ออุปกรณ๋', alignRight: false },
+    { id: 'Asset_name', label: 'ชื่ออุปกรณ์', alignRight: false },
     { id: 'Asset_expire_hour', label: 'เวลาที่เหลือในการบำรุงรักษา', alignRight: false },
     { id: 'Match_remain_time', label: 'เวลาที่ใช้', alignRight: false },
     { id: '', label: '', alignRight: false  },
@@ -451,7 +451,7 @@ const HomeMaintenance: React.FC=()=>{
                     บำรุงรักษา
                   </Typography>
                   <Typography variant="subtitle2">
-                    เมื่ออุปกรณ์ถึงเวลาบำรุงรักษาและบ่งบอกสถาณะบำรุงรักษาของอุปกรณ์
+                    เมื่ออุปกรณ์ถึงเวลาบำรุงรักษาและบ่งบอกสถานะบำรุงรักษาของอุปกรณ์
                   </Typography>
               </Grid>
             </Grid>

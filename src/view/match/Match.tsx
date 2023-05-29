@@ -56,8 +56,8 @@ const TABLE_HEAD = [
   { id: 'Match_floor', label: 'ชั้น', alignRight: false },
   { id: 'Match_sum_used_time', label: 'เวลาที่เหลือในการบำรุงรักษา', alignRight: false },
   { id: 'Match_active_datetime', label: 'วันที่-เวลา', alignRight: false },
-  { id: 'Match_status_rent', label: 'สถาณะการยืม', alignRight: false },
-  { id: 'Asset_maintenance', label: 'สถาณะบำรุงรักษา', alignRight: false },
+  { id: 'Match_status_rent', label: 'สถานะการยืม', alignRight: false },
+  { id: 'Asset_maintenance', label: 'สถานะบำรุงรักษา', alignRight: false },
   { id: '' },
 ];
 

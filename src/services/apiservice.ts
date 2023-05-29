@@ -23,6 +23,21 @@ export const login = async(path:string,email:string,password:string) => {
   }
 }
 
+export const recoveryEmail = async(path:string,otp:string,recipient_email:string) => {
+  try{
+    const response = await axios.post(api+path,{otp,recipient_email});
+    // window.history.pushState({open:1,message:response.data.message},"Success","/forgotpassword");
+    // window.location.reload();
+    return response.data;
+  }
+  catch(err){
+    localStorage.clear();
+    window.history.pushState({},"Error","/forgotpassword");
+    window.location.reload();
+    return null;
+  }
+}
+
 export const forgotpassword = async(path:string,email:string) => {
   try{
     const response = await axios.post(api+path,{email});

@@ -17,7 +17,7 @@ import Iconify from '../../components/iconify';
 
 import { Controller, useForm } from 'react-hook-form';
 
-import { forgotpassword } from '../../services/apiservice';
+import { recoveryEmail } from '../../services/apiservice';
 
 import { RecoveryContext } from "./forgotpassword";
 
@@ -88,11 +88,11 @@ export default function ForgotPage() {
   };
 
   const handleOnSubmit=async(data:any)=>{
-    const nagigateToOtp = () => {
+    const nagigateToOtp =async () => {
         if (email) {
           const OTP = Math.floor(Math.random() * 900000 + 100000);
           console.log(OTP);
-          setOTP(OTP);
+          await recoveryEmail("/Forgotpassword/send_recovery_email",String(OTP),email).then(setOTP(String(OTP)))
     
         //   axios
         //     .post("http://localhost:5000/send_recovery_email", {
@@ -146,7 +146,7 @@ export default function ForgotPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="body1" textAlign={'center'} color={'gray'} gutterBottom>
-            Please enter the email address associated with your account and We will email you a link to reset your password.
+            โปรดป้อนที่อยู่อีเมลที่เชื่อมโยงกับบัญชีของคุณและเราจะส่งอีเมลลิงก์เพื่อรีเซ็ตรหัสผ่านของคุณ
             </Typography>
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
             <Stack spacing={3} sx={{mt:3}}>
@@ -163,7 +163,7 @@ export default function ForgotPage() {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Email address"
+                          label="อีเมล"
                           error={error !== undefined}
                           helperText={error ? myHelper.email[error.type] : ""}
                         />
@@ -173,7 +173,7 @@ export default function ForgotPage() {
             </Stack>
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={load} sx={{mt:4}}>
-              Send Request
+              ส่งคำขอ
             </LoadingButton>
             </Box>
           </StyledContent>
@@ -181,8 +181,8 @@ export default function ForgotPage() {
 
         {mdUp && (
           <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-            Forgot your password?
+            <Typography style={{textAlign:'center'}} variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+            ลืมรหัสผ่านใช่ไหม?
             </Typography>
             <img src="/assets/illustrations/illustration_forgotpassword.png" alt="forgotpassword" />
           </StyledSection>

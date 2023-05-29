@@ -127,7 +127,7 @@ export default function LoginPage() {
         {mdUp && (
           <StyledSection>
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
-              Hi, Welcome Back
+              สวัสดี! ยินดีต้อนรับ
             </Typography>
             <img src="/assets/illustrations/illustration_login.png" alt="login" />
           </StyledSection>
@@ -136,7 +136,7 @@ export default function LoginPage() {
         <Container maxWidth="sm">
           <StyledContent>
             <Typography variant="h4" gutterBottom>
-              Sign in to SmartS<Iconify icon={"solar:plug-circle-outline"} />cket
+            ลงชื่อเข้าใช้ SmartS<Iconify icon={"solar:plug-circle-outline"} />cket
             </Typography>
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
             <Stack spacing={3} sx={{mt:5}}>
@@ -153,7 +153,7 @@ export default function LoginPage() {
                           {...field}
                           type="text"
                           fullWidth
-                          label="Email address"
+                          label="อีเมล"
                           error={error !== undefined}
                           helperText={error ? myHelper.email[error.type] : ""}
                         />
@@ -172,7 +172,7 @@ export default function LoginPage() {
                         <TextField
                           {...field}
                           name="password"
-                          label="Password"
+                          label="รหัสผ่าน"
                           type={showPassword ? 'text' : 'password'}
                           InputProps={{
                             endAdornment: (
@@ -197,12 +197,12 @@ export default function LoginPage() {
               <Typography variant="body2">
               </Typography>
               <Link  variant="subtitle2" underline="hover" onClick={() => {navigate("/forgotpassword")}}>
-                Forgot password?
+                ลืมรหัสผ่าน?
               </Link>
             </Stack>
 
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={load}>
-              Login
+              เข้าสู่ระบบ
             </LoadingButton>
             </Box>
           </StyledContent>

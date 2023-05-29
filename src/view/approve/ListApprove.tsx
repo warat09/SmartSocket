@@ -54,7 +54,7 @@ const TABLE_HEAD = [
   { id: 'UserMatch_description', label: 'คำอธิบาย', alignRight: false },
   { id: 'UserMatch_datetime', label: 'วันที่-เวลา', alignRight: false },
   { id: 'User_Name', label: 'ชื่อผู้ใช้', alignRight: false },
-  { id: 'UserMatch_status_user_match', label: 'สถาณะ', alignRight: false },
+  { id: 'UserMatch_status_user_match', label: 'สถานะ', alignRight: false },
   { id: 'User_action', label: '', alignRight: false }
 ];
 

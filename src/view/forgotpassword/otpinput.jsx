@@ -1,4 +1,4 @@
-import { useState,useEffect,useContext } from 'react';
+import { useState,useEffect,useContext,useRef } from 'react';
 
 import { Helmet } from 'react-helmet-async';
 
@@ -12,9 +12,10 @@ import { styled } from '@mui/material/styles';
 
 import { RecoveryContext } from "./forgotpassword";
 
+
 const myHelper = {
   otpnumber:{
-    required: "Asset is Required"
+    required: ""
   },
 };
 
@@ -31,10 +32,28 @@ export default function OtpPage() {
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column',
-    padding: theme.spacing(12, 0),
+    padding: theme.spacing(12, 3),
   }));
-  const [inputotp,setinputotp] = useState({otp_1:""})
+
+  const inputRefs = useRef([]);
+
+  const handleChange = (index, e) => {
+    const value = e.target.value;
+    if (value.length === 1 && inputRefs.current[index + 1]) {
+      inputRefs.current[index + 1].focus();
+    }
+  };
   const handleOnSubmit=async(data)=>{
+    let {email,password,otp_1,otp_2,otp_3,otp_4,otp_5,otp_6} = data
+    const Otp = String(otp_1).concat(String(otp_2),String(otp_3),String(otp_4),String(otp_5),String(otp_6));
+    if(Otp === otp){
+      console.log("yes")
+      console.log(Otp,otp)
+    }
+    else{
+      console.log("no")
+      console.log(Otp,otp)
+    }
   }
 
   return(
@@ -42,17 +61,20 @@ export default function OtpPage() {
       <Helmet>
           <title> ForgotPassword | SmartSocket </title>
       </Helmet>
-      <Container maxWidth="sm">
+      <Container maxWidth="xs">
+      
       <StyledContent>
+        
           <Box paddingBottom={3}>
             <img src="/assets/illustrations/illustration_sentemail.png" alt="login" style={{marginLeft:'auto',marginRight:'auto',width: '60%'}} />
               <Typography variant="body1" textAlign={'center'} color={'gray'} gutterBottom>
-              We've sent a 6-digit confirmation email to your email.
+              เราได้ส่งอีเมลยืนยัน 6 หลักไปยังอีเมลของคุณแล้ว
               </Typography>
               <Typography variant="body1" textAlign={'center'} color={'gray'} gutterBottom>
-              Please enter the code in below box to verify your email.
+              กรุณาใส่รหัสในช่องด้านล่างเพื่อยืนยันอีเมลของคุณ
               </Typography>
           </Box>
+          
             
           <Box component="form" onSubmit={handleSubmit(handleOnSubmit)}>
           <Controller
@@ -67,7 +89,7 @@ export default function OtpPage() {
                       {...field}
                       type="text"
                       fullWidth
-                      label="Email"
+                      label="อีเมล"
                       defaultValue={email}
                       InputProps={{
                         readOnly: true,
@@ -77,15 +99,72 @@ export default function OtpPage() {
                     />
                     )}
                   />
+                  {/* <p>OTP Entered - {Otp.join("")}</p> */}
+                  
           <Stack
             direction="row"
-            divider={<Divider orientation="vertical" flexItem />}
             spacing={2}
             justifyContent="center"
             pt={3}
             pb={1}
           >
-                  <Controller
+            {[...Array(6)].map((data, index) => {
+                        return (
+                          <Controller
+                          control={control}
+                          name={`otp_${index+1}`}
+                          defaultValue=""
+                          rules={{
+                            required: true,
+                          }}
+                          render={({ field, fieldState: { error } }) => (
+                            <TextField
+                              {...field}
+                              type="text"
+                              placeholder="-"
+                              value={data}
+                              inputProps={{
+                                maxLength: 1,
+                                style: { width:'30px',height:'23px',textAlign: 'center' },
+                              }}
+                              onChange={(e) =>{
+                                field.onChange(parseInt(e.target.value))
+                                handleChange(index, e)                             
+                                }                     
+                              }
+                              inputRef={(ref) => (inputRefs.current[index] = ref)}
+                              error={error !== undefined}
+                              helperText={error ? myHelper.otpnumber[error.type] : ""}
+                            />
+                          )}
+                        />
+                        // <TextField
+                        //   type="text"
+                        //   name="otp"
+                        //   key={index}
+                        //   value={data}
+                        //   onChange={e => handleChange(e.target, index)}
+                        //   onFocus={e => e.target.select()}
+                        //   inputProps={{
+                        //     maxLength: 1,
+                        //     style: { width:'30px',height:'23px',textAlign: 'center' },
+                        //   }}
+                        // />
+                      //   <TextField
+                      //   key={index}
+                      //   variant="outlined"
+                      //   size="small"
+                      //   type="text"
+                      //   inputProps={{ maxLength: 1,style: { width:'30px',height:'40px',textAlign: 'center' }, }}
+                      //   onChange={(e) => handleChange(index, e)}
+                      //   inputRef={(ref) => (inputRefs.current[index] = ref)}
+                      // />
+                        );
+                    })}
+            
+                    
+            
+                  {/* <Controller
                       control={control}
                       name="otp_1"
                       defaultValue=""
@@ -109,11 +188,12 @@ export default function OtpPage() {
                               // setinputotp({otp_1:input})
                             }
                           }}
+                          onFocus={e => e.target.select()}
                         />
                       )}
-                    />
+                    /> */}
 
-                    <Controller
+                    {/* <Controller
                       control={control}
                       name="otp_2"
                       defaultValue=""
@@ -131,6 +211,7 @@ export default function OtpPage() {
                             maxLength: 1,
                             style: { width:'30px',height:'23px',textAlign: 'center' },
                           }}
+                          onFocus={e => e.target.select()}
                         />
                       )}
                     />
@@ -220,7 +301,7 @@ export default function OtpPage() {
                           }}
                         />
                       )}
-                    />
+                    /> */}
             </Stack>
             <Stack spacing={3} sx={{mt:3}}>
                 <Controller
@@ -234,7 +315,7 @@ export default function OtpPage() {
                         <TextField
                           {...field}
                           type="password"
-                          label="Password"
+                          label="รหัสผ่าน"
                           error={error !== undefined}
                           helperText={error ? myHelper.otpnumber[error.type] : ""}
                         />
@@ -251,7 +332,7 @@ export default function OtpPage() {
                         <TextField
                           {...field}
                           type="password"
-                          label="Confirm New Password"
+                          label="ยืนยันรหัสผ่าน"
                           error={error !== undefined}
                           helperText={error ? myHelper.otpnumber[error.type] : ""}
                         />
@@ -259,7 +340,7 @@ export default function OtpPage() {
                     />
             </Stack>
             <LoadingButton fullWidth size="large" type="submit" variant="contained" loading={load} sx={{mt:4}}>
-              Update Password
+              ยืนยัน
             </LoadingButton>
             </Box>
             </StyledContent>

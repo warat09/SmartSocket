@@ -84,7 +84,7 @@ const TABLE_HEAD:{ id: string, label: string,alignRight: boolean }[] = [
   { id: 'id_card', label: 'รหัสประจำตัว', alignRight: false },
   { id: 'departure', label: 'แผนก', alignRight: false },
   { id: 'role', label: 'การกำหนดสิทธิ์', alignRight: false },
-  { id: 'status_user', label: 'สถาณะ', alignRight: false },
+  { id: 'status_user', label: 'สถานะ', alignRight: false },
   { id: '', label: '', alignRight: false  },
 ];
 
